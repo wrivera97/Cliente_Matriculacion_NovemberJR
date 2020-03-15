@@ -1,0 +1,37 @@
+<div class="row" *ngIf="flagInformacionEstudiante">
+    <div class="col-lg-12">
+        <ngb-tabset>
+            <ngb-tab title="Sección 1" id="tab1" *ngIf="flagSeccion1">
+                <ng-template ngbTabContent>
+                    <app-seccion1></app-seccion1>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Sección 2" id="tab2" *ngIf="flagSeccion2">
+                <ng-template ngbTabContent>
+                    <app-seccion2></app-seccion2>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Sección 3" id="tab3" *ngIf="flagSeccion3">
+                <ng-template ngbTabContent>
+                    <app-seccion3></app-seccion3>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Formulario" id="tab4">
+                <ng-template ngbTabContent>
+                    <app-formulario></app-formulario>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Solicitud" id="tab5">
+                <ng-template ngbTabContent>
+                    <app-solicitud></app-solicitud>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>
+
+<div *ngIf="!flagInformacionEstudiante">
+    <h1 class="text-center">
+        <button class="btn btn-link btn-lg" (click)="getEstudiante()">Volver a cargar la página</button>
+    </h1>
+</div>

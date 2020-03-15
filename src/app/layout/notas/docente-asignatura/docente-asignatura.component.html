@@ -1,0 +1,113 @@
+<div class=" row">
+    <div class="col-lg-12">
+        <table class="table table-responsive table-sm">
+            <tr>
+                <td>
+                <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+                </td>
+                <td>
+                    <select [disabled]="flagAll" name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                            (change)="cambiarPeriodoLectivoActual()">
+                        <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                                *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <button (click)="getDocentesAsignados()" class="btn btn-success"
+                            title="Actualizar"><span class="{{messages['buttonRefresh']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <th scope="col">ID</th>
+                <th scope="col">Identificacion</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Estado</th>
+
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let datadocente of docenteAsignatura">
+
+                <td> {{datadocente.docente.id}} </td>
+                <td> {{datadocente.docente.identificacion}} </td>
+
+                <td> {{datadocente.docente.nombre1}}  {{datadocente.docente.nombre2}} </td>
+                <td> {{datadocente.docente.apellido1}}  {{datadocente.docente.apellido2}} </td>
+
+                <td> {{datadocente.docente.correo_institucional}} </td>
+
+                <td> {{datadocente.docente.estado}} </td>
+                <td>
+
+                <button type="button" class="btn btn-warning ml-1 btn-sm text-white"(click)="getDetalleDocente(datadocente)"
+                 title="Asignaturas">
+    <span class="{{messages['buttonUpdate']['icon']}}">
+
+    </span>
+        </button>
+    </td>
+</tr>
+            </tbody>
+          </table>
+    </div>
+</div>
+
+
+<div class="row" *ngIf="flagAll">
+    <div class="col-lg-12">
+        <h1>
+            <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagDocenteAsignaturas()">
+                <span class="fa fa-arrow-left text-white"> Regresar</span>
+            </button>
+
+            {{docenteSeleccionado.docente.apellido1 + ' ' + docenteSeleccionado.docente.apellido2 + ' '
+            + docenteSeleccionado.docente.nombre1 + ' ' + docenteSeleccionado.docente.nombre2}}
+        </h1>
+        
+        <table class="table table-hover table-sm table-responsive">
+            <thead class="table-default text-center">
+            <th scope="col">Id</th>
+            <th scope="col">Asignatura</th>
+            <th scope="col">Jornada</th>
+            <th scope="col">Paralelo</th>
+          
+            <th scope="col">
+
+                <button type="button" class="btn btn-success ml-1 btn-sm"
+                title="Añadir nueva asignatura">
+        <span class="{{messages['buttonAdd']['icon']}}">
+          {{messages['buttonAdd']['text']}}
+        </span>
+        </button>
+
+            </th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let Detalle of detalleDocente">
+
+                    <td> <option>{{Detalle.id}} </option> </td>
+                    <td> <option>{{Detalle.asignatura.nombre}} </option> </td>
+                    <td> <option>{{Detalle.jornada}} </option> </td>
+                    <td> <option>{{Detalle.paralelo}} </option> </td>
+
+                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white"(click)="deleteAsignaturaDocente()"
+                    title="Eliminar Asignatura">
+       <span class="{{messages['buttonDelete']['icon']}}"></span>
+           </button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

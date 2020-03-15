@@ -1,0 +1,366 @@
+<div class="card mt-1">
+  <div class="card-body">
+    <form name="datosAcademicosform" method="post" #formCtrl="ngForm">
+      <div class="row ml-2">
+        <div class="col-lg-12 col-sm-12">
+          <h6 class="text-muted"><b class="text-danger">* </b>Todos los campos son obligatorios</h6>
+          <table class="table table-responsive">
+            <tr>
+              <td width="50%">
+                <label for="tipoColegio">
+                  <b class="text-danger">*</b> 31. Tipo Colegio:
+                </label>
+                <select [(ngModel)]="estudiante.tipo_colegio" class="form-control"
+                        id="tipoColegio" name="tipoColegio" required
+                        [ngClass]="{'backgroundTextFieldWarning':estudiante.tipo_colegio=='0','backgroundTextFieldSuccess':estudiante.tipo_colegio!='0'}"
+                        (change)="updateEstudiante()">
+                  <option value="0">SELECCIONE</option>
+                  <option value="{{tipoColegio.codigo}}" *ngFor="let tipoColegio of tiposColegio">
+                    {{tipoColegio.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td width="50%">
+                <label for="tipoBachillerato">
+                  <b class="text-danger">*</b> 32. Tipo Bachillerato:
+                </label>
+                <select [(ngModel)]="estudiante.tipo_bachillerato" class="form-control"
+                        id="tipoBachillerato" name="tipoBachillerato" required
+                        [ngClass]="{'backgroundTextFieldWarning':estudiante.tipo_bachillerato=='0','backgroundTextFieldSuccess':estudiante.tipo_bachillerato!='0'}"
+                        (change)="updateEstudiante()">
+                  <option value="0">SELECCIONE</option>
+                  <option value="{{tipoBachillerato.codigo}}" *ngFor="let tipoBachillerato of tiposBachillerato">
+                    {{tipoBachillerato.descripcion}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="anioGraduacionColegio">
+                  <b class="text-danger">*</b> 33. Año de Graduación del Colegio:
+                </label>
+                <input type="number" [(ngModel)]="estudiante.anio_graduacion" class="form-control"
+                       id="anioGraduacionColegio" name="anioGraduacionColegio" required
+                       [ngClass]="{'backgroundTextFieldWarning':estudiante.anio_graduacion==null||estudiante.anio_graduacion==''
+                       ,'backgroundTextFieldSuccess':estudiante.anio_graduacion!=''}"
+                       (focusout)="updateEstudiante()">
+              </td>
+              <td>
+                <label for="fechaInicioCarrera">
+                  <b class="text-danger">*</b> 35. Fecha de Inicio Carrera Superior:
+                </label>
+                <input type="date" [(ngModel)]="estudiante.fecha_inicio_carrera" class="form-control"
+                       id="fechaInicioCarrera" name="fechaInicioCarrera" required disabled>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="poseeTituloSuperior">
+                  <b class="text-danger">*</b> 34. ¿Posee título de Educación Superior?
+                </label>
+                <select [(ngModel)]="informacionEstudiante.posee_titulo_superior" class="form-control"
+                        id="poseeTituloSuperior" name="poseeTituloSuperior" required
+                        (change)="validateTituloSuperior();updateEstudiante()"
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.posee_titulo_superior=='0','backgroundTextFieldSuccess':informacionEstudiante.posee_titulo_superior!='0'}">
+                  <option value="0">SELECCIONE</option>
+                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
+                    {{opcion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.posee_titulo_superior=='1'">
+                  <label for="tituloSuperiorObtenido">
+                    <b class="text-danger">*</b> 34.1. Especifique el título obtenido:
+                  </label>
+                  <input type="text" [(ngModel)]="informacionEstudiante.titulo_superior_obtenido"
+                         class="form-control text-uppercase" id="tituloSuperiorObtenido" name="tituloSuperiorObtenido"
+                         [required]="informacionEstudiante.posee_titulo_superior=='1'"
+                         [disabled]="informacionEstudiante.posee_titulo_superior!='1'"
+                         [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.titulo_superior_obtenido==null||informacionEstudiante.titulo_superior_obtenido.trim()==''
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.titulo_superior_obtenido!=''}"
+                         (focusout)="updateEstudiante()">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="haRealizadoPracticas">
+                  <b class="text-danger">*</b> 49. Ha realizado Prácticas Preprofesionales:
+                </label>
+                <select [(ngModel)]="informacionEstudiante.ha_realizado_practicas" class="form-control"
+                        id="haRealizadoPracticas" name="haRealizadoPracticas" required
+                        (change)="validarPracticas();updateEstudiante()"
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.ha_realizado_practicas==null
+                        ||informacionEstudiante.ha_realizado_practicas=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.ha_realizado_practicas!='0'}">
+                  <option value="0">SELECCIONE</option>
+                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
+                    {{opcion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.ha_realizado_practicas=='1'">
+                  <label for="horasPracticas">
+                    <b class="text-danger">*</b> 50. Horas de Prácticas Preprofesionales Realizadas:
+                  </label>
+                  <input type="number" [(ngModel)]="informacionEstudiante.horas_practicas" class="form-control"
+                         id="horasPracticas" name="horasPracticas"
+                         [required]="informacionEstudiante.ha_realizado_practicas=='1'"
+                         [disabled]="informacionEstudiante.ha_realizado_practicas!='1'"
+                         [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.horas_practicas==null
+                        ||informacionEstudiante.horas_practicas==''
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.horas_practicas!=''}"
+                         (focusout)="updateEstudiante()">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div *ngIf="informacionEstudiante.ha_realizado_practicas=='1'">
+                  <label for="tipoInstitucionPracticas">
+                    <b class="text-danger">*</b> 51. Tipo de Institución en el que se realiza Prácticas
+                    Preprofesionales:
+                  </label>
+                  <select [(ngModel)]="informacionEstudiante.tipo_institucion_practicas" class="form-control"
+                          id="tipoInstitucionPracticas" name="tipoInstitucionPracticas"
+                          [required]="informacionEstudiante.ha_realizado_practicas=='1'"
+                          [disabled]="informacionEstudiante.ha_realizado_practicas!= '1'"
+                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.tipo_institucion_practicas==null
+                        ||informacionEstudiante.tipo_institucion_practicas=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.tipo_institucion_practicas!='0'}"
+                          (change)="updateEstudiante()">
+                    <option value="0" selected>SELECCIONE...</option>
+                    <option value="{{tipo.codigo}}" *ngFor="let tipo of tiposInstituciones">
+                      {{tipo.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.ha_realizado_practicas=='1'">
+                  <label for="sectorEconomico">
+                    <b class="text-danger">*</b> 52. Sector Económico en el que realiza Prácticas Preprofesionales:
+                  </label>
+                  <select [(ngModel)]="informacionEstudiante.sector_economico_practica" class="form-control"
+                          id="sectorEconomico" name="sectorEconomico"
+                          [required]="informacionEstudiante.ha_realizado_practicas=='1'"
+                          [disabled]="informacionEstudiante.ha_realizado_practicas!= '1'"
+                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.sector_economico_practica==null
+                        ||informacionEstudiante.sector_economico_practica=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.sector_economico_practica!='0'}"
+                          (change)="updateEstudiante()">
+                    <option value="0" selected>SELECCIONE...</option>
+                    <option value="{{sector.codigo}}" *ngFor="let sector of sectoresEconomicos">
+                      {{sector.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="haRealizadoVinculacion">
+                  <b class="text-danger">*</b> 53. Ha participado en algún Proyecto de Vinculación con la Sociedad en
+                  el Instituto:
+                </label>
+                <select [(ngModel)]="informacionEstudiante.ha_realizado_vinculacion" class="form-control"
+                        id="haRealizadoVinculacion" name="haRealizadoVinculacion" required
+                        (change)="validarVinculacion();updateEstudiante()"
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.ha_realizado_vinculacion==null
+                        ||informacionEstudiante.ha_realizado_vinculacion=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.ha_realizado_vinculacion!='0'}">
+                  <option value="0">SELECCIONE</option>
+                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
+                    {{opcion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.ha_realizado_vinculacion=='1'">
+                  <label for="alcanceVinculacion">
+                    <b class="text-danger">*</b> 54. Cuál es el alcance del Proyecto de Vinculación con la Sociedad:
+                  </label>
+                  <select [(ngModel)]="informacionEstudiante.alcance_vinculacion" class="form-control"
+                          id="alcanceVinculacion" name="alcanceVinculacion"
+                          [required]="informacionEstudiante.ha_realizado_vinculacion=='1'"
+                          [disabled]="informacionEstudiante.ha_realizado_vinculacion!= '1'"
+                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.alcance_vinculacion==null
+                        ||informacionEstudiante.alcance_vinculacion=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.alcance_vinculacion!='0'}"
+                          (change)="updateEstudiante()">
+                    <option value="0" selected>SELECCIONE...</option>
+                    <option value="{{alcance.codigo}}" *ngFor="let alcance of alcancesVinculacion">
+                      {{alcance.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="ocupacion">
+                  <b class="text-danger">*</b> 55. Se encuentra dedicado a:
+                </label>
+                <select [(ngModel)]="informacionEstudiante.ocupacion" class="form-control"
+                        id="ocupacion" name="ocupacion" required (change)="validateOcupacion();updateEstudiante()"
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.ocupacion==null
+                        ||informacionEstudiante.ocupacion=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.ocupacion!='0'}">
+                  <option value="0">SELECCIONE...</option>
+                  <option value="{{ocupacion.codigo}}" *ngFor="let ocupacion of ocupacionesEstudiante">
+                    {{ocupacion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.ocupacion=='2'">
+                  <label for="nombreEmpresaLabora">
+                    <b class="text-danger">*</b> 56. Nombre de la empresa donde labora:
+                  </label>
+                  <input type="text" [(ngModel)]="informacionEstudiante.nombre_empresa_labora" class="form-control"
+                         id="nombreEmpresaLabora" name="nombreEmpresaLabora"
+                         [required]="informacionEstudiante.ocupacion=='2'"
+                         [disabled]="informacionEstudiante.ocupacion!='2'"
+                         [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.nombre_empresa_labora==null
+                        ||informacionEstudiante.nombre_empresa_labora.trim()==''
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.nombre_empresa_labora!=''}"
+                         (focusout)="updateEstudiante()">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div *ngIf="informacionEstudiante.ocupacion=='2'">
+                  <label for="areaTrabajoEmpresa">
+                    <b class="text-danger">*</b> 57. Área de la empresa:
+                  </label>
+                  <select [(ngModel)]="informacionEstudiante.area_trabajo_empresa" class="form-control"
+                          id="areaTrabajoEmpresa" name="areaTrabajoEmpresa"
+                          [required]="informacionEstudiante.ocupacion=='2'"
+                          [disabled]="informacionEstudiante.ocupacion!= '2'"
+                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.area_trabajo_empresa==null
+                        ||informacionEstudiante.area_trabajo_empresa=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.area_trabajo_empresa!='0'}"
+                          (change)="updateEstudiante()">
+                    <option value="0" selected>SELECCIONE...</option>
+                    <option value="{{area.codigo}}" *ngFor="let area of sectoresEconomicos">
+                      {{area.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="informacionEstudiante.ocupacion=='2'">
+                  <label for="destinoIngreso">
+                    <b class="text-danger">*</b> 58. ¿Para qué emplea sus ingresos económicos?
+                  </label>
+                  <select [(ngModel)]="informacionEstudiante.destino_ingreso" class="form-control"
+                          id="destinoIngreso" name="destinoIngreso"
+                          [required]="informacionEstudiante.ocupacion=='2'"
+                          [disabled]="informacionEstudiante.ocupacion!= '2'"
+                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.area_trabajo_empresa==null
+                        ||informacionEstudiante.area_trabajo_empresa=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.area_trabajo_empresa!='0'}"
+                          (change)="updateEstudiante()">
+                    <option value="0" selected>SELECCIONE...</option>
+                    <option value="{{destinoIngreso.codigo}}" *ngFor="let destinoIngreso of destinosIngreso">
+                      {{destinoIngreso.descripcion}}
+                    </option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="recibeBonoDesarrollo">
+                  <b class="text-danger">*</b> 59. ¿Recibe el bono de desarrollo humano?
+                </label>
+                <select [(ngModel)]="informacionEstudiante.recibe_bono_desarrollo" class="form-control"
+                        id="recibeBonoDesarrollo" name="recibeBonoDesarrollo" required
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.recibe_bono_desarrollo==null
+                        ||informacionEstudiante.recibe_bono_desarrollo=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.recibe_bono_desarrollo!='0'}"
+                        (change)="updateEstudiante()">
+                  <option value="0" selected>SELECCIONE...</option>
+                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
+                    {{opcion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <label for="nivelFormacionPadre">
+                  <b class="text-danger">*</b> 60. Nivel Formación Padre:
+                </label>
+                <select [(ngModel)]="informacionEstudiante.nivel_formacion_padre" class="form-control"
+                        id="nivelFormacionPadre" name="nivelFormacionPadre" required
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.nivel_formacion_padre==null
+                        ||informacionEstudiante.nivel_formacion_padre=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.nivel_formacion_padre!='0'}"
+                        (change)="updateEstudiante()">
+                  <option value="0" selected>SELECCIONE...</option>
+                  <option value="{{nivelFormacion.codigo}}" *ngFor="let nivelFormacion of nivelesFormacion">
+                    {{nivelFormacion.descripcion}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="nivelFormacionMadre">
+                  <b class="text-danger">*</b> 61. Nivel Formación Madre:
+                </label>
+                <select [(ngModel)]="informacionEstudiante.nivel_formacion_madre" class="form-control"
+                        id="nivelFormacionMadre" name="nivelFormacionMadre" required
+                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.nivel_formacion_madre==null
+                        ||informacionEstudiante.nivel_formacion_madre=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.nivel_formacion_madre!='0'}"
+                        (change)="updateEstudiante()">
+                  <option value="0" selected>SELECCIONE...</option>
+                  <option value="{{nivelFormacion.codigo}}" *ngFor="let nivelFormacion of nivelesFormacion">
+                    {{nivelFormacion.descripcion}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <label for="ingresoFamiliar">
+                  <b class="text-danger">*</b> 62. Ingresos Familiares $:
+                </label>
+                <input type="number" min="1" [(ngModel)]="informacionEstudiante.ingreso_familiar"
+                       class="form-control"
+                       id="ingresoFamiliar" name="ingresoFamiliar" placeholder="Total de ingresos familiares"
+                       required
+                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.ingreso_familiar==null
+                        ||informacionEstudiante.ingreso_familiar==0
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.ingreso_familiar!=0}"
+                       (focusout)="updateEstudiante()">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="numeroMiembrosHogar">
+                  <b class="text-danger">*</b> 63. Total Miembros del Hogar:
+                </label>
+                <input type="number" min="1" max="100" [(ngModel)]="informacionEstudiante.numero_miembros_hogar"
+                       class="form-control" required id="numeroMiembrosHogar" name="numeroMiembrosHogar"
+                       placeholder="Total de ingresos familiares"
+                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.numero_miembros_hogar==null
+                        ||informacionEstudiante.numero_miembros_hogar==0
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.numero_miembros_hogar!=0}"
+                       (focusout)="updateEstudiante()">
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mt-3" *ngIf="estadoDatos!=''">
+  <div class="col-lg-12">
+    <span class="fa fa-save btn btn-link"> {{estadoDatos}}</span>
+  </div>
+</div>

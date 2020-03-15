@@ -1,0 +1,44 @@
+<h1>EVALUCIÓN DOCENTE</h1>
+<div class="row" *ngIf="flagInformacionEstudiante">
+    <div class="col-xl-4 mt-5" *ngFor="let asignaturaMatricula of asignaturasMatricula">
+        <div class="card">
+            <div style="height: 100px;">
+                <div class="card-header bg-white h-100 text-center">
+                    <p (click)="evaluate()">
+                        ({{asignaturaMatricula.codigo}})
+                    </p>
+                    <p (click)="evaluate()">
+                        {{asignaturaMatricula.nombre}}
+                    </p>
+                </div>
+            </div>
+            <div class="card-body text-center">
+                <button class="btn btn-primary" *ngIf="asignaturaMatricula.estado_evaluacion!='EVALUADO'"
+                        (click)="evaluate()">
+                    EVALUAR
+                </button>
+                <button disabled class="btn" *ngIf="asignaturaMatricula.estado_evaluacion=='EVALUADO'">
+                    EVALUADO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!flagInformacionEstudiante">
+    <div *ngFor="let pregunta of evaPreguntas">
+        <div class="row">
+            <div class="col-lg-12 form-control ml-5">
+                <label for="{{pregunta.id}}">{{pregunta.orden + '. ' + pregunta.pregunta}}</label>
+            </div>
+        </div>
+        <div class="row ml-5 mb-5 mt-1">
+            <div class="col-lg-3" *ngFor="let respuesta of cantidadRespuestas,let indice = index">
+                <input id="{{indice+1}}" type="radio" name="{{pregunta.id}}" [checked]="pregunta.valor==indice+1"
+                       (click)="updateRespuesta($event,pregunta)">
+                {{indice + 1}}
+            </div>
+        </div>
+    </div>
+</div>
+

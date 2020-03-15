@@ -1,0 +1,210 @@
+<div class="card mt-1">
+    <div class="card-body">
+        <form name="datosPersnalesform" method="post" #formCtrl="ngForm">
+            <div class="row ml-2">
+                <div class="col-lg-12 col-sm-12">
+                    <h6 class="text-muted"><b class="text-danger">* </b>Todos los campos son obligatorios</h6>
+                    <table class="table table-responsive">
+                        <tr>
+                            <td width="30%">
+                                <label for="tipoDocumento">
+                                    <b class="text-danger">*</b> 1. Tipo Documento:
+                                </label>
+                                <select [(ngModel)]="estudiante.tipo_identificacion" class="form-control" disabled
+                                        id="tipoDocumento" name="tipoDocumento" required
+                                        (change)="validateTipoIdentificacion()">
+                                    <option value="" selected>SELECCIONE...</option>
+                                    <option value="{{tipoDocumento.codigo}}"
+                                            *ngFor="let tipoDocumento of tiposDocumentos">
+                                        {{tipoDocumento.descripcion}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <label for="identificacion">
+                                    <b class="text-danger">*</b> 2. Número de Documento:
+                                </label>
+                                <input type="{{estudiante.tipo_identificacion=='2'?'text':'number'}}" disabled
+                                       [(ngModel)]="estudiante.identificacion" class="form-control"
+                                       id="identificacion" name="identificacion" placeholder="Ej. 1723456789" required>
+                            </td>
+                            <td>
+                                <label for="sexo">
+                                    <b class="text-danger">*</b> 3. Sexo:
+                                </label>
+                                <select [(ngModel)]="estudiante.sexo" class="form-control" id="sexo"
+                                        name="sexo" required (change)="updateEstudiante()" disabled>
+                                    <option value="0" selected>SELECCIONE...</option>
+                                    <option value="{{sexo.codigo}}" *ngFor="let sexo of sexos">
+                                        {{sexo.descripcion}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <label for="genero">
+                                    <b class="text-danger">*</b> 4. Género:
+                                </label>
+                                <select [(ngModel)]="estudiante.genero" class="form-control" id="genero" name="genero"
+                                        required (change)="updateEstudiante()" disabled>
+                                    <option value="0" selected>SELECCIONE...</option>
+                                    <option value="{{genero.codigo}}" *ngFor="let genero of generos">
+                                        {{genero.descripcion}}
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="apellido1">
+                                    <b class="text-danger">*</b> 5.1. Primer Apellido:
+                                </label>
+                                <input type="text" [(ngModel)]="estudiante.apellido1"
+                                       class="form-control text-uppercase"
+                                       id="apellido1" name="apellido1" placeholder="Primer Apellido" required disabled>
+                            </td>
+                            <td>
+                                <label for="apellido2">
+                                    5.2. Segundo Apellido:
+                                </label>
+                                <input type="text" [(ngModel)]="estudiante.apellido2"
+                                       class="form-control text-uppercase"
+                                       id="apellido2" name="apellidos" placeholder="Segundo Apellido" disabled>
+                            </td>
+                            <td>
+                                <label for="nombre1">
+                                    <b class="text-danger">*</b> 5.3. Primer Nombre:
+                                </label>
+                                <input type="text" [(ngModel)]="estudiante.nombre1"
+                                       class="form-control text-uppercase"
+                                       id="nombre1" name="nombre1" placeholder="Primer Nombre" required disabled>
+                            </td>
+                            <td>
+                                <label for="nombre2">
+                                    5.4. Segundo Nombre:
+                                </label>
+                                <input type="text" [(ngModel)]="estudiante.nombre2" class="form-control text-uppercase"
+                                       id="nombre2" name="nombre2" placeholder="Segundo Nombre" disabled>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="correoPersonal">
+                                    6.1. Correo Personal:
+                                </label>
+                                <input type="email" [(ngModel)]="estudiante.correo_personal"
+                                       class="form-control" (focusout)="updateEstudiante()"
+                                       id="correoPersonal" name="correoPersonal" placeholder="Ej. micorreo@gmail.com">
+                            </td>
+                            <td>
+                                <label for="correoInstitucional">
+                                    <b class="text-danger">*</b> 6.2. Correo Institucional:
+                                </label>
+                                <input type="email" [(ngModel)]="estudiante.correo_institucional"
+                                       title="{{estudiante.correo_institucional}}"
+                                       class="form-control" id="correoInstitucional" name="correoInstitucional"
+                                       placeholder="Ej. micorreo@domini.edu.ec" disabled>
+
+                            </td>
+                            <td>
+                                <label for="telefonoCelular">
+                                    <b class="text-danger">*</b> 7. Teléfono Celular:
+                                </label>
+                                <input type="text" [(ngModel)]="informacionEstudiante.telefono_celular"
+                                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.telefono_celular==null || informacionEstudiante.telefono_celular.trim()==''
+                       ,'backgroundTextFieldSuccess':informacionEstudiante.telefono_celular!=null}"
+                                       class="form-control text-uppercase"
+                                       id="telefonoCelular" name="telefonoCelular" placeholder="Ej. 098765432" required
+                                       (focusout)="updateEstudiante()">
+                            </td>
+                            <td>
+                                <label for="telefonoFijo">
+                                    <b class="text-danger">*</b> 8. Teléfono Convencional:
+                                </label>
+                                <div class="input-group-prepend">
+                                    <select name="codigoPronvicial" id="codigoPronvicial" class="input-group-text"
+                                            title="Código de Provincia" [(ngModel)]="codigoProvincial">
+                                        <option value="02">02</option>
+                                        <option value="02">03</option>
+                                        <option value="02">04</option>
+                                        <option value="02">05</option>
+                                        <option value="02">06</option>
+                                        <option value="02">07</option>
+                                    </select>
+                                    <input type="text" [(ngModel)]="informacionEstudiante.telefono_fijo"
+                                           [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.telefono_fijo==null|| informacionEstudiante.telefono_fijo.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.telefono_fijo!=null}"
+                                           class="form-control text-uppercase"
+                                           id="telefonoFijo" name="telefonoFijo" placeholder="Ej. 0234567890" required
+                                           (focusout)="updateEstudiante()">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="direccion">
+                                    <b class="text-danger">*</b> 9. Dirección de Domicilio:
+                                </label>
+                                <textarea rows="2" type="text" [(ngModel)]="informacionEstudiante.direccion"
+                                          class="form-control text-uppercase" id="direccion" name="direccion"
+                                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.direccion==null || informacionEstudiante.direccion.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.direccion!=null}"
+                                          placeholder="EJ. SECTOR, CALLE PRINCIPAL, CALLE SECUNDARIA, NÚMERO DE CASA"
+                                          required (focusout)="updateEstudiante()"></textarea>
+                            </td>
+                            <td colspan="2">
+                                <label for="codigoPostal">
+                                    <b class="text-danger">*</b> 10. Código Postal:
+                                    <a href="http://www.codigopostal.gob.ec/" target="_blank" class="btn-link">(consulte
+                                        aquí)</a>
+                                </label>
+                                <input type="text" [(ngModel)]="informacionEstudiante.codigo_postal"
+                                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.codigo_postal==null|| informacionEstudiante.codigo_postal.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.codigo_postal!=null}"
+                                       class="form-control text-uppercase" id="codigoPostal" name="codigoPostal"
+                                       placeholder="Ej. 170707" required
+                                       (focusout)="updateEstudiante()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <label for="contactoEmergencia">
+                                    <b class="text-danger">*</b> 11. Contacto Emergencia:
+                                </label>
+                                <input type="text" [(ngModel)]="informacionEstudiante.contacto_emergencia_nombres"
+                                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.contacto_emergencia_nombres==null || informacionEstudiante.contacto_emergencia_nombres.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.contacto_emergencia_nombres!=null}"
+                                       class="form-control text-uppercase" id="contactoEmergencia"
+                                       name="contactoEmergencia"
+                                       placeholder="Apellidos y Nombres" required (focusout)="updateEstudiante()">
+                            </td>
+                            <td>
+                                <label for="parentescoEmergencia">
+                                    <b class="text-danger">*</b> 12. Parentesco:
+                                </label>
+                                <input type="text" [(ngModel)]="informacionEstudiante.contacto_emergencia_parentesco"
+                                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.contacto_emergencia_parentesco==null
+                       || informacionEstudiante.contacto_emergencia_parentesco.trim()=='',
+                       'backgroundTextFieldSuccess':informacionEstudiante.contacto_emergencia_parentesco!=null}"
+                                       class="form-control text-uppercase" id="parentescoEmergencia"
+                                       name="parentescoEmergencia" placeholder="mamá, papá, tío, tía, etc." required
+                                       (focusout)="updateEstudiante()">
+                            </td>
+                            <td>
+                                <label for="telefonoContacto">
+                                    <b class="text-danger">*</b> 13. Teléfono Emergencia:
+                                </label>
+                                <input type="text" [(ngModel)]="informacionEstudiante.contacto_emergencia_telefono"
+                                       [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.contacto_emergencia_telefono==null|| informacionEstudiante.contacto_emergencia_telefono.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.contacto_emergencia_telefono!=null}"
+                                       class="form-control"
+                                       id="telefonoContacto" name="telefonoContacto" placeholder="Ej. 0987654321"
+                                       required
+                                       (focusout)="updateEstudiante()">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row mt-3" *ngIf="estadoDatos!=''">
+    <div class="col-lg-12">
+        <span class="fa fa-save btn btn-link"> {{estadoDatos}}</span>
+    </div>
+</div>

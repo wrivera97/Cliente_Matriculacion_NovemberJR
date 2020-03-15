@@ -1,0 +1,114 @@
+<div class="row">
+    <div class="col-lg-3 col-xs-12 mt-1">
+        <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+
+    </div>
+    <div class="col-lg-4 col-xs-12 mt-1">
+        <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                (change)="cambiarPeriodoLectivoActual()">
+            <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                    *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+        </select>
+    </div>
+    <div class="col-lg-5 col-xs-12 mt-1">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control text-uppercase" id="buscador" name="buscador" [(ngModel)]="buscador"
+                   (keyup)="filter($event)"
+                   placeholder="Identificación">
+            <div class="input-group-prepend">
+                <span class="btn input-group-text fa fa-search" id="basic-addon-buscar" (click)="filter($event)"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="flagSolicitud">
+    <button type="button" class="btn btn-primary fa fa-download btn-lg mt-3" (click)="getSolicitudMatricula()">
+        Descargar
+    </button>
+    <div class="container" id="formulario1">
+        <div class="row ml-3" #encabezadoHojaVida>
+            <div class="col-lg-3">
+
+            </div>
+            <div class="col-lg-6 text-center">
+                <h3>
+                    <strong>ASIGNATURAS</strong>
+                </h3>
+            </div>
+            <div class="col-lg-2">
+                <img src="{{'assets/images/logo_instituto_'+matricula.instituto_id+'.png'}}" alt="">
+            </div>
+        </div>
+        <div class="row m-5" #asignaturas>
+            <div class="col-lg-12">
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <th width="10%">
+                            CÓDIGO
+                        </th>
+                        <th width="20%">
+                            ASIGNATURA
+                        </th>
+                        <th width="10%">
+                            PERIODO
+                        </th>
+                        <th width="10%">
+                            NÚMERO MATRÍCULA
+                        </th>
+                        <th width="10%">
+                            JORNADA
+                        </th>
+                        <th width="10%">
+                            H. DOCENTES
+                        </th>
+                        <th width="10%">
+                            H. PRÁCTICAS
+                        </th>
+                        <th width="10%">
+                            H. AUTÓNOMAS
+                        </th>
+                    </tr>
+                    <tr *ngFor="let detalle of detalleMatricula,let i=index">
+                        <td>
+                            {{detalle.asignatura_codigo}}
+                        </td>
+                        <td>
+                            {{detalle.asignatura}}
+                        </td>
+                        <td class="text-center">
+                            {{detalle.periodo}}
+                        </td>
+                        <td>
+                            {{numerosMatricula[detalle.numero_matricula - 1]['descripcion']}}
+                        </td>
+                        <td>
+                            {{jornadas[detalle.jornada - 1]['descripcion']}}
+                        </td>
+                        <td>
+                            {{detalle.horas_docente}}
+                        </td>
+                        <td>
+                            {{detalle.horas_practica}}
+                        </td>
+                        <td>
+                            {{detalle.horas_autonoma}}
+                        </td>
+                </table>
+            </div>
+        </div>
+        <div class="row m-5" #pieHojaVida1>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <i class="pull-right">Pág. 1 de 1</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>

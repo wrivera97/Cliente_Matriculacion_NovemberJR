@@ -1,0 +1,295 @@
+<div class="card mt-1">
+    <div class="card-body">
+        <table class="table table-responsive table-striped">
+            <tr>
+                <th width="5%">
+                    Código
+                </th>
+                <th width="20%">
+                    Periodo Lectivo
+                </th>
+                <th width="15%">
+                    Fecha Inicio Periodo
+                </th>
+                <th width="15%">
+                    Fecha Fin Periodo
+                </th>
+                <th width="10%">
+                    Estado
+                </th>
+                <th width="10%">
+                    <button type="button" class="btn btn-success ml-1 btn-sm" title="Añadir nuevo periodo"
+                            (click)="openPeriodoLectivo(contentPeriodoLectivo,null)">
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
+                </span>
+                    </button>
+                </th>
+            </tr>
+            <tr *ngFor="let periodo of periodosLectivos"
+                [ngClass]="{'bg-primary text-white': periodo.estado=='ACTUAL'}">
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="periodo.codigo" class="form-control">-->
+                    {{periodo.codigo}}
+                </td>
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="periodo.nombre" class="form-control">-->
+                    {{periodo.nombre}}
+                </td>
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="periodo.fecha_inicio_periodo" class="form-control">-->
+                    {{periodo.fecha_inicio_periodo}}
+                </td>
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="periodo.fecha_fin_periodo" class="form-control">-->
+                    {{periodo.fecha_fin_periodo}}
+                </td>
+                <td>
+                    <b *ngIf="periodo.estado=='ACTUAL' || periodo.estado=='HISTORICO'"
+                       [ngClass]="{'text-white':periodo.estado=='ACTUAL'}">{{periodo.estado}}</b>
+                </td>
+                <td>
+                    <button *ngIf="periodo.estado=='ACTIVO'"
+                            (click)="activatePeriodoLectivo(periodo)"
+                            class="btn btn-primary ml-1 btn-sm" title="Abrir Periodo Lectivo">
+                        <span class="{{messages['buttonActivatePeriodo']['icon']}}"> Abrir</span>
+                    </button>
+                    <button class="btn btn-warning ml-1 btn-sm text-white"
+                            (click)="openPeriodoLectivo(contentPeriodoLectivo,periodo)"
+                            *ngIf="periodo.estado=='ACTIVO'"
+                            title="Actualizar">
+                        <span class="{{messages['buttonUpdate']['icon']}}"></span>
+                    </button>
+                    <button class="btn btn-danger ml-1 btn-sm"
+                            (click)="closePeriodoLectivo(periodo)"
+                            *ngIf="periodo.estado=='ACTUAL'" title="Cerrar Periodo Lectivo">
+                        <span class="{{messages['buttonClosePeriodo']['icon']}}"> Cerrar</span>
+                    </button>
+                    <button class="btn btn-danger ml-1 btn-sm"
+                            (click)="deletePeriodoLectivo(periodo)"
+                            *ngIf="periodo.estado=='ACTIVO'" title="Eliminar Periodo Lectivo">
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+        <!--Cupos totales y paginacion-->
+        <div class="row">
+            <div class="col-lg-6">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)" tabindex="-1"
+                               (click)="firstPagina()">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                               (click)="paginacion(false)">Previous</a>
+                        </li>
+                        <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                            *ngFor="let page of total_pages_pagination"
+                            (click)="getPeriodosLectivos(page)">
+                            <a class="page-link" href="javascript:void(0)">{{page}}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                               (click)="lastPagina()">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #contentPeriodoLectivo let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Periodo Lectivo</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Fecha Inicio Periodo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaInicioPeriodo">
+                        <b class="text-danger">*</b> Fecha Inicio Periodo:
+                    </label>
+                    <input id="fechaInicioPeriodo" name="fechaInicioPeriodo" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_periodo"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin Periodo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinPeriodo">
+                        <b class="text-danger">*</b> Fecha Fin Periodo:
+                    </label>
+                    <input id="fechaFinPeriodo" name="fechaFinPeriodo" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_periodo"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin Anulacion-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinAnulacion">
+                        <b class="text-danger">*</b> Fecha Fin Anulación Matrícula:
+                    </label>
+                    <input id="fechaFinAnulacion" name="fechaFinAnulacion" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_anulacion"
+                           class="text-uppercase form-control" required="">
+                </div>
+            </div>
+
+            <!--Ciclo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="codigo">
+                        <b class="text-danger">*</b> Ciclo:
+                    </label>
+                    <select name="codigo" id="codigo" [(ngModel)]="periodoLectivoSeleccionado.codigo"
+                            class="form-control">
+                        <option value="">SELECCIONE...</option>
+                        <option *ngIf="periodoLectivoSeleccionado.fecha_inicio_periodo!=null"
+                                value="{{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0,4)+'-1'}}">
+                            {{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4) + '-1'}}
+                        </option>
+                        <option *ngIf="periodoLectivoSeleccionado.fecha_inicio_periodo!=null"
+                                value="{{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0,4)+'-2'}}">
+                            {{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4) + '-2'}}
+                    </select>
+                </div>
+            </div>
+
+            <!--Nombre Periodo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="nombre">
+                        <b class="text-danger">*</b> Nombre Periodo:
+                    </label>
+                    <input id="nombre" name="nombre" type="text" [(ngModel)]="periodoLectivoSeleccionado.nombre"
+                           class="text-uppercase form-control" required>
+                </div>
+            </div>
+
+            <!--Fecha Inicio Cupo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaInicioCupo">
+                        <b class="text-danger">*</b> Fecha Inicio Cupo:
+                    </label>
+                    <input id="fechaInicioCupo" name="fechaInicioCupo" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_cupo"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin Cupo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinCupo">
+                        <b class="text-danger">*</b> Fecha Fin Cupo:
+                    </label>
+                    <input id="fechaFinCupo" name="fechaFinCupo" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_cupo"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Inicio Ordinaria-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaInicioOrdinaria">
+                        <b class="text-danger">*</b> Fecha Inicio Ordinaria:
+                    </label>
+                    <input id="fechaInicioOrdinaria" name="fechaInicioOrdinaria" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_ordinaria"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin Ordinaria-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinOrdinaria">
+                        <b class="text-danger">*</b> Fecha Fin Ordinaria:
+                    </label>
+                    <input id="fechaFinOrdinaria" name="fechaFinOrdinaria" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_ordinaria"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Inicio ExtraOrdinaria-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaInicioExtraOrdinaria">
+                        <b class="text-danger">*</b> Fecha Inicio ExtraOrdinaria:
+                    </label>
+                    <input id="fechaInicioExtraOrdinaria" name="fechaInicioExtraOrdinaria" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_extraordinaria"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin ExtraOrdinaria-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinExtraOrdinaria">
+                        <b class="text-danger">*</b> Fecha Fin ExtraOrdinaria:
+                    </label>
+                    <input id="fechaFinExtraOrdinaria" name="fechaFinExtraOrdinaria" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_extraordinaria"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+            <!--Fecha Inicio Especial-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaInicioExtraEspecial">
+                        <b class="text-danger">*</b> Fecha Inicio Especial:
+                    </label>
+                    <input id="fechaInicioExtraEspecial" name="fechaInicioExtraEspecial" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_especial"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+
+            <!--Fecha Fin Especial-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinExtraEspecial">
+                        <b class="text-danger">*</b> Fecha Fin Especial:
+                    </label>
+                    <input id="fechaFinExtraEspecial" name="fechaFinExtraEspecial" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_especial"
+                           class="text-uppercase form-control">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>

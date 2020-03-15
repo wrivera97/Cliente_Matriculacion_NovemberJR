@@ -1,0 +1,934 @@
+<!--Encabezado-->
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <table class="table table-responsive table-sm">
+            <tr>
+                <td>
+                    <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+                </td>
+                <td>
+                    <select name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                            (change)="cambiarPeriodoLectivoActual();">
+                        <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}"
+                                value="{{periodo.id}}"
+                                *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <button (click)="getMatriculadosCount(periodoLectivoActual)" class="btn btn-success"
+                            title="Actualizar"><span class="{{messages['buttonRefresh']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!--Titulo Institutos-->
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1><span class="">TOTAL ESTUDIANTES MATRICULADOS: </span>
+            <span class=""> {{total_matriculados_institutos}} </span>
+            <i class="fa fa-users"></i>
+        </h1>
+    </div>
+</div>
+<hr class="bg-dark">
+<div class="row">
+    <div class="col-lg-12">
+        <h4> INSTITUTOS: </h4>
+    </div>
+</div>
+<!--Resumen Institutos-->
+<div class="row">
+    <div class="col-xl-4" *ngFor="let matricula of total_matriculados_institutos_count">
+        <div class="card">
+            <div style="height: 150px;">
+                <div class="card-header bg-white h-100 text-center">
+                    <img src="{{'assets/images/logo_instituto_'+matricula.instituto_id +'.png'}}" alt=""
+                         class="img-thumbnail">
+                    <h6 class="text-muted">{{matricula.instituto}}</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-lg-12">
+                        <table class="table-bordered table-sm table-responsive">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Matriculados:
+                                </th>
+                                <th>
+                                    Retirados:
+                                </th>
+                                <th>
+                                    Desertores:
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="">
+                                    {{matricula.total_matriculados}}
+                                </th>
+                                <th class="">
+                                    {{matricula.total_anulados}}
+                                </th>
+                                <th class="">
+                                    {{matricula.total_desertores}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="">
+                                    Aprobados:
+                                </th>
+                                <th class="">
+                                    En Proceso:
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="">
+                                    {{matricula.total_aprobados}}
+                                </th>
+                                <th class="">
+                                    {{matricula.total_en_proceso}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="bg-dark">
+<!--Titulo Carreras-->
+<div class="row">
+    <div class="col-lg-12">
+        <h4>CARRERAS:</h4>
+    </div>
+</div>
+
+<!--Resumen Carreras-->
+<div class="row">
+    <div class="col-xl-4" *ngFor="let matricula of total_matriculados_carreras_count">
+        <button *ngIf="flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Menos
+        </button>
+        <div class="card">
+
+            <div style="height: 380px;" class="card-header bg-white text-center">
+                <img src="{{'assets/images/logo_carrera_'+matricula.carrera_id +'.jpg'}}" alt=""
+                     class="btn img-thumbnail" title="Descargar Cupos"
+                     (click)="exportCuposCarrera(matricula.carrera_id)">
+                <h6 class="btn text-muted" title="Descargar Cupos"
+                    (click)="exportCuposCarrera(matricula.carrera_id)">{{matricula.malla}}</h6>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-sm table-responsive">
+                            <thead>
+                            <tr>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'MATRICULADO')"
+                                    title="Descargar Matriculados">
+                                    <small class="btn bg-light btn-sm">Matriculados:</small>
+                                </td>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'ANULADO')"
+                                    title="Descargar Retirados">
+                                    <small class="btn bg-light btn-sm">Retirados:</small>
+                                </td>
+                                <td (click)="exportCuposMalla(matricula.malla_id,'DESERTOR')"
+                                    title="Descargar Desertores">
+                                    <small class="btn bg-light btn-sm">
+                                        Desertores:
+                                    </small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'MATRICULADO')"
+                                    title="Descargar Matriculados">
+                                    <small
+                                        class="btn bg-light btn-sm">{{matricula.total_matriculados}}</small>
+                                </td>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'ANULADO')"
+                                    title="Descargar Retirados">
+                                    <small
+                                        class="btn bg-light btn-sm">{{matricula.total_anulados}}</small>
+                                </td>
+                                <td (click)="exportCuposMalla(matricula.malla_id,'DESERTOR')"
+                                    title="Descargar Desertores">
+                                    <small class="btn bg-light btn-sm">
+                                        {{matricula.total_desertores}}
+                                    </small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'APROBADO')"
+                                    title="Descargar Aprobados">
+                                    <small
+                                        class="btn bg-light btn-sm">Aprobados: </small>
+                                </td>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'EN_PROCESO')"
+                                    title="Descargar en Proceso">
+                                    <small
+                                        class="btn bg-light btn-sm">En
+                                        Proceso:</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'APROBADO')"
+                                    title="Descargar Aprobados">
+                                    <small class="btn bg-light btn-sm">{{matricula.total_aprobados}}</small>
+                                </td>
+                                <td
+                                    (click)="exportCuposMalla(matricula.malla_id,'EN_PROCESO')"
+                                    title="Descargar en Proceso">
+                                    <small class="btn bg-light btn-sm">{{matricula.total_en_proceso}}</small>
+                                </td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="flagsCarrera[matricula.malla_id]" class="card-body">
+                <!--Primero Semestre-->
+                <div *ngIf="matricula.matriculados_1!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','1')"
+                                        title="Descargar Matriculados">
+                                        <span class="{{classContadorMatriculadosPeriodoPrincipal}}">PRIMERO</span>
+                                    </th>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','1')"
+                                        title="Descargar Matriculados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodoPrincipal}}">Matriculados: {{matricula.matriculados_1}}</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_1}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_1}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_1}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_1}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','1')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_1}}
+                                        </span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','1')"
+                                        title="Descargar En Proceso">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">En Proceso: {{matricula.en_proceso_1}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','1')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_1}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','1')"
+                                        title="Descargar Desertores">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_1}}</span>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Segundo Semestre-->
+                <div *ngIf="matricula.matriculados_2!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','2')"
+                                        title="Descargar Matriculados">
+                                        <span class="{{classContadorMatriculadosPeriodoPrincipal}}">SEGUNDO</span>
+                                    </th>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','2')"
+                                        title="Descargar Matriculados">
+                                    <span class="{{classContadorMatriculadosPeriodoPrincipal}}">
+                                        Matriculados: {{matricula.matriculados_2}}
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_2}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_2}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_2}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_2}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','2')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_2}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','2')"
+                                        title="Descargar En Proceso">
+                                    <span class="{{classContadorMatriculadosPeriodo}}">En
+                                    Proceso: {{matricula.en_proceso_2}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','2')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_2}}</span>
+                                    </td>
+                                    <td
+                                        (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','2')"
+                                        title="Descargar Desertores">
+                                <span
+                                    class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_2}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Tercero Semestre-->
+                <div *ngIf="matricula.matriculados_3!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','3')"
+                                        title="Descargar Matriculados">
+                                    <span class="{{classContadorMatriculadosPeriodoPrincipal}}">TERCERO
+                                        </span>
+                                    </th>
+                                    <th class="btn"
+                                        (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','3')"
+                                        title="Descargar Matriculados">
+                                    <span class="{{classContadorMatriculadosPeriodoPrincipal}}">
+                                        Matriculados: {{matricula.matriculados_3}}
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_3}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_3}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_3}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_3}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table  table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','3')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_3}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','3')"
+                                        title="Descargar En Proceso">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">En Proceso: {{matricula.en_proceso_3}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','3')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_3}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','3')"
+                                        title="Descargar Desertores">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_3}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Cuarto Semestre-->
+                <div *ngIf="matricula.matriculados_4!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','4')"
+                                        title="Descargar Matriculados">
+                                        <span class="{{classContadorMatriculadosPeriodoPrincipal}}">CUARTO</span>
+                                    </th>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','4')"
+                                        title="Descargar Matriculados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodoPrincipal}}">Matriculados: {{matricula.matriculados_4}}</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_4}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_4}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_4}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_4}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','4')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_4}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','4')"
+                                        title="Descargar En Proceso">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">En Proceso: {{matricula.en_proceso_4}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','4')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_4}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','4')"
+                                        title="Descargar Desertores">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_4}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Quinto Semestre-->
+                <div *ngIf="matricula.matriculados_5!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','5')"
+                                        title="Descargar Matriculados">
+                                    <span class="{{classContadorMatriculadosPeriodoPrincipal}}">QUINTO
+                                        </span>
+                                    </th>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','5')"
+                                        title="Descargar Matriculados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodoPrincipal}}">Matriculados: {{matricula.matriculados_5}}
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_5}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_5}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_5}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_5}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','5')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_5}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','5')"
+                                        title="Descargar En Proceso">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">En Proceso: {{matricula.en_proceso_5}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','5')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_5}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','5')"
+                                        title="Descargar Desertores">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_5}}
+                                    </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Sexto Semestre-->
+                <div *ngIf="matricula.matriculados_6!=0">
+                    <hr class="bg-dark">
+                    <div class="row  text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','6')"
+                                        title="Descargar Matriculados">
+                                        <span class="{{classContadorMatriculadosPeriodoPrincipal}}">SEXTO</span>
+                                    </th>
+                                    <th (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','6')"
+                                        title="Descargar Matriculados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodoPrincipal}}">Matriculados: {{matricula.matriculados_6}}</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col-lg-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                        A
+                                    </th>
+                                    <th>
+                                        B
+                                    </th>
+                                    <th>
+                                        C
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <b>MATUTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_a_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_b_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_matutina_c_6}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b> VESPERTINA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_a_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_b_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_vespertina_c_6}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>NOCTURNA</b>
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_a_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_b_6}}
+                                    </td>
+                                    <td>
+                                        {{matricula.matriculados_nocturna_c_6}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row  text-center mt-2">
+                        <div class="col-lg-12">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','6')"
+                                        title="Descargar Aprobados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Aprobados: {{matricula.aprobados_6}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','6')"
+                                        title="Descargar En Proceso">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">En Proceso: {{matricula.en_proceso_6}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','6')"
+                                        title="Descargar Retirados">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Retirados: {{matricula.anulados_6}}</span>
+                                    </td>
+                                    <td (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','6')"
+                                        title="Descargar Desertores">
+                                    <span
+                                        class="{{classContadorMatriculadosPeriodo}}">Desertores: {{matricula.desertores_6}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button *ngIf="flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Menos
+        </button>
+        <button *ngIf="!flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Más
+        </button>
+        <hr class="bg-dark">
+
+    </div>
+</div>

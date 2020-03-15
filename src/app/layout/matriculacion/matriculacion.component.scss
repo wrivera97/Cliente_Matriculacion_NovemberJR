@@ -1,0 +1,53 @@
+#contenedor_carga {
+  background-color: rgba(255, 255, 255, 0.9);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  -webkit-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
+  z-index: 10000;
+}
+
+#carga {
+  border: 15px solid #000;
+  border-top-color: #f0ad4e;
+  border-top-style: groove;
+  height: 120px;
+  width: 120px;
+  border-radius: 100%;
+  position: relative;
+  top: 40%;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+
+  -webkit-animation: girar 1.5s linear infinite;
+  -o-animation: girar 1.5s linear infinite;
+  animation: girar 1.5s linear infinite;
+}
+
+
+@keyframes girar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.backgroundTextFieldSuccess{
+  background: #fff;
+  color: #000;
+}
+
+.backgroundTextFieldWarning{
+  background: #f08080;
+  color: #fff;
+}

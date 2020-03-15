@@ -1,0 +1,143 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+    <div class="list-group">
+        <a routerLink="/dashboard-matricula" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4' || user.role.rol=='6'">
+            <i class="fa fa-fw fa-dashboard"></i>&nbsp;
+            <span>{{ 'Dashboard' | translate }}</span>
+        </a>
+
+        <a routerLink="/dashboard-cupo" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='1'">
+            <i class=" fa fa-fw fa-dashboard"></i>&nbsp;
+            <span>{{ 'Dashboard' | translate }}</span>
+        </a>
+        <!--Perfil Estudiante-->
+        <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='2'">
+            <i class="fa fa-fw fa-user"></i>&nbsp;
+            <span>{{ 'Profile' | translate }}</span>
+        </a>
+        <a [routerLink]="['/matricula']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
+            <i class="fa fa-fw fa-address-card"></i>&nbsp;
+            <span>{{ 'Registration' | translate }}</span>
+        </a>
+        <a [routerLink]="['/cupos']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='1' || user.role.rol=='4'">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Quotas' | translate }}</span>
+        </a>
+        <a [routerLink]="['/estudiantes']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='0'">
+            <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
+            <span>{{ 'Students' | translate }}</span>
+        </a>
+        <a [routerLink]="['/ajustes']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='4'">
+            <i class="fa fa-fw fa-wrench"></i>&nbsp;
+            <span>{{ 'Settings' | translate }}</span>
+        </a>
+        <a [routerLink]="['/usuarios']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='5'">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Users' | translate }}</span>
+        </a>
+        <a [routerLink]="['/perfil-estudiante-secretaria']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='4'">
+            <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
+            <span>{{ 'Student Profile' | translate }}</span>
+        </a>
+        <a [routerLink]="['/eva-estudiante-docente']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='2'">
+            <i class="fa fa-fw fa-id-card"></i>&nbsp;
+            <span>{{ 'Teacher Evaluation' | translate }}</span>
+        </a>
+
+        <a [routerLink]="['/docente-asignatura']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='4'">
+            <i class="fa fa-fw fa-id-card"></i>&nbsp;
+            <span>{{ 'Teacher Subjects' | translate }}</span>
+        </a>
+
+
+        <!--    <div class="nested-menu">-->
+        <!--      <a class="list-group-item" (click)="addExpandClass('pages')">-->
+        <!--        <i class="fa fa-plus"></i>&nbsp;-->
+        <!--        <span>{{ 'Menu' | translate }}</span>-->
+        <!--      </a>-->
+        <!--      <li class="nested" [class.expand]="showMenu === 'pages'">-->
+        <!--        <ul class="submenu">-->
+        <!--          <li>-->
+        <!--            <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']"-->
+        <!--               class="list-group-item">-->
+        <!--              <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;-->
+        <!--              <span>{{ 'Student Profile' | translate }}</span>-->
+        <!--            </a>-->
+        <!--          </li>-->
+
+        <!--        </ul>-->
+        <!--      </li>-->
+        <!--    </div>-->
+
+        <div class="header-fields">
+            <a (click)="rltAndLtr()" class="list-group-item">
+                <span><i class="fa fa-arrows-h"></i>&nbsp; RTL/LTR</span>
+            </a>
+            <div class="nested-menu">
+                <a class="list-group-item" (click)="addExpandClass('languages')">
+                    <span><i class="fa fa-language"></i>&nbsp; {{ 'Language' | translate }} <b class="caret"></b></span>
+                </a>
+                <li class="nested" [class.expand]="showMenu === 'languages'">
+                    <ul class="submenu">
+                        <li>
+                            <a href="javascript:void(0)" (click)="changeLang('en')">
+                                {{ 'English' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" (click)="changeLang('es')">
+                                {{ 'Spanish' | translate }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+            <div class="nested-menu">
+                <a class="list-group-item" (click)="addExpandClass('profile')">
+                    <span><i class="fa fa-user"></i>&nbsp; {{user.name}}</span>
+                </a>
+                <li class="nested" [class.expand]="showMenu === 'profile'">
+                    <ul class="submenu">
+                        <li>
+                            <a href="javascript:void(0)">
+                                <span><i class="fa fa-fw fa-user"></i> {{ 'Profile' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']"
+                               class="dropdown-item"
+                               *ngIf="user.role.rol == '2'">
+                                <i class="fa fa-fw fa-user"></i>&nbsp;
+                                <span>{{ 'Profile' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a [routerLink]="['/reset-password']">
+                                <i class="fa fa-fw fa-key"></i> {{ 'Password' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a [routerLink]="['/login']" (click)="onLoggedout()">
+                                <span><i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+        <i class="fa fa-fw fa-angle-double-left"></i>&nbsp;
+        <span>{{ 'Collapse Sidebar' | translate }}</span>
+    </div>
+</nav>

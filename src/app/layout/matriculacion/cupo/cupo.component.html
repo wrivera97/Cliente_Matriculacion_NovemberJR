@@ -1,0 +1,781 @@
+<div class="row">
+    <div class="col-lg-3">
+            <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!=estados.periodoLectivo.actual,
+                    'text-success':periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual}"
+                  class="form-control">
+                        <strong>{{txtPeridoActualHistorico}} :</strong>
+                    </span>
+    </div>
+    <div class="col-lg-3">
+        <select [disabled]="flagAsignaturasCupo" name="periodoLectivoActual"
+                [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
+            <option [ngClass]="{'bg-success text-white':periodo.estado==estados.periodoLectivo.actual}"
+                    value="{{periodo.id}}"
+                    *ngFor="let periodo of periodosLectivos">
+                {{periodo.nombre}}
+            </option>
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <select [disabled]="flagAsignaturasCupo" [(ngModel)]="carrera.id" class="form-control"
+                id="carrera" name="carrera" required (change)="getCupos(1);getDetalleMatriculasForMalla()">
+            <option value="0" selected>SELECCIONE UNA CARRERA</option>
+            <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small"
+                    [ngClass]="{'bg-warning':carrera.descripcion=='MALLA ANTIGUA','text-white':carrera.descripcion=='MALLA ANTIGUA'}">
+                {{ carrera.descripcion }}
+            </option>
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <select [disabled]="flagAsignaturasCupo" [(ngModel)]="periodoAcademico" class="form-control"
+                id="periodoAcademico" name="periodoAcademico" required
+                (change)="getCupos(1)">
+            <option value="-1" selected>SELECCIONE NIVEL</option>
+            <option value="" selected>TODOS</option>
+            <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos"
+                    class="small">
+                {{periodoAcademico.nombre}}
+            </option>
+        </select>
+    </div>
+</div>
+
+<!--Buscador-->
+<div *ngIf="!flagAsignaturasCupo && carrera.id!=0">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12 mt-1">
+            <table class="table table-sm table-responsive">
+                <tbody>
+                <tr>
+                    <td *ngIf="periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <label for="file-upload-cupos" class="btn btn-light fa fa-upload btn-sm form-control-sm"
+                               title="Subir archivo de cupos" [ngClass]="{'disabled':false}">
+                            <!--                           [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<-->
+                            <!--                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo '-->
+                            <!--                            +'('+periodoLectivoSeleccionado.fecha_inicio_cupo+' - '+periodoLectivoSeleccionado.fecha_fin_cupo+')'-->
+                            <!--                            :'Desertar Estudiante'"-->
+
+                            Subir cupos
+                        </label>
+                        <input id="file-upload-cupos" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                               name="fileExcel"
+                               (change)="uploadCupos($event)"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                        <!--                           [disabled]="-->
+                        <!--                           !(-->
+                        <!--                           (periodoLectivoSeleccionado.fecha_inicio_cupo|date:'yyyy-MM-dd')<=(fechaActual|date:'yyyy-MM-dd')-->
+                        <!--                           &&-->
+                        <!--                           (fechaActual|date:'yyyy-MM-dd')<=(periodoLectivoSeleccionado.fecha_fin_cupo|date:'yyyy-MM-dd')-->
+                        <!--                           )"-->
+
+                    </td>
+                    <td>
+                        <label for="file-upload-paralelos" class="btn btn-light fa fa-upload btn-sm"
+                               title="Subir archivo de cupos" *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            Cargar Paralelos
+                        </label>
+                        <input id="file-upload-paralelos" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                               name="fileExcel"
+                               (change)="uploadParalelos($event)"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    </td>
+                    <td *ngIf="carrera.id!=0 && periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <button type="button" class="btn btn-light btn-sm form-control-sm"
+                                (click)="validateCuposPeriodoAcademico()"
+                                title="Aprobar todos los cupos del periodo académico">
+                            <span class="fa fa-check"> Aprobar cupos por periodo</span>
+                        </button>
+                    </td>
+                    <td *ngIf="periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <button type="button" class="btn btn-light btn-sm form-control-sm"
+                                (click)="validateCuposCarrera()"
+                                title="Aprobar todos los cupos de la carrera"
+                        >
+                            <span class="fa fa-check"> Aprobar cupos por carrera</span>
+                        </button>
+                    </td>
+                    <td *ngIf="periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <button type="button" class="btn btn-light btn-sm form-control-sm"
+                                (click)="deleteCuposPeriodoAcademico()"
+                                title="Eliminar todos los cupos del periodo académico">
+                            <span class="fa fa-trash"> Cupos por periodo</span>
+                        </button>
+                    </td>
+                    <td *ngIf="carrera.id!=0">
+                        <button type="button" class="btn btn-light btn-sm form-control-sm"
+                                (click)="deleteCuposCarrera()"
+                                title="Eliminar todos los cupos de la carrera"
+                                *ngIf="periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                            <span class="fa fa-trash"> Cupos por carrera</span>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-light btn-sm form-control-sm"
+                                (click)="openDescargas(contentDescargas)"
+                                title="Descargas">
+                            <span class="fa fa-download"> Descargas</span>
+                        </button>
+                    </td>
+
+                    <td>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-4 col-xs-12">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control text-uppercase" id="buscador" name="buscador"
+                       [(ngModel)]="buscador"
+                       (keyup)="filter($event)"
+                       placeholder="Identificación, Apellido o Nombre">
+                <div class="input-group-prepend">
+                    <span class="btn input-group-text fa fa-search" id="basic-addon-buscar"
+                          (click)="filter($event)"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-sm table-responsive">
+            <thead>
+            <th>
+                <button class="btn btn-link" (click)="getCuposPorEstado(1,'MATRICULADO')">
+                    MATRICULADOS: {{total_detalle_matriculas_matriculados}}
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-link" (click)="getCuposPorEstado(1,'APROBADO')">
+                    APROBADOS: {{total_detalle_matriculas_aprobados}}
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-link" (click)="getCuposPorEstado(1,'EN_PROCESO')">
+                    EN PROCESO: {{total_detalle_matriculas_en_proceso}}
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-link" (click)="getCuposPorEstado(1,'ANULADO')">
+                    RETIRADOS: {{total_detalle_matriculas_anulados}}
+                </button>
+            </th>
+            <th>
+                <button class="btn btn-link" (click)="getCuposPorEstado(1,'DESERTOR')">
+                    DESERTORES: {{total_detalle_matriculas_desertores}}
+                </button>
+            </th>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--Tabla cupos-->
+<div class="row mt-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
+    <div class="col-lg-12">
+        <table class="table-sm table-responsive table-hover">
+            <thead class="table text-center">
+            <th width="10%">Indetificación</th>
+            <th width="20%">Apellidos y Nombres</th>
+            <th width="10%">Tipo Matrícula</th>
+            <th width="10%">Periodo</th>
+            <th width="10%">Jornada</th>
+            <th width="10%">Jornada Operativa</th>
+            <th width="10%">Estado</th>
+            <th width="20%">
+
+            </th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let cupo of cupos">
+                <td>
+                    <span class="btn btn-link"
+                          (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
+                    <small>{{cupo.estudiante.identificacion}}</small>
+                        </span>
+                </td>
+                <td>
+                    <span class="btn btn-link"
+                          (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
+                        <small>
+                    {{cupo.estudiante.apellido1 + ' ' + cupo.estudiante.apellido2 + ' ' + cupo.estudiante.nombre1 + ' ' +
+                        cupo.estudiante.nombre2}}
+                            </small>
+                        </span>
+                </td>
+                <td>
+                    <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            id="tipoMatricula" name="tipoMatricula" required
+                            (change)="updateMatricula(cupo,'Tipo Matricula')">
+                        <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
+                            {{tipoMatricula.nombre}}
+                        </option>
+                    </select>
+                </td>
+                <td class="text-uppercase">
+                    <select name="periodoAcademicoPrincipal" id="periodoAcademicoPrincipal"
+                            [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateMatricula(cupo,'Periodo Academico')">
+                        <option value={{periodo.id}}
+                                *ngFor="let periodo of peridoAcademicos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="jornadaPrincipal" id="jornadaPrincipal" [(ngModel)]="cupo.jornada"
+                            class="text-uppercase form-control-sm"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')
+                            && periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateMatricula(cupo,'Jornada Principal')">
+                        <option value={{jornada.codigo}}
+                                *ngFor="let jornada of jornadas">{{jornada.descripcion}}</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="jornadaOperativa" id="jornadaOperativa" [(ngModel)]="cupo.jornada_operativa"
+                            class="text-uppercase form-control-sm"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')
+                            &&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateMatricula(cupo,'Jornada Operativa')">
+                        <option value={{jornada.codigo}}
+                                *ngFor="let jornada of jornadasOperativa">{{jornada.descripcion}}</option>
+                    </select>
+                </td>
+                <td>
+                    <small>{{cupo.estado}}</small>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn ml-1 btn-sm" (click)="validateCupo(cupo)" title="Aprobar"
+                            [ngClass]="{'btn-success':cupo.estado=='APROBADO','btn-primary':cupo.estado=='EN_PROCESO'}"
+                            [disabled]="cupo.estado=='APROBADO' || cupo.estado=='MATRICULADO'"
+                            *ngIf="cupo.estado=='EN_PROCESO'">
+
+                        <span class="{{messages['buttonCheck']['icon']}}"></span>
+                    </button>
+                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white"
+                            (click)="getDetalleMatricula(cupo)" title="Asignaturas">
+                <span class="{{messages['buttonUpdate']['icon']}}">
+
+                </span>
+                    </button>
+                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteCupo(cupo)"
+                            title="Eliminar"
+                            *ngIf="(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO') && periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
+                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'"
+                            [disabled]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')
+                            <(fechaActual|date:'yyyy-MM-dd'))"
+                            [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Desertar Estudiante'">
+                        <span class="{{messages['buttonDesert']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--Cupos totales y paginacion-->
+<div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
+    <div class="col-lg-6">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link bg-dark text-white" href="javascript:void(0)" tabindex="-1"
+                       (click)="firstPagina()">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                       (click)="paginacion(false)">Previous</a>
+                </li>
+                <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                    *ngFor="let page of total_pages_pagination"
+                    (click)="getCupos(page)">
+                    <a class="page-link" href="javascript:void(0)" *ngIf="!flagCuposEstado">{{page}}</a>
+                </li>
+                <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                    *ngFor="let page of total_pages_pagination"
+                    (click)="getCuposPorEstado(page,estadoCupos)">
+                    <a class="page-link" href="javascript:void(0)" *ngIf="flagCuposEstado">{{page}}</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                       (click)="lastPagina()">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<!--Detalle matricula-->
+<div class="row mt-3" *ngIf="flagAsignaturasCupo">
+    <div class="col-lg-12">
+        <h1>
+            <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagAsignaturasCupo()">
+                <span class="fa fa-arrow-left text-white"> Regresar</span>
+            </button>
+            {{matriculaSeleccionada.estudiante.apellido1 + ' ' + matriculaSeleccionada.estudiante.apellido2 + ' '
+        + matriculaSeleccionada.estudiante.nombre1 + ' ' + matriculaSeleccionada.estudiante.nombre2}}
+        </h1>
+
+        <table class="table table-hover table-sm table-responsive">
+            <thead class="table-default text-center">
+            <th width="35%">Asignatura</th>
+            <th width="15%">Número Matrícula</th>
+            <th width="13%">Jornada</th>
+            <th width="17%">Tipo Matrícula</th>
+            <th width="10%">Estado</th>
+            <th width="10%">
+                <button type="button" class="btn btn-success ml-1 btn-sm"
+                        (click)="openDetalleMatricula(contentDetalleMatricula)"
+                        *ngIf="matriculaSeleccionada.estado=='EN_PROCESO' || matriculaSeleccionada.estado=='APROBADO'"
+                        title="Añadir nueva asignatura">
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
+                </span>
+                </button>
+            </th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let detalle of detalleMatricula">
+                <td>
+                    <select [(ngModel)]="detalle.asignatura.id" class="form-control"
+                            id="detalleAsignatura" name="detalleAsignatura" required
+                            [disabled]="!((detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateDetalleMatricula(detalle,'Asignatura')">
+                        <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
+                            {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select [(ngModel)]="detalle.numero_matricula" class="form-control"
+                            id="numero_matricula" name="numero_matricula" required
+                            [disabled]="!((detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateDetalleMatricula(detalle,'Numero Matricula')">
+                        <option value="{{numeroMatricula.codigo}}" *ngFor="let numeroMatricula of numerosMatricula">
+                            {{numeroMatricula.descripcion}}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select [(ngModel)]="detalle.jornada" class="form-control text-uppercase"
+                            [disabled]="!((detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            id="jornada" name="jornada" required (change)="updateDetalleMatricula(detalle, 'Jornada')">
+                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                            {{jornada.descripcion}}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
+                            id="tipo_matricula" name="tipo_matricula" required
+                            [disabled]="!((detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateDetalleMatricula(detalle,'Tipo Matricula')">
+                        <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
+                            {{tipoMatricula.nombre}}
+                        </option>
+                    </select>
+                </td>
+                <td class="text-center">
+                    {{detalle.estado}}
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-primary ml-1 btn-sm" (click)="validateDetalleCupo(detalle)"
+                            title="Aprobar"
+                            *ngIf="(detalle.estado=='EN_PROCESO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <span class="{{messages['buttonCheck']['icon']}}"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleCupo(detalle)"
+                            title="Eliminar"
+                            *ngIf="(detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--Nuevo detalle matricula-->
+<ng-template #contentDetalleMatricula let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Detalle Matrícula</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Asignatura-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createAsignatura">
+                        <b class="text-danger">*</b> Asignatura:
+                    </label>
+                    <select [(ngModel)]="detalleMatriculaNuevo.asignatura.id" class="form-control text-uppercase"
+                            id="createAsignatura" name="createAsignatura" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
+                            {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Numero Matricula-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createNumeroMatricula">
+                        <b class="text-danger">*</b> Número de Matrícula:
+                    </label>
+                    <select [(ngModel)]="detalleMatriculaNuevo.numero_matricula" class="form-control"
+                            id="createNumeroMatricula" name="createNumeroMatricula" required>
+                        <option value="" selected>SELECCIONE...</option>
+                        <option value="{{numeroMatricula.codigo}}" *ngFor="let numeroMatricula of numerosMatricula">
+                            {{numeroMatricula.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Jornada-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createJornada">
+                        <b class="text-danger">*</b> Jornada:
+                    </label>
+                    <select [(ngModel)]="detalleMatriculaNuevo.jornada" class="form-control"
+                            id="createJornada" name="createJornada" required>
+                        <option value="" selected>SELECCIONE...</option>
+                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                            {{jornada.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Tipo Matricula-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createTipoMatricula">
+                        <b class="text-danger">*</b> Tipo de Matrícula:
+                    </label>
+                    <select [(ngModel)]="detalleMatriculaNuevo.tipo_matricula.id" class="form-control"
+                            id="createTipoMatricula" name="createTipoMatricula" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
+                            {{tipoMatricula.nombre}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Paralelo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createParalelo">
+                        <b class="text-danger">*</b> Paralelo:
+                    </label>
+                    <select [(ngModel)]="detalleMatriculaNuevo.paralelo" class="form-control"
+                            id="createParalelo" name="createParalelo" required>
+                        <option value="" selected>SELECCIONE...</option>
+                        <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
+                            {{paralelo.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!--Informacion Estudiante-->
+<ng-template #contentInformacionEstudiante let-c="close" let-d="dismiss">
+    <form name="informacionEstudiante" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Información Estudiante</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Tipo Documento-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="tipoIdentificacionEditar">
+                        <b class="text-danger">*</b> Tipo Documento:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.tipo_identificacion" class="form-control text-uppercase"
+                            id="tipoIdentificacionEditar" name="tipoIdentificacionEditar" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="1" selected>CÉDULA</option>
+                        <option value="2" selected>PASAPORTE</option>
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <label for="identificacionEditar">
+                        <b class="text-danger">*</b> Número de Documento:
+                    </label>
+                    <input id="identificacionEditar" name="identificacionEditar" type="text"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.identificacion">
+                </div>
+            </div>
+
+            <!--Apellidos-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="apellido1Editar">
+                        <b class="text-danger">*</b> Primer Apellido:
+                    </label>
+                    <input id="apellido1Editar" name="apellido1Editar" type="text"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.apellido1">
+                </div>
+                <div class="col-lg-6">
+                    <label for="apellido2Editar">
+                        <b class="text-danger">*</b> Segundo Apellido:
+                    </label>
+                    <input id="apellido2Editar" name="apellido2Editar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.apellido2">
+                </div>
+            </div>
+
+            <!--Nombres-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="nombre1Editar">
+                        <b class="text-danger">*</b> Primer nombre:
+                    </label>
+                    <input id="nombre1Editar" name="nombre1Editar" type="text"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.nombre1">
+                </div>
+                <div class="col-lg-6">
+                    <label for="nombre2Editar">
+                        <b class="text-danger">*</b> Segundo Nombre:
+                    </label>
+                    <input id="nombre2Editar" name="nombre2Editar" type="text"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.nombre2">
+                </div>
+            </div>
+
+            <!--Correo y Fecha Nacimiento-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="correoInstitucionalEditar">
+                        <b class="text-danger">*</b> Correo Institucional:
+                    </label>
+                    <input id="correoInstitucionalEditar" name="correoInstitucionalEditar" type="text"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.correo_institucional">
+                </div>
+                <div class="col-lg-6">
+                    <label for="fechaNacimientoEditar">
+                        <b class="text-danger">*</b> Fecha Nacimiento:
+                    </label>
+                    <input id="fechaNacimientoEditar" name="fechaNacimientoEditar" type="date"
+                           class="form-control" required
+                           [(ngModel)]="estudianteSeleccionado.fecha_nacimiento">
+                </div>
+            </div>
+
+            <!--Sexo y Genero-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="sexo">
+                        <b class="text-danger">*</b> Sexo:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.sexo" class="form-control" id="sexo"
+                            [ngClass]="{'backgroundTextFieldWarning':estudianteSeleccionado.sexo=='0',
+                            'backgroundTextFieldSuccess':estudianteSeleccionado.sexo=='1'||estudianteSeleccionado.sexo=='2'}"
+                            name="sexo" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{sexo.codigo}}" *ngFor="let sexo of sexos">
+                            {{sexo.descripcion}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <label for="genero">
+                        <b class="text-danger">*</b> Género:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.genero" class="form-control" id="genero" name="genero"
+                            [ngClass]="{'backgroundTextFieldWarning':estudianteSeleccionado.genero=='0',
+                            'backgroundTextFieldSuccess':estudianteSeleccionado.genero=='1'||estudianteSeleccionado.genero=='2'}"
+                            required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{genero.codigo}}" *ngFor="let genero of generos">
+                            {{genero.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--Sexo y Genero-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="etnia">
+                        <b class="text-danger">*</b> Etnia:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.etnia" class="form-control"
+                            [ngClass]="{'backgroundTextFieldWarning':estudianteSeleccionado.etnia=='0'
+                            ,'backgroundTextFieldSuccess':estudianteSeleccionado.etnia!='0'}"
+                            id="etnia" name="etnia" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{etnina.codigo}}" *ngFor="let etnina of etnias">
+                            {{etnina.descripcion}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <label for="genero">
+                        <b class="text-danger">*</b> Tipo Sangre:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.tipo_sangre" class="form-control"
+                            id="tipoSangre" name="tipoSangre" required
+                            [ngClass]="{'backgroundTextFieldWarning':estudianteSeleccionado.tipo_sangre=='0'
+                            ,'backgroundTextFieldSuccess':estudianteSeleccionado.tipo_sangre!='0'}">
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="{{tipoSangre.codigo}}" *ngFor="let tipoSangre of tiposSangre">
+                            {{tipoSangre.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!--Descargas-->
+<ng-template #contentDescargas let-c="close" let-d="dismiss">
+    <form name="formatoCupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Descargas:</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Formatos-->
+            <div class="form-group">
+                <label class="bg-primary form-control text-white">FORMATOS CUPOS:</label>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_cupos_nuevos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de cupos">
+                        Nuevos Estudiantes
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_cupos_antiguos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de cupos">
+                        Antiguos Estudiantes
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_paralelos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de paralelos">
+                        Paralelos
+                    </a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="bg-primary form-control text-white">LISTA ESTUDIANTES:</label>
+            </div>
+            <!--Cupos-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportCuposCarrera()"
+                            title="Descargar todos los cupos de la carrera">
+                        <span class="fa fa-download"> Cupos por carrera</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportCuposPeriodo()"
+                            title="Descargar todos los cupos del periodo académico">
+                        <span class="fa fa-download"> Cupos por periodo</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportListasPeriodo()"
+                            title="Descargar todas las listas del periodo académico">
+                        <span class="fa fa-download"> Listas por asignatura</span>
+                    </button>
+                </div>
+            </div>
+
+            <!--Matriz Sniese-->
+            <div class="form-group">
+                <label class="bg-primary form-control text-white">MATRIZ SNIESE:</label>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg" (click)="exportMatrizSniese()"
+                            title="Descargar matriz SNIESE">
+                        <span class="fa fa-download"> Matriz SNIESE</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>

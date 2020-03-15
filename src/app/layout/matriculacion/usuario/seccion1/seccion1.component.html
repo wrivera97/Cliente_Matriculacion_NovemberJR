@@ -1,0 +1,210 @@
+<div class="card mt-1">
+    <div class="card-body">
+        <!--Buscador-->
+        <div class="row">
+            <div class="col-lg-4 col-xs-12">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control text-uppercase" [(ngModel)]="buscador"
+                           (keyup)="filter($event)"
+                           placeholder="Identificación, apellidos o nombres">
+                    <div class="input-group-prepend">
+                        <span class="btn input-group-text fa fa-search" id="basic-addon-buscar"
+                              (click)="filter($event)"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-responsive table-hover">
+            <thead class="table-default text-center">
+            <th width="15%">
+                Identificación
+            </th>
+            <th width="25%">
+                Usuario
+            </th>
+            <th width="25%">
+                Correo Institucional
+            </th>
+            <th width="15%">
+                Perfil
+            </th>
+            <th width="15%">
+                Estado
+            </th>
+            <th width="5%">
+                <button type="button" class="btn btn-success ml-1 btn-sm" title="Añadir nuevo Usuario"
+                        (click)="openUsuario(contentUsuario,null)">
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
+                </span>
+                </button>
+            </th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let usuario of usuarios">
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="usuario.user_name" class="form-control">-->
+                    {{usuario.user_name}}
+                </td>
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="usuario.name" class="form-control">-->
+                    {{usuario.name}}
+                </td>
+                <td>
+                    <!--                    <input type="email" [(ngModel)]="usuario.email" class="form-control">-->
+                    {{usuario.email}}
+                </td>
+                <td class="text-center">
+                    <select name="rol" id="rol" [(ngModel)]="usuario.role.id" class="form-control-sm"
+                            (change)="updateUsuario(usuario)" *ngIf="usuario.id != user.id">
+                        <option value="{{rol.id}}" *ngFor="let rol of roles">{{rol.descripcion}}</option>
+                    </select>
+                </td>
+                <td class="text-center">
+                    <select name="estado" id="estado" [(ngModel)]="usuario.estado" *ngIf="usuario.id != user.id"
+                            [ngClass]=" {'bg-danger text-white': usuario.estado=='INACTIVO'}"
+                            class="form-control-sm"
+                            (change)="updateUsuario(usuario)">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-warning ml-1 btn-sm text-white" (click)="openUsuario(contentUsuario,usuario)"
+                            title="Actualizar" *ngIf="usuario.id != user.id">
+                        <span class="{{messages['buttonUpdate']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <!--Paginacion-->
+        <div class="row">
+            <div class="col-lg-6">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)" tabindex="-1"
+                               (click)="firstPagina()">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                               (click)="paginacion(false)">Previous</a>
+                        </li>
+                        <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                            *ngFor="let page of total_pages_pagination"
+                            (click)="getUsuarios(page)">
+                            <a class="page-link" href="javascript:void(0)">{{page}}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                               (click)="lastPagina()">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #contentUsuario let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Usuario</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Identificacion-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="identificacion">
+                        <b class="text-danger">*</b> Identificación:
+                    </label>
+                    <input id="identificacion" name="identificacion" type="text"
+                           [(ngModel)]="usuarioSeleccionado.user_name"
+                           class="text-uppercase form-control" required>
+                </div>
+            </div>
+            <!--Nombre-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="nombre">
+                        <b class="text-danger">*</b> Apellido y Nombre:
+                    </label>
+                    <input id="nombre" name="nombre" type="text" [(ngModel)]="usuarioSeleccionado.name"
+                           class="text-uppercase form-control" placeholder="Pérez Juan" required>
+                </div>
+            </div>
+            <!--Correo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="nombre">
+                        <b class="text-danger">*</b> Correo Electrónico Institucional:
+                    </label>
+                    <input id="correo" name="correo" type="email" [(ngModel)]="usuarioSeleccionado.email"
+                           class="text-lowercase form-control" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="perfil">
+                        <b class="text-danger">*</b> Perfil:
+                    </label>
+                    <select name="perfil" id="perfil" [(ngModel)]="usuarioSeleccionado.role.id" class="form-control"
+                            required>
+                        <option value="{{rol.id}}" *ngFor="let rol of roles">{{rol.descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="perfil">
+                        <b class="text-danger">*</b> Estado:
+                    </label>
+                    <select name="estadoEdit" id="estadoEdit" [(ngModel)]="usuarioSeleccionado.estado"
+                            [ngClass]="{'bg-danger text-white': usuarioSeleccionado.estado=='INACTIVO'}"
+                            class="form-control" required>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+            </div>
+            <!--Carreras-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label>
+                        Carreras:
+                    </label>
+                    <br>
+                    <input id="carreras" name="carreras" type="checkbox" class="text-uppercase"
+                           [(ngModel)]="flagSeleccionaTodasCarreras" (click)="seleccionarCarrera(null)">
+                    <label for="carreras" class="btn"> TODAS</label>
+                    <div *ngFor="let carrera of carreras">
+                        <input id="{{carrera.id}}" name="{{carrera.id}}" type="checkbox" class="text-uppercase"
+                               (click)="seleccionarCarrera(carrera)" [(ngModel)]="carrera.seleccionada">
+                        <label for="{{carrera.id}}" class="btn"> {{carrera.descripcion}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>

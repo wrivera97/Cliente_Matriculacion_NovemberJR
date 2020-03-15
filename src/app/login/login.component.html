@@ -1,0 +1,43 @@
+<div class="login-page" [@routerTransition]>
+    <div class="row justify-content-md-center">
+        <div class="col-lg-4">
+            <img src="assets/images/logo.png" class="user-avatar" width="70px"/>
+            <h3>IGNUG</h3>
+            <form role="form" *ngIf="validateLogin">
+
+                <div class="form-group">
+                    <label for="userName">
+                        <i class="fa fa-envelope">
+                            {{ 'Institutional Email' | translate }}
+                        </i>
+                    </label>
+                    <div class="form-group input-group">
+                        <input type="text" [(ngModel)]="userName"
+                               class="form-control input-underline input-lg text-right text-lowercase"
+                               id="userName" (keyup)="onLoggedin($event)"
+                               [disabled]="!validateLogin" name="userName" placeholder="">
+                        <div class="input-group-prepend">
+                            <label for="userName" class="input-group-text  input-underline input-lg"
+                                   id="basic-addon1">@yavirac.edu.ec</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fa fa-key">
+                            {{ 'Password' | translate }}<i class="fa fa-question btn"
+                                                           title="Su contraseña por defecto es su número de cédula"></i>
+                        </i>
+                    </label>
+                    <input type="password" [(ngModel)]="password" class="form-control input-underline input-lg"
+                           id="password"
+                           name="password" placeholder="" (keyup)="onLoggedin($event)" [disabled]="!validateLogin">
+                </div>
+                <a class="btn rounded-btn" (click)="onLoggedin(13)">{{ 'Log in' | translate }}</a>
+                <a class="btn rounded-btn m-3" title="Escribe tu correo y has click aquí"
+                   (click)="forgotPassword()">¿{{ 'Forgot Password' | translate }}?</a>
+                <!--        <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>-->
+            </form>
+        </div>
+    </div>
+</div>

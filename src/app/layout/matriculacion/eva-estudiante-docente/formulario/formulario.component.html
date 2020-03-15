@@ -1,0 +1,561 @@
+<button type="button" class="btn btn-primary fa fa-download btn-lg mt-3 mb-3" (click)="imprimir()" *ngIf="flagFormulario">
+  Descargar
+</button>
+<div class="container" id="formulario1">
+  <div class="row ml-3" #encabezadoHojaVida>
+    <div class="col-lg-3">
+      <img src="{{'assets/images/logo_instituto_'+instituto.id+'.png'}}" alt="">
+    </div>
+    <div class="col-lg-6 text-center">
+      <p>
+        <strong>{{instituto.nombre}}</strong>
+        <br>
+        <strong>FORMULARIO DE MATRÍCULA</strong>
+      </p>
+    </div>
+    <div class="col-lg-3 text-left">
+      <img src="assets/images/logo_gobierno_de_todos.jpg" alt="" width="80%" height="60%">
+    </div>
+  </div>
+  <div class="row m-5" #cuerpoHojaVida1>
+    <div class="col-lg-12">
+      <table class="table table-bordered">
+        <tr>
+          <td colspan="4">
+            <strong>1. Tipo de Documento de identificación:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.tipo_identificacion==tipo.codigo}"
+               *ngFor="let tipo of tiposIdentificacion">
+              {{tipo.descripcion}}
+            </i>
+          </td>
+          <td>
+            <strong>Formulario Nro.</strong>
+            <i class="ml-3">{{matricula.id}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>2. Número de Documento de Identificación:</strong>
+            <i class="ml-3">{{matricula.estudiante.identificacion}}</i>
+          </td>
+          <td>
+            <strong>3. Sexo:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.sexo==sexo.codigo}"
+               *ngFor="let sexo of sexos">
+              {{sexo.descripcion}}
+            </i>
+          </td>
+          <td>
+            <strong>4. Género:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.genero==genero.codigo}"
+               *ngFor="let genero of generos">
+              {{genero.descripcion}}
+            </i>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>5. Apellidos y Nombres del Estudiante:</strong>
+            <i class="ml-3">
+              {{matricula.estudiante.apellido1 + ' ' + matricula.estudiante.apellido2 + ' '
+            + matricula.estudiante.nombre1 + ' ' + matricula.estudiante.nombre2 + ' '}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" rowspan="3">
+            <strong>6. Correo Electrónico:</strong>
+            <i class="ml-3">{{matricula.estudiante.correo_institucional}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>7. No. Celular:</strong>
+            <i class="ml-3">{{informacionEstudiante.telefono_celular}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>8. No. Convencional:</strong>
+            <i class="ml-3">{{informacionEstudiante.telefono_fijo}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>9. Dirección:</strong>
+            <i class="ml-3">{{informacionEstudiante.direccion}}</i>
+          </td>
+          <td colspan="2">
+            <strong>10. Código Postal:</strong>
+            <i class="ml-3">{{informacionEstudiante.codigo_postal}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>11. En caso de emergencia contactar a:</strong>
+            <i class="ml-3">{{informacionEstudiante.contacto_emergencia_nombres}}</i>
+          </td>
+          <td>
+            <strong>12. Parentesco:</strong>
+            <i class="ml-3">{{informacionEstudiante.contacto_emergencia_parentesco}}</i>
+          </td>
+          <td>
+            <strong>13. Nro Contacto:</strong>
+            <i class="ml-3">{{informacionEstudiante.contacto_emergencia_telefono}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>14. Etnia:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.etnia==etnia.codigo}"
+               *ngFor="let etnia of etnias">
+              {{etnia.descripcion}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>15. En caso de escoger etnia Indígena u Otro especifique su nacionalidad:</strong>
+            <span *ngFor="let pueblo of pueblosNacionalidad">
+              <i class="ml-3 text-capitalize"
+                 *ngIf="matricula.estudiante.pueblo_nacionalidad==pueblo.codigo">
+                {{pueblo.descripcion}}
+              </i>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>16. Habla algún idioma ancestral:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.habla_idioma_ancestral==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          <td colspan="2">
+            <strong *ngIf="informacionEstudiante.idioma_ancestral">Especifique:</strong>
+            <i class="ml-3">{{informacionEstudiante.idioma_ancestral}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>17. Fecha de Nacimiento:</strong>
+            <i class="ml-3">{{matricula.estudiante.fecha_nacimiento}}</i>
+          </td>
+          <td colspan="2">
+            <strong>17.1. Edad:</strong>
+            <i class="ml-3">{{edad}}</i>
+          </td>
+          <td>
+            <strong>18. Tipo De Sangre:</strong>
+            <span *ngFor="let tipoSangre of tiposSangre">
+              <i class="ml-3" *ngIf="tipoSangre.codigo == matricula.estudiante.tipo_sangre">
+                {{tipoSangre.descripcion}}
+              </i>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>19. País Nacionalidad:</strong>
+            <i class="ml-3">{{ubicacionNacimiento.pais_nombre}}</i>
+          </td>
+          <td colspan="2">
+            <strong>20. Provincia Nacimiento:</strong>
+            <i class="ml-3">{{ubicacionNacimiento.provincia_nombre}}</i>
+          </td>
+          <td colspan="2">
+            <strong>21. Cantón Nacimiento:</strong>
+            <i class="ml-3">{{ubicacionNacimiento.canton_nombre}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>22. Categoría Migratoria:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.categoria_migratoria==categoriaMigratoria.codigo}"
+               *ngFor="let categoriaMigratoria of categoriasMigratoria">
+              {{categoriaMigratoria.descripcion}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>23. País de Residencia:</strong>
+            <i class="ml-3">{{ubicacionResidencia.pais_nombre}}</i>
+          </td>
+          <td colspan="2">
+            <strong>24.1. Provincia de Residencia:</strong>
+            <i class="ml-3">{{ubicacionResidencia.provincia_nombre}}</i>
+          </td>
+          <td colspan="2">
+            <strong>25. Cantón Residencia:</strong>
+            <i class="ml-3">{{ubicacionResidencia.canton_nombre}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>26. Estado Civil:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.estado_civil==estadoCivil.codigo}"
+               *ngFor="let estadoCivil of estadosCivil">
+              {{estadoCivil.descripcion}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>27. Tiene Alguna Discapacidad:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.tiene_discapacidad==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+          <td colspan="3">
+            <strong>28. Nro. Carnet CONADIS:</strong>
+            <i class="ml-3">{{informacionEstudiante.numero_carnet_conadis}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>29. Porcentaje de Discapacidad:</strong>
+            <i class="ml-3"> {{informacionEstudiante.porcentaje_discapacidad}}</i>
+          </td>
+          <td colspan="3">
+            <strong>30. Tipo:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.tipo_discapacidad==tipoDiscapacidad.codigo}"
+               *ngFor="let tipoDiscapacidad of tiposDiscapacidad">
+              {{tipoDiscapacidad.descripcion}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>31. Tipo de Colegio:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.tipo_colegio==tipoColegio.codigo}"
+               *ngFor="let tipoColegio of tiposColegio">
+              {{tipoColegio.descripcion}}
+            </i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>32. Tipo de Bachillerato:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.estudiante.tipo_bachillerato==tipoBachillerato.codigo}"
+               *ngFor="let tipoBachillerato of tiposBachillerato">
+              {{tipoBachillerato.descripcion}}
+            </i>
+          </td>
+          <td colspan="2">
+            <strong>33. Año Graduación:</strong>
+            <i class="ml-3"> {{matricula.estudiante.anio_graduacion}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>34. Posee algún título de Educación Superior:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.posee_titulo_superior==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+          <td colspan="3">
+            <strong *ngIf="informacionEstudiante.titulo_superior_obtenido">Especifíque:</strong>
+            <i class="ml-3"> {{informacionEstudiante.titulo_superior_obtenido}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>35. Fecha en la que inició el estudiante la Carrera:</strong>
+            <i class="ml-3"> {{matricula.estudiante.fecha_inicio_carrera}}</i>
+          </td>
+          <td colspan="3">
+            <strong>36. Fecha de Matrícula:</strong>
+<!--            <i class="ml-3"> {{ matricula.fecha_formulario | date:'yyyy-MM-dd'}}</i>-->
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>37. Tipo de Matrícula:</strong>
+            <i class="ml-3"> {{matricula.tipo_matricula.nombre}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>38. Periodo /Ciclo Académico:</strong>
+            <i class="fa fa-circle ml-3" [ngClass]="{'fa-circle':matricula.periodo_lectivo.codigo.substring(5,6)=='1'}">
+              Primero (May-Oct)</i>
+            <i class="fa fa-circle-o ml-2"
+               [ngClass]="{'fa-circle':matricula.periodo_lectivo.codigo.substring(5,6)=='2'}"> Segundo (Nov- Abril) </i>
+          </td>
+          <td colspan="2">
+            <strong>39. Año del Periodo Académico:</strong>
+            <i class="ml-3"> {{matricula.periodo_lectivo.codigo.substring(0, 4)}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>40. Periodo /Ciclo Académico:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':matricula.periodo_academico.id==semestre.codigo}"
+               *ngFor="let semestre of semestres">
+              {{semestre.descripcion}}
+            </i>
+          </td>
+          <td colspan="2">
+            <strong>41. Paralelo:</strong>
+            <span *ngFor="let paralelo of paralelos">
+              <i class="ml-3" *ngIf="paralelo.codigo == matricula.paralelo_principal">
+                {{paralelo.descripcion}}
+              </i>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>42. Nombre de la Carrera:</strong>
+            <i class="ml-3"> {{carrera.nombre}}</i>
+          </td>
+          <td colspan="2">
+            <strong>43. Tíitulo que otorga la Carrera:</strong>
+            <i class="ml-3"> {{carrera.titulo_otorga}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <strong>44. Tipo de Carrera:</strong>
+            <i class="ml-3"> {{carrera.tipo_carrera}}</i>
+          </td>
+          <td colspan="2">
+            <strong>45. Modalidad de la Carrera:</strong>
+            <i class="ml-3"> {{carrera.modalidad}}</i>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <strong>46. Jornada en la que estudia:</strong>
+            <span *ngFor="let jornada of jornadas">
+              <i class="ml-3" *ngIf="jornada.codigo == matricula.jornada">
+                {{jornada.descripcion}}
+              </i>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row m-5" #pieHojaVida1>
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <i class="pull-right">Pág. 1 de 2</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container" id="formulario2">
+  <div class="row ml-3" #cuerpoHojaVida2>
+    <div class="col-lg-12">
+      <table class="table table-bordered">
+        <tr>
+          <td colspan="3">
+            <strong>47. Ha repetido al menos una materia:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.ha_repetido_asignatura==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+          <td colspan="3">
+            <strong>48. Ha perdido la Gratuidad:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.ha_perdido_gratuidad==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNoNA">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>49. Ha realizado Prácticas Preprofesionales:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.ha_realizado_practicas==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+          <td colspan="3">
+            <strong>50. Nro. Horas de Prácticas Preprofesionales Realizadas:</strong>
+            <i class="ml-3"> {{informacionEstudiante.horas_practicas}}</i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>51. Tipo de Institución en el que se realiza Prácticas Preprofesionales:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.tipo_institucion_practicas==tipoInstitucion.codigo}"
+               *ngFor="let tipoInstitucion of tiposInstituciones">
+              {{tipoInstitucion.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>52. Sector Económico en el que realiza Prácticas Preprofesionales:</strong>
+            {{informacionEstudiante.sector_economico_practica}}
+            <ul>
+              <li class="ml-3 text-capitalize"
+                  [ngClass]="{'text-danger':informacionEstudiante.sector_economico_practica==sector.codigo}"
+                  *ngFor="let sector of sectoresEconomicos">
+                {{sector.descripcion}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>53. Ha participado en algún Proyecto de Vinculación con la Sociedad en el Instituto:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.ha_realizado_vinculacion==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>54. Cuál es el alcance del Proyecto de Vinculación con la Sociedad:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.alcance_vinculacion==alcance .codigo}"
+               *ngFor="let alcance of alcancesVinculacion">
+              {{alcance.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>55. El Estudiante se encuentra dedicado a:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.ocupacion==ocupacion.codigo}"
+               *ngFor="let ocupacion of ocupacionesEstudiante">
+              {{ocupacion.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>56. Cuál es el nombre de la empresa donde labora:</strong>
+            <i class="ml-3"> {{informacionEstudiante.nombre_empresa_labora}}</i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>57. Indique cuál es el sector Económico de la empresa:</strong>
+            {{informacionEstudiante.area_trabajo_empresa}}
+            <ul>
+              <li class="ml-3 text-capitalize"
+                  [ngClass]="{'text-danger':informacionEstudiante.area_trabajo_empresa==sector.codigo}"
+                  *ngFor="let sector of sectoresEconomicos">
+                {{sector.descripcion}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>58. Para que emplea sus ingresos económicos el estudiante:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.destino_ingreso==destino.codigo}"
+               *ngFor="let destino of destinosIngreso">
+              {{destino.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>59. Usted o algún miembro de la familia del estudiante recibe el bono de desarrollo humano:</strong>
+            <i class="fa fa-circle-o ml-3 text-capitalize"
+               [ngClass]="{'fa-circle':informacionEstudiante.recibe_bono_desarrollo==opcion.codigo}"
+               *ngFor="let opcion of opcionesSiNo">
+              {{opcion.descripcion}}
+            </i>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>60. Nivel de Formación del Padre:</strong>
+            <ul>
+              <li class="ml-3 text-capitalize"
+                  [ngClass]="{'fa fa-check text-danger':informacionEstudiante.nivel_formacion_padre==nivel.codigo}"
+                  *ngFor="let nivel of nivelesFormacion">
+                {{nivel.descripcion}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6">
+            <strong>61. Nivel de Formación de la Madre:</strong>
+            <ul>
+              <li class="ml-3 text-capitalize"
+                  [ngClass]="{'fa fa-check text-danger':informacionEstudiante.nivel_formacion_madre==nivel.codigo}"
+                  *ngFor="let nivel of nivelesFormacion">
+                {{nivel.descripcion}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <strong>62. Ingresos del Hogar: $</strong>
+            <i class="ml-3"> {{informacionEstudiante.ingreso_familiar}}</i>
+          </td>
+          <td colspan="3">
+            <strong>63. Número de Miembros del Hogar:</strong>
+            <i class="ml-3"> {{informacionEstudiante.numero_miembros_hogar}}</i>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+  <div class="row ml-3 mt-5" #pieHojaVida2>
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12">
+          <i class="pull-right"> __________________________________________</i>
+          <strong class="pull-right">FIRMA ESTUDIANTE:</strong>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <i class="pull-right">Pág. 2 de 2</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button type="button" class="btn btn-primary fa fa-download btn-lg" (click)="imprimir()"> Descargar</button>
