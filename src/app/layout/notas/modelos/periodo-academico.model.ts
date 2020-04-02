@@ -4,6 +4,7 @@ export class PeriodoAcademico {
   estado: string;
 
   constructor() {
+    
     this.nombre = '';
     this.estado = '';
   }

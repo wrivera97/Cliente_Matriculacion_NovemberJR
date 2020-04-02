@@ -1,21 +1,26 @@
 import {Asignatura} from './asignatura.model';
 import { PeriodoLectivo } from './periodo-lectivo.model';
 import {Docente} from './docente.model';
+import { PeriodoAcademico } from './periodo-academico.model';
+import { Carrera } from './carrera.model';
+
 
 export class DocenteAsignatura {
 
     id?: number;
-    asignatura: Asignatura;
     docente: Docente;
-    periodo: PeriodoLectivo;
+    periodo_lectivo: PeriodoLectivo;
+    asignatura: Asignatura;
     paralelo: String;
     jornada: String;
-
-
+    periodo_academico: PeriodoAcademico;
+    carrera: Carrera;
     constructor() {
-        this.asignatura = new Asignatura();
         this.docente = new Docente();
-        this.periodo = new PeriodoLectivo();
+        this.periodo_lectivo = new PeriodoLectivo();
+        this.asignatura = new Asignatura();
+        this.carrera = new Carrera();
+        this.periodo_academico = new PeriodoAcademico();
         this.paralelo = '';
         this.jornada = '';
 

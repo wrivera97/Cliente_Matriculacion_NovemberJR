@@ -10,6 +10,10 @@ import {Carrera} from '../modelos/carrera.model';
 import { DocenteAsignatura } from '../modelos/docente-asignaturas.model';
 import {catalogos} from '../../../../environments/catalogos';
 import { Docente } from '../modelos/docente.model';
+import {Asignatura} from '../modelos/asignatura.model';
+import {Malla} from '../modelos/malla.model';
+import { promise } from 'protractor';
+import { DocenteAsignaturaModule } from './docente-asignatura.module';
 
 @Component({
   selector: 'app-docente-asignatura',
@@ -17,18 +21,23 @@ import { Docente } from '../modelos/docente.model';
   styleUrls: ['./docente-asignatura.component.scss']
 })
 export class DocenteAsignaturaComponent implements OnInit {
-    periodoAcademicos: Array<PeriodoAcademico>;
+    periodo_academicos: Array<PeriodoAcademico>;
     periodoLectivoSeleccionado: PeriodoLectivo;
-    buscador: string;
+    periodo_academico: PeriodoAcademico;
     flagPagination: boolean;
     txtPeriodoActualHistorico: string;
-    periodoAcademico: string;
+
     periodoLectivo: string;
     periodosLectivos: Array<PeriodoLectivo>;
     periodoLectivoActual: PeriodoLectivo;
     periodoLectivos: Array<PeriodoLectivo>;
+    detalleDocenteasignaturaNuevo: DocenteAsignatura;
     detalleDocente: Array<DocenteAsignatura>;
+    jornadas: Array<any>;
+    paralelos: Array<any>;
     flagAll: boolean;
+    carrera: Carrera;
+    periodo_lectivo: PeriodoLectivo;
     messages: any;
     carreras: Array<Carrera>;
     actual_page: number;
@@ -37,18 +46,18 @@ export class DocenteAsignaturaComponent implements OnInit {
     total_register: number;
     total_pages_pagination: Array<any>;
     total_pages_temp: number;
-    carrera: Carrera;
     docenteAsignatura: Array<DocenteAsignatura>;
     docenteSeleccionado: DocenteAsignatura;
-
+    detalleDocenteSeleccionado: DocenteAsignatura;
+    asignaturas: Array<Asignatura>;
   constructor(private spinner: NgxSpinnerService, private NotasService: ServiceService , private router: Router,
     private modalService: NgbModal) { }
 
   ngOnInit() {
     this.txtPeriodoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
     this.flagAll = false;
-    this.periodoAcademico = '';
-    this.buscador = '';
+
+
     this.periodoLectivo = '';
 
     this.actual_page = 1;
@@ -61,14 +70,19 @@ export class DocenteAsignaturaComponent implements OnInit {
     this.total_pages = 1;
 
 
+
     this.periodoLectivoSeleccionado = new PeriodoLectivo();
     this.docenteSeleccionado = new DocenteAsignatura();
+    this.paralelos = catalogos.paralelos;
+    this.jornadas = catalogos.jornadas;
     this.periodoLectivoActual = new PeriodoLectivo();
     this.carrera = new Carrera();
-
-
-   /* this.getCarreras(); */
-this.getDocentesAsignados(this.actual_page);
+    this.periodo_academico = new PeriodoAcademico();
+    this.periodo_lectivo = new PeriodoLectivo();
+    this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();
+    this.detalleDocenteSeleccionado  = new DocenteAsignatura();
+    this.getDocentesAsignados();
+    this.getCarreras();
     this.getPeriodoAcademicos();
     this.getPeriodoLectivoActual();
     this.getPeriodoLectivos();
@@ -80,7 +94,7 @@ this.getDocentesAsignados(this.actual_page);
 
     this.NotasService.get('catalogos/periodo_academicos').subscribe(
         response => {
-            this.periodoAcademicos = response['periodo_academicos'];
+            this.periodo_academicos = response['periodo_academicos'];
         },
         error => {
             this.spinner.hide();
@@ -144,42 +158,28 @@ cambiarPeriodoLectivoActual() {
     });
 }
 //////////////////////////////////////////////////////////////
-getDocentesAsignados(page: number) {
-    this.flagPagination = true;
-
-    this.spinner.show();
-this.NotasService.get('asignacionDocentestest1').subscribe(
+getDocentesAsignados() {
+this.flagAll = false;
+this.spinner.show();
+this.NotasService.get('asignacionDocentesAsignados').subscribe(
     Response => {
-        this.docenteAsignatura = Response ['test1'];
-        this.spinner.show();
-        console.log(Response);
+        this.docenteAsignatura = Response ['docentesAsignados'];
+this.spinner.hide();
     },
     error => {
 this.spinner.hide();
 });
     }
-
-    cambiarEstadoFlagDocenteAsignaturas() {
-        this.flagAll = false;
-        if (this.buscador.trim() === '') {
-        } else {
-
-        }
-
-    }
-
-
         getDetalleDocente(docente: DocenteAsignatura) {
             this.spinner.show();
             this.detalleDocente = null;
             this.flagAll = true;
             this.docenteSeleccionado = docente;
-
-            // tslint:disable-next-line:max-line-length
-            this.NotasService.get('asignacionDocentes?id=' + this.docenteSeleccionado.docente.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id).subscribe(
+            this.NotasService.get('asignacionDocentes?id=' + this.docenteSeleccionado.docente.id
+                                                           + '&periodo_lectivo_id=' + this.periodoLectivoActual.id).subscribe(
                 response => {
-                    this.detalleDocente = response['asignacionesDocente'];
 
+                    this.detalleDocente = response['asignacionesDocente'];
                     this.spinner.hide();
                 },
                 error => {
@@ -188,40 +188,115 @@ this.spinner.hide();
                 });
         }
 
+        createDetalleDocenteAsignatura() {
+         this.spinner.show();
+           this.NotasService.post('asignacionDocentes', {'docente_asignatura': this.detalleDocenteasignaturaNuevo})
+            .subscribe(
+            response => {
+                this.getDetalleDocente(this.docenteSeleccionado);
+                this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();
+                this.spinner.hide();
+                swal.fire(this.messages['createSuccess']);
+            },
+            error => {
+                this.spinner.hide();
+                if (error.error.errorInfo === '23505') {
+                    swal.fire(this.messages['error23505']);
+                } else {
+                    swal.fire(this.messages['error500']);
+                }
+                this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();
+            });
+            }
 
-
-async deleteAsignaturaDocente(docenteAsignatura: DocenteAsignatura) {
+           async  updateDetalleDocenteAsignatura(detalledocente: DocenteAsignatura) {
+            const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
+            if (razonModificarMatricula) {
+                this.spinner.show();
+                  this.NotasService.update('asignacionDocentes', {'docente_asignatura': detalledocente }).subscribe(
+                   response => {
+                    this.getDetalleDocente(this.docenteSeleccionado);
+                    this.spinner.hide();
+                       swal.fire(this.messages['updateSuccess']);
+                   },
+                   error => {
+                       this.spinner.hide();
+                           swal.fire(this.messages['error500']);
+                   });
+            } else {
+                if (!(razonModificarMatricula === undefined)) {
+                    swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+                }
+            }
+        }
+async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {
             const {value: razonEliminarAsignatura} = await swal.fire(this.messages['deleteInputQuestion']);
 if (razonEliminarAsignatura) {
     swal.fire(this.messages['deleteRegistrationQuestion'])
                 .then((result) => {
                     if (result.value) {
                         this.spinner.show();
-                        this.NotasService.delete('asignacionDocentes?id=' + docenteAsignatura.id).subscribe(
-         response => {
-
-console.log(response);
+                        this.NotasService.delete('asignacionDocentes?id=' + detalledocente.id).subscribe(
+                         response => {
+             this.getDetalleDocente(this.docenteSeleccionado);
+             this.spinner.show();
+             console.log(response);
+             swal.fire(this.messages['deleteSuccess']);
+        },
+        error => {
             this.spinner.hide();
-         });
-
-         }
-
-                        });
-
+            swal.fire(this.messages['error500']);
+                           });
+                        }
+                    });
 } else {
     if (!(razonEliminarAsignatura === undefined)) {
         swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
     }
+    }
+    }
 
+async opendetalledocenteasignaturas(content) {
+    const {value: razonNuevaAsignatura} = await swal.fire(this.messages['createInputQuestion']);
+    if (razonNuevaAsignatura) {
+        this.detalleDocenteasignaturaNuevo.docente.id = this.docenteSeleccionado.docente.id;
+         this.detalleDocenteasignaturaNuevo.periodo_lectivo.id = this.periodoLectivoActual.id;
+                this.modalService.open(content)
+            .result
+            .then((resultModal => {
+                if (resultModal === 'save') {
+                    this.createDetalleDocenteAsignatura();
+                }
+            }), (resultCancel => {
 
+            }));
+    } else {
+        if (!(razonNuevaAsignatura === undefined)) {
+            swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+        }
+    }
 }
+async opendetalledocenteasignaturasUpdate(content) {
+    const {value: razonUpdateAsignatura} = await swal.fire(this.messages['UpdateQuestionAccept']);
+    if (razonUpdateAsignatura) {
+        this.modalService.open(content)
+            .result
+            .then((resultModal => {
+                if (resultModal === 'save') {
+  this.updateDetalleDocenteAsignatura(razonUpdateAsignatura);
+                }
+            }), (resultCancel => {
+
+            }));
+    } else {
+        if (!(razonUpdateAsignatura === undefined)) {
+            swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+        }
+    }
 }
-
-/* sacar carreras con el id de usuario o no??
-
 getCarreras() {
     this.spinner.show();
-    this.NotasService.get('catalogos/carreras').subscribe(
+    this.NotasService.get('carreras').subscribe(
         Response => {
             this.carreras = Response ['carreras'];
             this.spinner.hide();
@@ -231,7 +306,30 @@ getCarreras() {
 
         });
 }
-*/
+getAsignaturasCarrera() {
+    this.NotasService.get('matriculas/asignaturas?carrera_id=' + this.carrera.id).subscribe(
+        response => {
+            this.spinner.hide();
+            this.asignaturas = response['asignaturas'];
+        },
+        error => {
+            this.spinner.hide();
+            swal.fire(this.messages['error412']);
+        });
 }
+
+getAsignaturasCarreraNivel() {
+    this.NotasService.get('testnivel?carrera_id=' + this.carrera.id + '&periodo_academico_id=' + this.periodo_academico.id).subscribe(
+        response => {
+            this.asignaturas = response['asignaturas'];
+        },
+        error => {
+            this.spinner.hide();
+            swal.fire(this.messages['error500']);
+        });
+}
+}
+
+
 
 

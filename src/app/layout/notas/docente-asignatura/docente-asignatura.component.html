@@ -1,10 +1,10 @@
-<div class=" row">
+<div class="row">
     <div class="col-lg-12">
         <table class="table table-responsive table-sm">
             <tr>
                 <td>
                 <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
-                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control ">
                         <strong>{{txtPeriodoActualHistorico}} :</strong>
                     </span>
                 </td>
@@ -12,33 +12,37 @@
                     <select [disabled]="flagAll" name="periodoLectivoActual"
                             [(ngModel)]="periodoLectivoActual.id" class="form-control"
                             (change)="cambiarPeriodoLectivoActual()">
+
                         <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                                 *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
                     </select>
                 </td>
-                <td>
-                    <button (click)="getDocentesAsignados()" class="btn btn-success"
-                            title="Actualizar"><span class="{{messages['buttonRefresh']['icon']}}"></span>
-                    </button>
-                </td>
             </tr>
         </table>
+    </div>
+</div>
 
+<div class="row mt-1" *ngIf="!flagAll" >
+    <div class="col-lg-12">
         <table class="table">
             <thead class="thead-dark">
-                <th scope="col">ID</th>
-                <th scope="col">Identificacion</th>
-                <th scope="col">Nombres</th>
-                <th scope="col">Apellidos</th>
-                <th scope="col">Correo</th>
-                <th scope="col">Estado</th>
+
+                <th scope="col">Identificacion:</th>
+                <th scope="col">Nombres:</th>
+                <th scope="col">Apellidos:</th>
+                <th scope="col">Correo:</th>
+                <th scope="col">
+                    <button type="button" class="btn btn-success ml-1 btn-sm"
+                        (click)="getDocentesAsignados();" title="Actualizar">
+                    <span class="{{messages['buttonRefresh']['icon']}}"></span>
+                </button>
+            </th>
 
             </thead>
 
             <tbody>
               <tr *ngFor="let datadocente of docenteAsignatura">
 
-                <td> {{datadocente.docente.id}} </td>
                 <td> {{datadocente.docente.identificacion}} </td>
 
                 <td> {{datadocente.docente.nombre1}}  {{datadocente.docente.nombre2}} </td>
@@ -46,12 +50,12 @@
 
                 <td> {{datadocente.docente.correo_institucional}} </td>
 
-                <td> {{datadocente.docente.estado}} </td>
+
                 <td>
 
-                <button type="button" class="btn btn-warning ml-1 btn-sm text-white"(click)="getDetalleDocente(datadocente)"
-                 title="Asignaturas">
-    <span class="{{messages['buttonUpdate']['icon']}}">
+                <button type="button" class="btn btn-info ml-1 btn-sm text-white"(click)="getDetalleDocente(datadocente)"
+                 title="Revisar Asignaturas">
+    <span class="{{messages['buttonView']['icon']}}">
 
     </span>
         </button>
@@ -66,24 +70,24 @@
 <div class="row" *ngIf="flagAll">
     <div class="col-lg-12">
         <h1>
-            <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagDocenteAsignaturas()">
+            <button type="button" class="btn btn-secondary btn-lg mb-1" (click)="getDocentesAsignados()">
                 <span class="fa fa-arrow-left text-white"> Regresar</span>
             </button>
-
             {{docenteSeleccionado.docente.apellido1 + ' ' + docenteSeleccionado.docente.apellido2 + ' '
             + docenteSeleccionado.docente.nombre1 + ' ' + docenteSeleccionado.docente.nombre2}}
         </h1>
-        
+
         <table class="table table-hover table-sm table-responsive">
             <thead class="table-default text-center">
-            <th scope="col">Id</th>
-            <th scope="col">Asignatura</th>
-            <th scope="col">Jornada</th>
-            <th scope="col">Paralelo</th>
-          
+                <th scope="col">Id:</th>
+            <th scope="col">Asignatura:</th>
+            <th scope="col">Jornada:</th>
+            <th scope="col">Paralelo:</th>
+
             <th scope="col">
 
                 <button type="button" class="btn btn-success ml-1 btn-sm"
+                 (click)="opendetalledocenteasignaturas(contentDetalleDocenteAsignatura)"
                 title="Añadir nueva asignatura">
         <span class="{{messages['buttonAdd']['icon']}}">
           {{messages['buttonAdd']['text']}}
@@ -94,20 +98,236 @@
             </thead>
             <tbody>
                 <tr *ngFor="let Detalle of detalleDocente">
+                
+                    <td>
 
-                    <td> <option>{{Detalle.id}} </option> </td>
-                    <td> <option>{{Detalle.asignatura.nombre}} </option> </td>
-                    <td> <option>{{Detalle.jornada}} </option> </td>
-                    <td> <option>{{Detalle.paralelo}} </option> </td>
-
-                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white"(click)="deleteAsignaturaDocente()"
-                    title="Eliminar Asignatura">
-       <span class="{{messages['buttonDelete']['icon']}}"></span>
+                {{Detalle.id}}
+                    </td>
+                    <td>
+                       
+                        {{Detalle.asignatura.nombre}}
+               
+                    </td>
+               
+                    <td>
+                        <select disabled [(ngModel)]="Detalle.jornada" class="text-uppercase form-control-sm"
+                        id="jornada" name="jornada" required
+                        (change)="updateDetalleDocenteAsignatura(Detalle)">
+                    <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                        {{jornada.descripcion}}
+                    </option>
+                </select>
+             </td>
+             <td>
+                <select disabled [(ngModel)]="Detalle.paralelo" class="text-uppercase form-control-sm"
+                id="jornada" name="jornada" required >
+            <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
+                {{paralelo.descripcion}}
+            </option>
+        </select>
+     </td>
+     <td>
+                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white" 
+                    (click)="opendetalledocenteasignaturasUpdate(contentUpdateDetalleDocenteAsignatura)"
+                    title="Actualizar">
+       <span class="{{messages['buttonUpdate']['icon']}}"></span>
            </button>
+        
+                    <button type="button" class="btn btn-danger ml-1 btn-sm text-white"(click)="deleteAsignaturaDocente(Detalle)"
+                    title="Eliminar">
+       <span class="{{messages['buttonDelete']['icon']}}"></span>
+        </button>
+    </td>
+
+<ng-template #contentUpdateDetalleDocenteAsignatura let-c="close" let-d="dismiss">
+    <form name="UpdateDetalleDocente" method="put" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-lg-auto text-center" name="titulo">Modificar Registro</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="form-group row">
+                <div class="col-lg-auto">
+                    <label for="createAsignatura">
+                        <b class="text-danger">Primero seleccione una carrera</b>:
+                    </label>
+                    <select  [(ngModel)]="carrera.id" class="form-control"
+                            id="carrera" name="carrera" required >
+                        <option value="0" selected>Seleccione una carrera</option>
+                        <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small">
+                            {{ carrera.descripcion }}
+                        </option>
+                    </select>
+                </div>
+                </div>
+
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createAsignatura">
+                        <b class="text-danger">*</b>Asignatura:
+                    </label>
+                    <select  [(ngModel)]="Detalle.asignatura.id" class="form-control"
+                            id="asignatura"name="asignatura" required (click)="getAsignaturasCarrera()"
+                            (change)="updateDetalleDocenteAsignatura(Detalle)"> 
+                        <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
+                            {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
+                        </option>
+                    </select>
+                </div>
+                </div>
+
+            <div class="form-group row">
+                <div class="col-lg-auto">
+                    <label for="createJornada">
+                        <b class="text-danger">*</b> Jornada:
+                    </label>
+                        <select [(ngModel)]="Detalle.jornada" class="text-uppercase form-control-sm"
+                        id="jornada" name="jornada" required
+                        (change)="updateDetalleDocenteAsignatura(Detalle)">
+                    <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                        {{jornada.descripcion}}
+                    </option>
+                </select>
+              
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-auto">
+                    <label for="createParalelo">
+                        <b class="text-danger">*</b> Paralelo:
+                    </label>
+                    <select [(ngModel)]="Detalle.paralelo" class="form-control"
+                            id="Paralelo" name="Paralelo" required
+                            (change)="updateDetalleDocenteAsignatura(Detalle)">
+                        <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
+                            {{paralelo.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
 
+<ng-template #contentDetalleDocenteAsignatura let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-lg-auto text-center" name="titulo">Nuevo Registro</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+<!--Carrera-->
+<div class="form-group row">
+<div class="col-lg-auto">
+    <label for="createAsignatura">
+        <b class="text-danger">Primero seleccione una carrera</b>:
+    </label>
+    <select  [(ngModel)]="carrera.id" class="form-control"
+            id="carrera" name="carrera" required >
+        <option value="0" selected>Seleccione una carrera</option>
+        <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small">
+            {{ carrera.descripcion }}
+        </option>
+    </select>
+</div>
+</div>
+<!--nivel-->
+
+<!--<div class="form-group row">
+    <div class="col-lg-auto">
+        <label>
+            <b class="text-danger">Nivel</b> :
+        </label>
+        <select [(ngModel)]="periodoAcademico" class="form-control"
+        id="periodoAcademico" name="periodoAcademico" required>
+    <option value="{{periodoAcademico}}" *ngFor="let periodo of periodoAcademicos" class="small">
+        {{ periodo.nombre}}
+    </option>
+</select>
+    </div>
+</div> --->
+            <!--Asignatura-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="createAsignatura">
+                        <b class="text-danger">*</b>Asignatura:
+                    </label>
+                    <select  [(ngModel)]="detalleDocenteasignaturaNuevo.asignatura.id" class="form-control"
+                            id="asignatura"name="asignatura" required (click)="getAsignaturasCarrera()">
+                        <option  selected>Seleccione una asignatura</option>
+                        <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas" class="small">
+                            {{asignatura.periodo_academico.id +' '+ asignatura.nombre }}
+                        </option>
+                    </select>
+                </div>
+                </div>
+            <!--Jornada-->
+            <div class="form-group row">
+                <div class="col-lg-auto">
+                    <label for="createJornada">
+                        <b class="text-danger">*</b> Jornada:
+                    </label>
+                    <select [(ngModel)]="detalleDocenteasignaturaNuevo.jornada" class="form-control"
+                            id="createJornada" name="createJornada" required>
+                        <option value="" selected>Seleccione una jornada</option>
+                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                            {{jornada.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-lg-auto">
+                    <label for="createParalelo">
+                        <b class="text-danger">*</b> Paralelo:
+                    </label>
+                    <select [(ngModel)]="detalleDocenteasignaturaNuevo.paralelo" class="form-control"
+                            id="createParalelo" name="createParalelo" required>
+                        <option value="" selected>Seleccione un paralelo</option>
+                        <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
+                            {{paralelo.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
 

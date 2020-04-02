@@ -263,6 +263,18 @@ export const catalogos = {
                 reverseButtons: true,
                 backdrop: 'rgba(255, 0, 0,0.4)'
             },
+            UpdateQuestionAccept: {
+                position: 'center',
+                title: '¿Desea modificar el registro seleccionado?',
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fa fa-check" aria-hidden="true"> Si</i>',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+                backdrop: 'rgba(255, 0, 0,0.4)'
+            },
             updateInputQuestion: {
                 input: 'textarea',
                 position: 'center',
@@ -439,6 +451,16 @@ export const catalogos = {
                 'timer': 5000,
                 'showConfirmButton': true,
                 'backdrop': 'rgba(255, 0, 0,0.4)'
+            },
+
+            error412: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'Primero seleccione una carrera',
+                'text': 'Y vuelva a intentar',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
             },
             error500: {
                 'position': 'center',

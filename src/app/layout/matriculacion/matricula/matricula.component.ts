@@ -136,6 +136,7 @@ export class MatriculaComponent implements OnInit {
                 this.detalleMatriculaNuevo = new DetalleMatricula();
                 this.spinner.hide();
                 swal.fire(this.messages['createSuccess']);
+                console.log(response);
             },
             error => {
                 this.spinner.hide();
@@ -151,9 +152,10 @@ export class MatriculaComponent implements OnInit {
     cambiarEstadoFlagAsignaturasCupo() {
         this.flagAsignaturasCupo = false;
         if (this.buscador.trim() === '') {
+
             this.getAprobados(this.actual_page);
         } else {
-            this.getAprobado();
+             this.getAprobado();
         }
 
     }
