@@ -67,7 +67,13 @@ const routes: Routes = [
     loadChildren: () =>
         import('./notas/docente-asignatura/docente-asignatura.module')
         .then(n => n.DocenteAsignaturaModule), canActivate: [AuthGuard]
-},
+            },
+            {
+                path: 'nota-asistencia',
+                loadChildren: () =>
+                    import('./notas/nota-asistencia/nota-asistencia.module')
+                        .then(n => n.NotaAsistenciaModule), canActivate: [AuthGuard]
+            },
         ]
     }
 ];

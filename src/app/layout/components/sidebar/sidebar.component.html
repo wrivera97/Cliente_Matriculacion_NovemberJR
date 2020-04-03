@@ -55,10 +55,14 @@
 
         <a [routerLink]="['/docente-asignatura']" [routerLinkActive]="['router-link-active']" class="list-group-item"
            *ngIf="user.role.rol=='4'">
-            <i class="fa fa-fw fa-id-card"></i>&nbsp;
+            <i class="fa fa-thumb-tack"></i>&nbsp;
             <span>{{ 'Teacher Subjects' | translate }}</span>
         </a>
-
+        <a [routerLink]="['/nota-asistencia']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+        *ngIf="user.role.rol=='4'">
+         <i class="fa fa-book"></i>&nbsp;
+         <span>{{ 'Note Assistance' | translate }}</span>
+     </a>
 
         <!--    <div class="nested-menu">-->
         <!--      <a class="list-group-item" (click)="addExpandClass('pages')">-->

@@ -513,8 +513,10 @@ export const catalogos = {
                 showConfirmButton: true,
                 backdrop: 'rgba(255, 0, 0,0.4)'
             },
+            saveConfirmationDialog2: {'ok': 'OK', 'iconOk': 'fa fa-check-square-o'},
             saveConfirmationDialog: {'ok': 'Guardar', 'cancel': 'Cancelar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             requiredFields: {'icon': '*', 'text': 'Todos los campos son obligatorios'},
+            requiredFields2: {'icon': '¡Atencion!', 'text': 'Seleccione solo el campo a modificar'},
             buttonCreate: {'icon': 'fa fa-save', 'text': 'Guardar'},
             buttonAdd: {'icon': 'fa fa-plus', 'text': 'Añadir'},
             buttonUpdate: {'icon': 'fa fa-edit', 'text': ''},

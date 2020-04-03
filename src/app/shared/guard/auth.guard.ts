@@ -81,6 +81,11 @@ export class AuthGuard implements CanActivate {
                         return true;
                     }
                     break;
+                    case '/nota-asistencia':
+                        if (this.user.role.rol === '4') {
+                            return true;
+                        }
+                        break;
                 default:
                     this.router.navigate(['/access-denied']);
                     return false;

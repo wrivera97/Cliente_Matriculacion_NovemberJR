@@ -142,7 +142,6 @@ getPeriodosLectivos() {
             this.spinner.hide();
         });
 }
-
 cambiarPeriodoLectivoActual() {
     this.periodosLectivos.forEach(value => {
         // tslint:disable-next-line:triple-equals
@@ -157,7 +156,6 @@ cambiarPeriodoLectivoActual() {
         }
     });
 }
-//////////////////////////////////////////////////////////////
 getDocentesAsignados() {
 this.flagAll = false;
 this.spinner.show();
@@ -318,7 +316,7 @@ getAsignaturasCarrera() {
         });
 }
 
-getAsignaturasCarreraNivel() {
+/*getAsignaturasCarreraNivel() {
     this.NotasService.get('testnivel?carrera_id=' + this.carrera.id + '&periodo_academico_id=' + this.periodo_academico.id).subscribe(
         response => {
             this.asignaturas = response['asignaturas'];
@@ -327,7 +325,7 @@ getAsignaturasCarreraNivel() {
             this.spinner.hide();
             swal.fire(this.messages['error500']);
         });
-}
+}*/
 }
 
 

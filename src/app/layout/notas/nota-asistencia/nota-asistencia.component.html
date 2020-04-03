@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-lg-3">
+          <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!=estados.periodoLectivo.actual,
+                  'text-success':periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual}"
+                class="form-control">
+                      <strong>{{txtPeridoActualHistorico}} :</strong>
+                  </span>
+  </div>
+  <div class="col-lg-3">
+      <select [disabled]="flagAll" name="periodoLectivoActual"
+              [(ngModel)]="periodoLectivoActual.id" class="form-control"
+              (change)="cambiarPeriodoLectivoActual()">
+          <option [ngClass]="{'bg-success text-white':periodo.estado==estados.periodoLectivo.actual}"
+                  value="{{periodo.id}}"
+                  *ngFor="let periodo of periodosLectivos">
+              {{periodo.nombre}}
+          </option>
+      </select>
+  </div>
+  <div class="col-lg-3">
+      <select [disabled]="flagAll" [(ngModel)]="carrera.id" class="form-control"
+              id="carrera" name="carrera" required >
+          <option value="0" selected>SELECCIONE UNA CARRERA</option>
+          <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small"
+                  [ngClass]="{'bg-warning':carrera.descripcion=='MALLA ANTIGUA','text-white':carrera.descripcion=='MALLA ANTIGUA'}">
+              {{ carrera.descripcion }}
+          </option>
+      </select>
+  </div>
+  <div class="col-lg-3">
+      <select [disabled]="flagAll" [(ngModel)]="periodo_academico" class="form-control"
+              id="periodoAcademico" name="periodoAcademico" required>
+          <option value="-1" selected>SELECCIONE NIVEL</option>
+          <option value="" selected>TODOS</option>
+          <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of periodo_academicos"
+                  class="small">
+              {{periodoAcademico.nombre}}
+          </option>
+      </select>
+  </div>
+</div>
+
+  

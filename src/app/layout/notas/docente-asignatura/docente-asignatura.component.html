@@ -26,7 +26,6 @@
     <div class="col-lg-12">
         <table class="table">
             <thead class="thead-dark">
-
                 <th scope="col">Identificacion:</th>
                 <th scope="col">Nombres:</th>
                 <th scope="col">Apellidos:</th>
@@ -120,7 +119,7 @@
              </td>
              <td>
                 <select disabled [(ngModel)]="Detalle.paralelo" class="text-uppercase form-control-sm"
-                id="jornada" name="jornada" required >
+                id="paralelo" name="paralelo" required >
             <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
                 {{paralelo.descripcion}}
             </option>
@@ -163,9 +162,9 @@
                 </div>
 
             <div class="form-group row">
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <label for="createAsignatura">
-                        <b class="text-danger">*</b>Asignatura:
+                        <b class="text-danger"></b>Asignatura:
                     </label>
                     <select  [(ngModel)]="Detalle.asignatura.id" class="form-control"
                             id="asignatura"name="asignatura" required (click)="getAsignaturasCarrera()"
@@ -177,10 +176,10 @@
                 </div>
                 </div>
 
-            <div class="form-group row">
+            <div class="form-row">
                 <div class="col-lg-auto">
                     <label for="createJornada">
-                        <b class="text-danger">*</b> Jornada:
+                        <b class="text-danger"></b> Jornada:
                     </label>
                         <select [(ngModel)]="Detalle.jornada" class="text-uppercase form-control-sm"
                         id="jornada" name="jornada" required
@@ -189,15 +188,12 @@
                         {{jornada.descripcion}}
                     </option>
                 </select>
-              
-                </div>
             </div>
-            <div class="form-group row">
                 <div class="col-lg-auto">
                     <label for="createParalelo">
-                        <b class="text-danger">*</b> Paralelo:
+                        <b class="text-danger"></b> Paralelo:
                     </label>
-                    <select [(ngModel)]="Detalle.paralelo" class="form-control"
+                    <select [(ngModel)]="Detalle.paralelo" class="text-uppercase form-control-sm"
                             id="Paralelo" name="Paralelo" required
                             (change)="updateDetalleDocenteAsignatura(Detalle)">
                         <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
@@ -206,21 +202,17 @@
                     </select>
                 </div>
             </div>
-        </div>
+        
         <div class="modal-footer">
             <h6 class="text-muted">
-                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
-                {{messages['requiredFields']['text']}}
+                <b class="text-danger">{{messages['requiredFields2']['icon']}} </b>
+                {{messages['requiredFields2']['text']}}
             </h6>
-            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
-        <span
-            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
-            </button>
-            <button type="button" class="btn btn-danger" (click)="c('close')">
-        <span
-            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            <button type="button" class="btn btn-success" (click)="c('close')" >
+        <span class="{{messages['saveConfirmationDialog2']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog2']['ok']}}
             </button>
         </div>
+    </div>
     </form>
 </ng-template>
                 </tr>
