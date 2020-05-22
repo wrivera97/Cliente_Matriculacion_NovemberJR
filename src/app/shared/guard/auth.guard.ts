@@ -77,12 +77,12 @@ export class AuthGuard implements CanActivate {
                     }
                     break;
                 case '/docente-asignatura':
-                    if (this.user.role.rol === '4') {
+                    if (this.user.role.rol === '4' || this.user.role.rol === '1') {
                         return true;
                     }
                     break;
                     case '/nota-asistencia':
-                        if (this.user.role.rol === '4') {
+                        if (this.user.role.rol === '4' || this.user.role.rol === '7' || this.user.role.rol === '1') {
                             return true;
                         }
                         break;

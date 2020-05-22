@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\..\\..\\..\\..\\..\\..\\Server\\Server\\Servidor_Matriculacion_NovemberJR"
+		},
+		{
+			"path": "..\\..\\..\\..\\.."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

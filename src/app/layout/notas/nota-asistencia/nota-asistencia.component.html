@@ -1,43 +1,187 @@
-<div class="row">
-  <div class="col-lg-3">
-          <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!=estados.periodoLectivo.actual,
-                  'text-success':periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual}"
-                class="form-control">
-                      <strong>{{txtPeridoActualHistorico}} :</strong>
-                  </span>
-  </div>
-  <div class="col-lg-3">
-      <select [disabled]="flagAll" name="periodoLectivoActual"
-              [(ngModel)]="periodoLectivoActual.id" class="form-control"
-              (change)="cambiarPeriodoLectivoActual()">
-          <option [ngClass]="{'bg-success text-white':periodo.estado==estados.periodoLectivo.actual}"
-                  value="{{periodo.id}}"
-                  *ngFor="let periodo of periodosLectivos">
-              {{periodo.nombre}}
-          </option>
-      </select>
-  </div>
-  <div class="col-lg-3">
-      <select [disabled]="flagAll" [(ngModel)]="carrera.id" class="form-control"
-              id="carrera" name="carrera" required >
-          <option value="0" selected>SELECCIONE UNA CARRERA</option>
-          <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small"
-                  [ngClass]="{'bg-warning':carrera.descripcion=='MALLA ANTIGUA','text-white':carrera.descripcion=='MALLA ANTIGUA'}">
-              {{ carrera.descripcion }}
-          </option>
-      </select>
-  </div>
-  <div class="col-lg-3">
-      <select [disabled]="flagAll" [(ngModel)]="periodo_academico" class="form-control"
-              id="periodoAcademico" name="periodoAcademico" required>
-          <option value="-1" selected>SELECCIONE NIVEL</option>
-          <option value="" selected>TODOS</option>
-          <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of periodo_academicos"
-                  class="small">
-              {{periodoAcademico.nombre}}
-          </option>
-      </select>
-  </div>
+<table>
+    <tr>
+        <td>
+
+               <span  [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" >
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+        </td>
+
+        <td>
+            <select [disabled]="flagAll" name="periodoLectivoActual"
+                    [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                    (change)="cambiarPeriodoLectivoActual()">
+                <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                        *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}
+                </option>
+            </select>
+        </td>
+            <td>
+        <div>
+            <small class="text-muted" *ngIf="!flagAll" > * seleccione un periodo para revisar sus asignaciones.</small>
+        </div>
+            </td>
+
+    </tr>
+</table>
+
+<!---Form--->
+
+<div class="row mt-1" *ngIf="!flagAll">
+    <div class="col-lg-12">
+
+        <table class="table table-hover table-lg table-responsive">
+            <thead class="table-default text-center">
+            <th scope="col">Carrera:</th>
+            <th scope="col">Asignatura:</th>
+            <th scope="col">Nivel:</th>
+            <th scope="col">Jornada:</th>
+            <th scope="col">Paralelo:</th>
+            <th scope="col">Estado:</th>
+
+
+            <th scope="col">
+                <button type="button" class="btn btn-success ml-1 btn-sm" (click)="getDocenteAsignaturasUser(periodoLectivoSeleccionado)"
+                         title="Actualizar">
+                    <span class="{{messages['buttonRefresh']['icon']}}"></span>
+                </button>
+
+            </th>
+
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let test of detalleDocenteAsignatura ">
+                <td>
+                {{'{%pendiente%}'}}
+                </td>
+                <td>
+                {{test.asignatura.nombre}}
+                </td>
+
+                <td>
+                    {{test.asignatura.periodo_academico_id}}
+                </td>
+
+                <td>
+                    <select disabled [(ngModel)]="test.jornada" class="text-uppercase form-control-sm">
+                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                            {{jornada.descripcion}}
+                        </option>
+                    </select>
+                </td>
+
+                <td>
+
+                    <select disabled [(ngModel)]="test.paralelo" class="text-uppercase form-control-sm">
+                        <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
+                            <h1>{{paralelo.descripcion}}</h1>
+                        </option>
+                    </select>
+                </td>
+                <td>
+
+                    {{test.estado}}
+
+                </td>
+
+
+                <td>
+                    <button type="button" class="btn btn-secondary ml-1 btn-sm text-white"
+                            (click)="getdetalleasignaturaestudiantes(test)"
+                            title="Lista de estudiantes matriculados ">
+    <span class="fa fa-users">
+
+    </span>
+                    </button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
 </div>
 
-  
+<div class="row" *ngIf="flagAll">
+    <div class="col-lg-12">
+        <table>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-secondary btn-lg mb-1" (click)="getDocenteAsignaturasUser(periodoLectivoSeleccionado)">
+                        <span class="fa fa-arrow-left text-white"> Regresar</span>
+                    </button>
+
+                </td>
+                <td class="text-muted " >
+                    <h4>
+                   {{'Lista de estudiantes de:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
+                    </h4>
+                </td>
+
+            </tr>
+        </table>
+        <table class="table table-hover table-lg table-responsive">
+            <thead class="table-default text-center">
+            <th scope="col">Apellidos</th>
+            <th scope="col">Nombres:</th>
+            <th scope="col">Correo Institucional:</th>
+            <th scope="col">Nota primer parcial:</th>
+            <th scope="col">Nota segundo parcial:</th>
+            <th scope="col">Nota final:</th>
+            <th scope="col">Asistencia primer parcial:</th>
+            <th scope="col">Asistencia segundo parcial:</th>
+            <th scope="col">Asistencia final:</th>
+            <th scope="col">Estado:</th>
+            </thead>
+
+        <tbody>
+        <tr *ngFor="let test2 of estudiantedetalles ">
+
+            <td>
+            {{test2.apellido1}} {{test2.apellido2}}
+            </td>
+            <td>
+            {{test2.nombre1}} {{test2.nombre2}}
+
+            </td>
+            <td>
+            {{test2.correo_institucional}}
+
+           </td>
+            <td>
+
+
+            </td>
+            <td>
+
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+
+            </td>
+            <td>
+
+            </td>
+            <td>
+
+
+            </td>
+            <td>
+
+
+            </td>
+
+        </tr>
+
+        </tbody>
+        </table>
+
+    </div>
+</div>
+
+

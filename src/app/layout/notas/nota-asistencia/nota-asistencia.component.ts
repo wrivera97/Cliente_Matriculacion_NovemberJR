@@ -3,140 +3,166 @@ import {Router} from '@angular/router';
 import {catalogos} from '../../../../environments/catalogos';
 import {ServiceService} from '../notas.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {PeriodoAcademico} from '../modelos/periodo-academico.model';
 import {PeriodoLectivo} from '../modelos/periodo-lectivo.model';
 import {Carrera} from '../modelos/carrera.model';
-import {Asignatura} from '../modelos/asignatura.model';
+import {User} from '../modelos/user.model';
+import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
+import {Estudiante} from '../../matriculacion/modelos/estudiante.model';
 @Component({
   selector: 'app-nota-asistencia',
   templateUrl: './nota-asistencia.component.html',
   styleUrls: ['./nota-asistencia.component.scss']
 })
 export class NotaAsistenciaComponent implements OnInit {
-  flagAll: boolean;
-  txtPeridoActualHistorico: string;
-  estados: any;
+    flagAll: boolean;
+    txtPeridoActualHistorico: string;
+    estados: any;
 
-  periodo_academicos: Array<PeriodoAcademico>;
-  periodo_academico: PeriodoAcademico;
+    periodoLectivoSeleccionado: PeriodoLectivo;
+    txtPeriodoActualHistorico: string;
+    periodoLectivoActual: PeriodoLectivo;
 
-  periodoLectivoSeleccionado: PeriodoLectivo;
-  txtPeriodoActualHistorico: string;
-  periodoLectivoActual: PeriodoLectivo;
+    periodoLectivo: string;
+    periodosLectivos: Array<PeriodoLectivo>;
 
-periodoLectivo: string;
-periodosLectivos: Array<PeriodoLectivo>;
+    periodoLectivos: Array<PeriodoLectivo>;
+    detalleDocenteAsignatura: Array<DocenteAsignatura>;
+    detalleDocenteAsignaturaSeleccionado: DocenteAsignatura;
 
-periodoLectivos: Array<PeriodoLectivo>;
+    carreras: Array<Carrera>;
+    carrera: Carrera;
 
-carreras: Array<Carrera>;
-carrera: Carrera;
-
-asignaturas: Array<Asignatura>;
-
+    estudiantedetalles: Array <Estudiante>;
 
 
 
-  constructor(private spinner: NgxSpinnerService, private NotasService: ServiceService ,
-    private router: Router, private modalService: NgbModal) { }
 
-  ngOnInit() {
-    this.txtPeriodoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
-    this.flagAll = false;
+    messages: any;
+    user: User;
+    jornadas: Array<any>;
+    paralelos: Array<any>;
 
 
-    this.periodoLectivo = '';
-    this.estados = catalogos.estados;
-    this.periodoLectivoSeleccionado = new PeriodoLectivo();
-    this.periodoLectivoActual = new PeriodoLectivo();
-    this.carrera = new Carrera();
-    this.periodo_academico = new PeriodoAcademico();
-    this.getCarreras();
-    this.getPeriodoAcademicos();
-    this.getPeriodoLectivoActual();
-    this.getPeriodoLectivos();
-    this.getPeriodoLectivoActual();
+
+    constructor(private spinner: NgxSpinnerService, private NotasService: ServiceService,
+                private router: Router) {
+    }
+
+    ngOnInit() {
+        this.txtPeriodoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
+        this.flagAll = false;
+        this.user = JSON.parse(localStorage.getItem('user')) as User;
+        this.periodoLectivo = '';
+        this.estados = catalogos.estados;
+        this.messages = catalogos.messages;
+        this.periodoLectivoSeleccionado = new PeriodoLectivo();
+        this.periodoLectivoActual = new PeriodoLectivo();
+        this.paralelos = catalogos.paralelos;
+        this.jornadas = catalogos.jornadas;
+        this.detalleDocenteAsignaturaSeleccionado = new DocenteAsignatura();
+        this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
-    this.getPeriodosLectivos();
-  }
+        this.getPeriodosLectivos();
+    }
 
-  getPeriodoAcademicos() {
-
-    this.NotasService.get('catalogos/periodo_academicos').subscribe(
-        response => {
-            this.periodo_academicos = response['periodo_academicos'];
-        },
-        error => {
-            this.spinner.hide();
-
-        });
-}
-
-getPeriodoLectivoActual() {
-    this.NotasService.get('periodo_lectivos/actual').subscribe(
-        response => {
-            if (response['periodo_lectivo_actual'] == null) {
-                this.periodoLectivoActual = new PeriodoLectivo();
-            } else {
-                this.periodoLectivoActual = response['periodo_lectivo_actual'];
-                this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
-            }
-        },
-        error => {
-
-        });
-}
-
-
-getPeriodoLectivos() {
-    this.NotasService.get('periodo_lectivos').subscribe(
-        response => {
-            this.periodoLectivos = response['periodo_lectivos'];
-        },
-        error => {
-            this.spinner.hide();
-        });
-}
-getPeriodosLectivos() {
-    this.spinner.show();
-    this.NotasService.get('periodo_lectivos/historicos').subscribe(
-        response => {
-            this.periodosLectivos = response['periodos_lectivos_historicos'];
-            this.periodosLectivos.forEach(value => {
-                if (value.estado === 'ACTUAL') {
-                    this.periodoLectivoSeleccionado = value;
+    getPeriodoLectivoActual() {
+        this.NotasService.get('periodo_lectivos/actual').subscribe(
+            response => {
+                if (response['periodo_lectivo_actual'] == null) {
+                    this.periodoLectivoActual = new PeriodoLectivo();
+                } else {
+                    this.periodoLectivoActual = response['periodo_lectivo_actual'];
+                    this.periodoLectivoSeleccionado = response['periodo_lectivo_actual'];
+                    this.periodoLectivoSeleccionado.fecha_fin_cupo = new Date(this.periodoLectivoActual.fecha_fin_cupo + 'T00:00:00');
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
                 }
-            });
-            this.spinner.hide();
-        },
-        error => {
-            this.spinner.hide();
-        });
-}
-cambiarPeriodoLectivoActual() {
-    this.periodosLectivos.forEach(value => {
-        if (value.id === this.periodoLectivoActual.id) {
-            this.periodoLectivoSeleccionado = value;
-            if (value.estado !== 'ACTUAL') {
-                this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
-            } else {
-                this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
-            }
-        }
-    });
-}
-getCarreras() {
-  this.spinner.show();
-  this.NotasService.get('carreras').subscribe(
-      Response => {
-          this.carreras = Response ['carreras'];
-          this.spinner.hide();
-      },
-      error => {
-          this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
 
-      });
-}
+            });
+    }
+
+
+
+    getPeriodoLectivos() {
+        this.NotasService.get('periodo_lectivos').subscribe(
+            response => {
+                this.periodoLectivos = response['periodo_lectivos'];
+                this.getDocenteAsignaturasUser(this.periodoLectivoActual);
+            },
+            error => {
+                this.spinner.hide();
+            });
+    }
+
+    getPeriodosLectivos() {
+        this.spinner.show();
+        this.NotasService.get('periodo_lectivos/historicos').subscribe(
+            response => {
+                this.periodosLectivos = response['periodos_lectivos_historicos'];
+                this.periodosLectivos.forEach(value => {
+                    if (value.estado === 'ACTUAL') {
+                        this.periodoLectivoSeleccionado = value;
+                    }
+                });
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+            });
+    }
+    cambiarPeriodoLectivoActual() {
+        this.periodosLectivos.forEach(value => {
+            if (value.id == this.periodoLectivoActual.id) {
+                this.periodoLectivoSeleccionado = value;
+                if (value.estado != 'ACTUAL') {
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
+                } else {
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                }
+                this.getDocenteAsignaturasUser(this.periodoLectivoSeleccionado);
+            }
+
+        });
+
+    }
+
+    getDocenteAsignaturasUser(periodoLectivoActual) {
+        this.flagAll = false;
+        this.spinner.show();
+        const parametros =
+            '?id=' + this.user.id
+            + '&periodo_lectivo_id=' + periodoLectivoActual.id;
+        this.NotasService.get('testnotas' + parametros).subscribe(
+            Response => {
+                this.detalleDocenteAsignatura = Response['ok'];
+                this.spinner.hide();
+            });
+
+
+    }
+    getdetalleasignaturaestudiantes(detalleDocente: DocenteAsignatura) {
+        this.flagAll = true;
+        this.spinner.hide();
+        this.detalleDocenteAsignaturaSeleccionado = detalleDocente;
+
+        const  parametros =
+            '?asignatura_id=' + this.detalleDocenteAsignaturaSeleccionado.asignatura.id
+                  + '&paralelo=' + this.detalleDocenteAsignaturaSeleccionado.paralelo
+                  + '&jornada=' + this.detalleDocenteAsignaturaSeleccionado.jornada ;
+
+        this.NotasService.get('testnotas1' + parametros).subscribe(
+            Response => {
+                this.estudiantedetalles = Response['ok'];
+            },
+        error => {
+                alert('Error de servidor');
+
+            });
+    }
+
+
+
 
 }

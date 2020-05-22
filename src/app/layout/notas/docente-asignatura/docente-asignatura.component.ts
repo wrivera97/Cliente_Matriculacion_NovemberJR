@@ -9,11 +9,10 @@ import {PeriodoLectivo} from '../modelos/periodo-lectivo.model';
 import {Carrera} from '../modelos/carrera.model';
 import { DocenteAsignatura } from '../modelos/docente-asignaturas.model';
 import {catalogos} from '../../../../environments/catalogos';
-import { Docente } from '../modelos/docente.model';
 import {Asignatura} from '../modelos/asignatura.model';
-import {Malla} from '../modelos/malla.model';
-import { promise } from 'protractor';
-import { DocenteAsignaturaModule } from './docente-asignatura.module';
+import { Docente } from '../modelos/docente.model';
+import {error} from 'util';
+
 
 @Component({
   selector: 'app-docente-asignatura',
@@ -26,13 +25,14 @@ export class DocenteAsignaturaComponent implements OnInit {
     periodo_academico: PeriodoAcademico;
     flagPagination: boolean;
     txtPeriodoActualHistorico: string;
-
+    carreradonceteasignatura: Array<Carrera>;
     periodoLectivo: string;
     periodosLectivos: Array<PeriodoLectivo>;
     periodoLectivoActual: PeriodoLectivo;
     periodoLectivos: Array<PeriodoLectivo>;
     detalleDocenteasignaturaNuevo: DocenteAsignatura;
     detalleDocente: Array<DocenteAsignatura>;
+docenteDetalle: Array<Docente>;
     jornadas: Array<any>;
     paralelos: Array<any>;
     flagAll: boolean;
@@ -47,7 +47,7 @@ export class DocenteAsignaturaComponent implements OnInit {
     total_pages_pagination: Array<any>;
     total_pages_temp: number;
     docenteAsignatura: Array<DocenteAsignatura>;
-    docenteSeleccionado: DocenteAsignatura;
+    docenteSeleccionado: Docente;
     detalleDocenteSeleccionado: DocenteAsignatura;
     asignaturas: Array<Asignatura>;
   constructor(private spinner: NgxSpinnerService, private NotasService: ServiceService , private router: Router,
@@ -72,7 +72,7 @@ export class DocenteAsignaturaComponent implements OnInit {
 
 
     this.periodoLectivoSeleccionado = new PeriodoLectivo();
-    this.docenteSeleccionado = new DocenteAsignatura();
+    this.docenteSeleccionado = new Docente();
     this.paralelos = catalogos.paralelos;
     this.jornadas = catalogos.jornadas;
     this.periodoLectivoActual = new PeriodoLectivo();
@@ -156,28 +156,30 @@ cambiarPeriodoLectivoActual() {
         }
     });
 }
-getDocentesAsignados() {
-this.flagAll = false;
-this.spinner.show();
-this.NotasService.get('asignacionDocentesAsignados').subscribe(
+getDocentesAsignados() { // funcion o metodo { abrimos
+this.flagAll = false; // paginacion en caso de mostrar en otra pagina
+this.spinner.show(); // muestra animacion de cargar
+this.NotasService.get('detalleDocentes').subscribe(// nos subscribimos
     Response => {
-        this.docenteAsignatura = Response ['docentesAsignados'];
-this.spinner.hide();
+        this.docenteDetalle = Response ['detalleDocentes']; // llamamos desde el response para obtener datos
+       // console.log(Response)//muestra datos en consola
+this.spinner.hide(); // ocultamos la animacion de carga
     },
-    error => {
-this.spinner.hide();
-});
-    }
-        getDetalleDocente(docente: DocenteAsignatura) {
+    error => { // sintaxis de error en caso de existir alguno
+this.spinner.hide(); // ocultamos animacion
+}); // cierre del subcribe y response
+    } // funcion o metodo }cerramos
+        getDetalleDocente(docente: Docente) {
             this.spinner.show();
             this.detalleDocente = null;
             this.flagAll = true;
             this.docenteSeleccionado = docente;
-            this.NotasService.get('asignacionDocentes?id=' + this.docenteSeleccionado.docente.id
+            this.NotasService.get('asignacionDocentes?id=' + this.docenteSeleccionado.id
                                                            + '&periodo_lectivo_id=' + this.periodoLectivoActual.id).subscribe(
-                response => {
+                Response => {
 
-                    this.detalleDocente = response['asignacionesDocente'];
+                    this.detalleDocente = Response['asignacionesDocente'];
+                    console.log(Response);
                     this.spinner.hide();
                 },
                 error => {
@@ -188,6 +190,7 @@ this.spinner.hide();
 
         createDetalleDocenteAsignatura() {
          this.spinner.show();
+         this.detalleDocenteasignaturaNuevo.estado = 'ACTIVO';
            this.NotasService.post('asignacionDocentes', {'docente_asignatura': this.detalleDocenteasignaturaNuevo})
             .subscribe(
             response => {
@@ -207,9 +210,7 @@ this.spinner.hide();
             });
             }
 
-           async  updateDetalleDocenteAsignatura(detalledocente: DocenteAsignatura) {
-            const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
-            if (razonModificarMatricula) {
+            updateDetalleDocenteAsignatura(detalledocente: DocenteAsignatura) {
                 this.spinner.show();
                   this.NotasService.update('asignacionDocentes', {'docente_asignatura': detalledocente }).subscribe(
                    response => {
@@ -221,16 +222,11 @@ this.spinner.hide();
                        this.spinner.hide();
                            swal.fire(this.messages['error500']);
                    });
-            } else {
-                if (!(razonModificarMatricula === undefined)) {
-                    swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
-                }
             }
-        }
 async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {
-            const {value: razonEliminarAsignatura} = await swal.fire(this.messages['deleteInputQuestion']);
+            const {value: razonEliminarAsignatura} = await swal.fire(this.messages['deleteInputAccept']);
 if (razonEliminarAsignatura) {
-    swal.fire(this.messages['deleteRegistrationQuestion'])
+    swal.fire(this.messages['deleteInputAccept'])
                 .then((result) => {
                     if (result.value) {
                         this.spinner.show();
@@ -254,10 +250,8 @@ if (razonEliminarAsignatura) {
     }
     }
 
-async opendetalledocenteasignaturas(content) {
-    const {value: razonNuevaAsignatura} = await swal.fire(this.messages['createInputQuestion']);
-    if (razonNuevaAsignatura) {
-        this.detalleDocenteasignaturaNuevo.docente.id = this.docenteSeleccionado.docente.id;
+ opendetalledocenteasignaturas(content) {
+        this.detalleDocenteasignaturaNuevo.docente.id = this.docenteSeleccionado.id;
          this.detalleDocenteasignaturaNuevo.periodo_lectivo.id = this.periodoLectivoActual.id;
                 this.modalService.open(content)
             .result
@@ -268,12 +262,8 @@ async opendetalledocenteasignaturas(content) {
             }), (resultCancel => {
 
             }));
-    } else {
-        if (!(razonNuevaAsignatura === undefined)) {
-            swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
-        }
     }
-}
+
 async opendetalledocenteasignaturasUpdate(content) {
     const {value: razonUpdateAsignatura} = await swal.fire(this.messages['UpdateQuestionAccept']);
     if (razonUpdateAsignatura) {
@@ -326,8 +316,5 @@ getAsignaturasCarrera() {
             swal.fire(this.messages['error500']);
         });
 }*/
+
 }
-
-
-
-

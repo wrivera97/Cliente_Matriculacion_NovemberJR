@@ -54,14 +54,14 @@
         </a>
 
         <a [routerLink]="['/docente-asignatura']" [routerLinkActive]="['router-link-active']" class="list-group-item"
-           *ngIf="user.role.rol=='4'">
+           *ngIf="user.role.rol=='4' || user.role.rol=='1'" >
             <i class="fa fa-thumb-tack"></i>&nbsp;
-            <span>{{ 'Teacher Subjects' | translate }}</span>
+            <span>{{ 'Teachers Subjects' | translate }}</span>
         </a>
         <a [routerLink]="['/nota-asistencia']" [routerLinkActive]="['router-link-active']" class="list-group-item"
-        *ngIf="user.role.rol=='4'">
+        *ngIf="user.role.rol=='4' || user.role.rol=='7'|| user.role.rol=='1' ">
          <i class="fa fa-book"></i>&nbsp;
-         <span>{{ 'Note Assistance' | translate }}</span>
+         <span>{{ 'Grades Attendance' | translate }}</span>
      </a>
 
         <!--    <div class="nested-menu">-->

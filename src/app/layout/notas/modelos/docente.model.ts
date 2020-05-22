@@ -1,4 +1,5 @@
 import { User } from './user.model';
+import {DocenteAsignatura} from './docente-asignaturas.model';
 
 export class Docente {
 id?: number;
@@ -10,9 +11,10 @@ identificacion: String;
 genero: String;
 correo_institucional: String;
 estado: String;
-user: User;
+
 
     constructor() {
+
         this.nombre1 = '';
         this.nombre2 = '';
         this.apellido1 = '';
@@ -21,7 +23,7 @@ user: User;
         this.estado = '';
         this.genero = '';
         this.identificacion = '';
-        this.user = new User();
+
 
     }
 }

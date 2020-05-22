@@ -25,5 +25,6 @@ export class Asignatura {
     this.codigo_padre_prerequisito = '';
     this.malla = new Malla();
     this.periodo_academico = new PeriodoAcademico();
+
   }
 }

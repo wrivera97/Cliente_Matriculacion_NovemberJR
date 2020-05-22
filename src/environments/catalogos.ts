@@ -290,6 +290,19 @@ export const catalogos = {
                 reverseButtons: true,
                 backdrop: 'rgba(255, 0, 0,0.4)'
             },
+            deleteInputAccept: {
+                position: 'center',
+                type: 'error',
+                title: '¿Esta seguro en anular este registro?',
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fa fa-check" aria-hidden="true"> Si</i>',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+                backdrop: 'rgba(255, 0, 0,0.4)'
+            },
             deleteInputQuestion: {
                 input: 'textarea',
                 position: 'center',
@@ -513,7 +526,7 @@ export const catalogos = {
                 showConfirmButton: true,
                 backdrop: 'rgba(255, 0, 0,0.4)'
             },
-            saveConfirmationDialog2: {'ok': 'OK', 'iconOk': 'fa fa-check-square-o'},
+            saveConfirmationDialog2: {'ok': 'OK', 'cancel': 'Cerrar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             saveConfirmationDialog: {'ok': 'Guardar', 'cancel': 'Cancelar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             requiredFields: {'icon': '*', 'text': 'Todos los campos son obligatorios'},
             requiredFields2: {'icon': '¡Atencion!', 'text': 'Seleccione solo el campo a modificar'},

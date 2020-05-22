@@ -1,5 +1,6 @@
 import {Rol} from './rol.model';
 import {Carrera} from './carrera.model';
+import {Docente} from '../../notas/modelos/docente.model';
 
 export class User {
     id: string;
