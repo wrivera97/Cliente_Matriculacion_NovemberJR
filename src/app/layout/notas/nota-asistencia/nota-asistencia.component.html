@@ -51,7 +51,7 @@
 
             </thead>
 
-            <tbody>
+            <tbody class="text-center">
             <tr *ngFor="let test of detalleDocenteAsignatura ">
                 <td>
                 {{'{%pendiente%}'}}
@@ -109,27 +109,37 @@
                 </td>
                 <td class="text-muted " >
                     <h4>
-                   {{'Lista de estudiantes de:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
+                        {{'Estudiantes de:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
                     </h4>
                 </td>
 
             </tr>
         </table>
-        <table class="table table-hover table-lg table-responsive">
-            <thead class="table-default text-center">
+        <table class="table text-center text-muted">
+            <thead>
+            <tr>
+                <th></th>
+                <th>-ESTUDIANTE-</th>
+                <th>-NOTAS-</th>
+                <th>-ASISTENCIAS-</th>
+            </tr>
+            </thead>
+        </table>
+        <table class="table text-center">
+            <thead>
             <th scope="col">Apellidos</th>
             <th scope="col">Nombres:</th>
             <th scope="col">Correo Institucional:</th>
-            <th scope="col">Nota primer parcial:</th>
-            <th scope="col">Nota segundo parcial:</th>
-            <th scope="col">Nota final:</th>
-            <th scope="col">Asistencia primer parcial:</th>
-            <th scope="col">Asistencia segundo parcial:</th>
-            <th scope="col">Asistencia final:</th>
+            <th scope="col">Primer parcial:</th>
+            <th scope="col">Segundo parcial:</th>
+            <th scope="col">Final:</th>
+            <th scope="col">Primer parcial:</th>
+            <th scope="col">Segundo parcial:</th>
+            <th scope="col">Final:</th>
             <th scope="col">Estado:</th>
             </thead>
 
-        <tbody>
+        <tbody class="text-center">
         <tr *ngFor="let test2 of estudiantedetalles ">
 
             <td>
@@ -142,28 +152,30 @@
             <td>
             {{test2.correo_institucional}}
 
-           </td>
-            <td>
 
+            </td>
+
+            <td>
+                <input type="text"maxlength="5" size="4">
 
             </td>
             <td>
 
-
+                <input type="text"maxlength="5" size="4">
+            </td>
+            <td>
+                <input type="text"maxlength="5" size="4">
             </td>
             <td>
 
+                <input type="text"maxlength="5" size="4">
+            </td>
+            <td>
+                <input type="text"maxlength="5" size="4">
             </td>
             <td>
 
-
-            </td>
-            <td>
-
-            </td>
-            <td>
-
-
+                <input type="text"maxlength="5" size="4">
             </td>
             <td>
 
