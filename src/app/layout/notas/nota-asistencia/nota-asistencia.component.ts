@@ -8,6 +8,7 @@ import {Carrera} from '../modelos/carrera.model';
 import {User} from '../modelos/user.model';
 import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
 import {Estudiante} from '../../matriculacion/modelos/estudiante.model';
+import {Matricula} from '../../matriculacion/modelos/matricula.model';
 @Component({
   selector: 'app-nota-asistencia',
   templateUrl: './nota-asistencia.component.html',
@@ -32,7 +33,7 @@ export class NotaAsistenciaComponent implements OnInit {
     carreras: Array<Carrera>;
     carrera: Carrera;
 
-    estudiantedetalles: Array <Estudiante>;
+    estudiantedetalles: Array <Matricula>;
 
 
 
