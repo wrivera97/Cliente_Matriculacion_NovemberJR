@@ -23,11 +23,12 @@
 <div class="row mt-1" *ngIf="!flagAll" >
     <div class="col-lg-12">
         <table class="table">
-            <thead class="thead-dark">
+            <thead class="table text-center">
                 <th scope="col">Identificacion:</th>
                 <th scope="col">Nombres:</th>
                 <th scope="col">Apellidos:</th>
-                <th scope="col">Correo:</th>
+                <th scope="col">Correo Insitucional:</th>
+                <th scope="col">Estado:</th>
                 <th scope="col">
                     <button type="button" class="btn btn-success ml-1 btn-sm"
                         (click)="getDocentesAsignados();" title="Actualizar">
@@ -37,7 +38,7 @@
 
             </thead>
 
-            <tbody>
+            <tbody class="text-center" >
               <tr *ngFor="let datadocente of docenteDetalle">
 
                 <td> {{datadocente.identificacion}} </td>
@@ -46,7 +47,13 @@
                 <td> {{datadocente.apellido1}}  {{datadocente.apellido2}} </td>
 
                 <td> {{datadocente.correo_institucional}} </td>
+                <td>
+  <span [ngClass]="{'text-danger':datadocente.estado!=='ACTIVO'
+                ,'text-success':datadocente.estado=='ACTIVO'}">
+                {{datadocente.estado}}
 
+                </span>
+                </td>
 
                 <td>
 
@@ -73,16 +80,16 @@
         </button>
 
         </td>
-        <td class="text-center text-muted">
-          <h1 >  {{docenteSeleccionado.apellido1 + ' ' + docenteSeleccionado.apellido2 + ' '
+        <td class=" text-muted">
+          <h2>{{docenteSeleccionado.apellido1 + ' ' + docenteSeleccionado.apellido2 + ' '
         + docenteSeleccionado.nombre1 + ' ' + docenteSeleccionado.nombre2}}
-          </h1>
+          </h2>
         </td>
 
     </tr>
 </table>
         <table class="table table-hover table-lg table-responsive">
-            <thead class="table-default text-center">
+            <thead class="table text-center">
             <th scope="col">Carrera:</th>
             <th scope="col">Asignatura:</th>
             <th scope="col">Nivel:</th>
@@ -92,7 +99,7 @@
 
             <th scope="col">
 
-                <button type="button" class="btn btn-success ml-1 btn-sm"
+                <button [disabled]="periodoLectivoSeleccionado.estado=='HISTORICO'" type="button" class="btn btn-success ml-1 btn-sm"
                  (click)="opendetalledocenteasignaturas(contentDetalleDocenteAsignatura)"
                 title="Añadir Registro">
         <span class="{{messages['buttonAdd']['icon']}}">
@@ -102,7 +109,7 @@
 
             </th>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 <tr *ngFor="let docenteAsignatura of detalleDocente">
 
                     <td>
@@ -135,13 +142,19 @@
      </td>
 
                     <td>
-                        {{docenteAsignatura.estado}}
+                        <span [ngClass]="{'text-danger':docenteAsignatura.estado!=='ACTIVO',
+                                          'text-success':docenteAsignatura.estado=='ACTIVO'}">
+
+                            {{docenteAsignatura.estado}}
+                        </span>
+
                     </td>
 
                     <td>
                     <button type="button" class="btn btn-warning ml-1 btn-sm text-white"
                     (click)="opendetalledocenteasignaturasUpdate(contentUpdateDetalleDocenteAsignatura)"
-                    title="Modificar Registro"  *ngIf="docenteAsignatura.estado=='ACTIVO'">
+                    title="Modificar Registro"
+                            [disabled]="periodoLectivoSeleccionado.estado=='HISTORICO'|| docenteAsignatura.estado=='ANULADO'">
        <span class="{{messages['buttonUpdate']['icon']}}"></span>
            </button>
 
