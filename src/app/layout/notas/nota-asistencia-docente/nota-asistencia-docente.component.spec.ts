@@ -1,4 +1,4 @@
-import { BlankPageModule } from './nota-asistencia.module';
+import { BlankPageModule } from './nota-asistencia-docente.module';
 
 describe('BlankPageModule', () => {
     let blankPageModule: BlankPageModule;

@@ -7,14 +7,16 @@ import {PeriodoLectivo} from '../modelos/periodo-lectivo.model';
 import {Carrera} from '../modelos/carrera.model';
 import {User} from '../modelos/user.model';
 import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
-import {Estudiante} from '../../matriculacion/modelos/estudiante.model';
-import {Matricula} from '../../matriculacion/modelos/matricula.model';
+import {Matricula} from '../modelos/matricula.model';
+import {DetallenotaModel} from '../modelos/detallenota.model';
+
+import swal from "sweetalert2";
 @Component({
   selector: 'app-nota-asistencia',
-  templateUrl: './nota-asistencia.component.html',
-  styleUrls: ['./nota-asistencia.component.scss']
+  templateUrl: './nota-asistencia-docente.component.html',
+  styleUrls: ['./nota-asistencia-docente.component.scss']
 })
-export class NotaAsistenciaComponent implements OnInit {
+export class NotaAsistenciaDocenteComponent implements OnInit {
     flagAll: boolean;
     txtPeridoActualHistorico: string;
     estados: any;
@@ -25,16 +27,20 @@ export class NotaAsistenciaComponent implements OnInit {
 
     periodoLectivo: string;
     periodosLectivos: Array<PeriodoLectivo>;
-
     periodoLectivos: Array<PeriodoLectivo>;
+
     detalleDocenteAsignatura: Array<DocenteAsignatura>;
     detalleDocenteAsignaturaSeleccionado: DocenteAsignatura;
+    docenteasignaturauserseleccionado: DocenteAsignatura;
 
     carreras: Array<Carrera>;
     carrera: Carrera;
 
-    estudiantedetalles: Array <Matricula>;
+    DetalleEstudiante: Array <Matricula>;
+    DetalleEstudianteSeleccionado: Matricula;
 
+
+    detallenotanuevo: DetallenotaModel;
 
 
 
@@ -55,12 +61,15 @@ export class NotaAsistenciaComponent implements OnInit {
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.periodoLectivo = '';
         this.estados = catalogos.estados;
+        this.detallenotanuevo = new DetallenotaModel();
         this.messages = catalogos.messages;
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
         this.paralelos = catalogos.paralelos;
         this.jornadas = catalogos.jornadas;
         this.detalleDocenteAsignaturaSeleccionado = new DocenteAsignatura();
+        this.docenteasignaturauserseleccionado = new  DocenteAsignatura();
+        this.DetalleEstudianteSeleccionado = new Matricula();
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getPeriodosLectivos();
@@ -147,7 +156,6 @@ export class NotaAsistenciaComponent implements OnInit {
         this.flagAll = true;
         this.spinner.hide();
         this.detalleDocenteAsignaturaSeleccionado = detalleDocente;
-
         const  parametros =
             '?asignatura_id=' + this.detalleDocenteAsignaturaSeleccionado.asignatura.id
                   + '&paralelo=' + this.detalleDocenteAsignaturaSeleccionado.paralelo
@@ -155,7 +163,8 @@ export class NotaAsistenciaComponent implements OnInit {
 
         this.NotasService.get('testnotas1' + parametros).subscribe(
             Response => {
-                this.estudiantedetalles = Response['ok'];
+                this.DetalleEstudiante = Response['detalle_estudiante'];
+                console.log(Response);
             },
         error => {
                 alert('Error de servidor');
@@ -164,6 +173,27 @@ export class NotaAsistenciaComponent implements OnInit {
     }
 
 
+    createDetalleNotas(detalleEstudiante: Matricula) {
+        this.DetalleEstudianteSeleccionado = detalleEstudiante;
+        this.detallenotanuevo.docente_asignatura.id = this.detalleDocenteAsignaturaSeleccionado.id;
+        this.detallenotanuevo.estudiante.id = this.DetalleEstudianteSeleccionado.estudiante.id;
+        /*prueba de datos enviados al bdd y backend*/
+        this.detallenotanuevo.nota1 = '100';
+        this.detallenotanuevo.nota2 = '100';
+        this.detallenotanuevo.nota_final = '100';
+        this.detallenotanuevo.asistencia1 = '90';
+        this.detallenotanuevo.asistencia2 = '90';
+        this.detallenotanuevo.asistencia_final = '90';
+        this.detallenotanuevo.estado_academico = 'APROBADO';
 
+        this.NotasService.post('notaDetalle', {'detalle_nota' : this.detallenotanuevo}).subscribe(
+            response => {
+               this.detallenotanuevo = new DetallenotaModel();
+                swal.fire(this.messages['createSuccess']);
+            },
+            error => {
+                alert('error de servidor');
+            });
+    }
 
 }

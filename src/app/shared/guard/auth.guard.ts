@@ -81,7 +81,7 @@ export class AuthGuard implements CanActivate {
                         return true;
                     }
                     break;
-                    case '/nota-asistencia':
+                    case '/nota-asistencia-docente':
                         if (this.user.role.rol === '4' || this.user.role.rol === '7' || this.user.role.rol === '1') {
                             return true;
                         }

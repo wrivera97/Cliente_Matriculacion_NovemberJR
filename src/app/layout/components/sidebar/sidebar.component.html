@@ -58,7 +58,7 @@
             <i class="fa fa-thumb-tack"></i>&nbsp;
             <span>{{ 'Teachers Subjects' | translate }}</span>
         </a>
-        <a [routerLink]="['/nota-asistencia']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+        <a [routerLink]="['/nota-asistencia-docente']" [routerLinkActive]="['router-link-active']" class="list-group-item"
         *ngIf="user.role.rol=='4' || user.role.rol=='7'|| user.role.rol=='1' ">
          <i class="fa fa-book"></i>&nbsp;
          <span>{{ 'Grades Attendance' | translate }}</span>

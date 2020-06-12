@@ -124,22 +124,23 @@
 
                     <td>
                         {{docenteAsignatura.asignatura.periodo_academico_id}}
-                            </td>
+                    </td>
 
                     <td>
                         <select disabled [(ngModel)]="docenteAsignatura.jornada" class="text-uppercase form-control-sm">
                     <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
                         {{jornada.descripcion}}
                     </option>
-                </select>
-             </td>
+                         </select>
+                    </td>
+
              <td>
                 <select disabled [(ngModel)]="docenteAsignatura.paralelo" class="text-uppercase form-control-sm">
             <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
                 <strong>{{paralelo.descripcion}}</strong>
             </option>
-        </select>
-     </td>
+                 </select>
+             </td>
 
                     <td>
                         <span [ngClass]="{'text-danger':docenteAsignatura.estado!=='ACTIVO',
@@ -274,7 +275,7 @@
             <!--Asignatura-->
             <div class="form-group row">
                 <div class="col-lg-12">
-                    <label for="createAsignatura">
+                    <label for="asignatura">
                         <b class="text-danger">*</b>Asignatura:
                     </label>
                     <select  [(ngModel)]="detalleDocenteasignaturaNuevo.asignatura.id" class="form-control"

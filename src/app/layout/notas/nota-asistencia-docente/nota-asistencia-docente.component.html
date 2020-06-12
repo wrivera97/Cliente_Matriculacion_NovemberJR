@@ -109,7 +109,7 @@
                 </td>
                 <td class="text-muted " >
                     <h4>
-                        {{'Estudiantes de:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
+                        {{'Estudiantes matriculados en:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
                     </h4>
                 </td>
 
@@ -118,7 +118,6 @@
         <table class="table text-center text-muted">
             <thead>
             <tr>
-                <th></th>
                 <th>-ESTUDIANTE-</th>
                 <th>-NOTAS-</th>
                 <th>-ASISTENCIAS-</th>
@@ -129,7 +128,7 @@
             <thead>
             <th scope="col">Apellidos</th>
             <th scope="col">Nombres:</th>
-            <th scope="col">Correo Institucional:</th>
+            <!--<th scope="col">Correo Institucional:</th>-->
             <th scope="col">Primer parcial:</th>
             <th scope="col">Segundo parcial:</th>
             <th scope="col">Final:</th>
@@ -140,50 +139,54 @@
             </thead>
 
         <tbody class="text-center">
-        <tr *ngFor="let test2 of estudiantedetalles ">
+        <tr *ngFor="let estudiante of DetalleEstudiante ">
 
             <td>
-            {{test2.estudiante.apellido1}} {{test2.estudiante.apellido2}}
+            {{estudiante.estudiante.apellido1}} {{estudiante.estudiante.apellido2}}
             </td>
-            <td>
-            {{test2.estudiante.nombre1}} {{test2.estudiante.nombre2}}
 
+            <td>
+            {{estudiante.estudiante.nombre1}} {{estudiante.estudiante.nombre2}}
             </td>
+            <!--
             <td>
             {{test2.estudiante.correo_institucional}}
-
-
             </td>
-
-            <td>
-                <input type="text"maxlength="5" size="4">
-
-            </td>
+             -->
             <td>
 
-                <input type="text"maxlength="5" size="4">
-            </td>
-            <td>
-                <input type="text"maxlength="5" size="4">
+                <input type="text"maxlength="5" size="4" id="nota1" name="nota1" >
+
             </td>
             <td>
 
-                <input type="text"maxlength="5" size="4">
+                <input type="text"maxlength="5" size="4"  id="nota2" name="nota2">
             </td>
             <td>
-                <input type="text"maxlength="5" size="4">
+                <input type="text"maxlength="5" size="4" id="nota_final" name="nota_final" >
             </td>
-            <td>
+
+         <!--   <td>
 
                 <input type="text"maxlength="5" size="4">
             </td>
             <td>
+                <input type="text"maxlength="5" size="4" >
+            </td>
+            <td>
 
-
+                <input type="text"maxlength="5" size="4">
             </td>
 
+            <td>
+                {{'en proceso'}}
+            </td>
+-->
+            <td>
+                <button type="button" class="btn btn-success ml-1 btn-sm text-white fa fa-check text" aria-hidden=true (click)="createDetalleNotas(estudiante)">
+                </button>
+            </td>
         </tr>
-
         </tbody>
         </table>
 

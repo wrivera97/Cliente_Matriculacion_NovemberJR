@@ -69,10 +69,10 @@ const routes: Routes = [
         .then(n => n.DocenteAsignaturaModule), canActivate: [AuthGuard]
             },
             {
-                path: 'nota-asistencia',
+                path: 'nota-asistencia-docente',
                 loadChildren: () =>
-                    import('./notas/nota-asistencia/nota-asistencia.module')
-                        .then(n => n.NotaAsistenciaModule), canActivate: [AuthGuard]
+                    import('./notas/nota-asistencia-docente/nota-asistencia-docente.module')
+                        .then(n => n.NotaAsistenciaDocenteModule), canActivate: [AuthGuard]
             },
         ]
     }
