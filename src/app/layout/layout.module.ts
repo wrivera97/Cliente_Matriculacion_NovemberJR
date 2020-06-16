@@ -7,7 +7,6 @@ import {LayoutRoutingModule} from './layout-routing.module';
 import {LayoutComponent} from './layout.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {HeaderComponent} from './components/header/header.component';
-import { NotaAsistenciaEstudianteComponent } from './notas/nota-asistencia-estudiante/nota-asistencia-estudiante.component';
 
 
 @NgModule({
@@ -18,7 +17,7 @@ import { NotaAsistenciaEstudianteComponent } from './notas/nota-asistencia-estud
         NgbDropdownModule,
         FormsModule
     ],
-    declarations: [LayoutComponent, SidebarComponent, HeaderComponent, NotaAsistenciaEstudianteComponent]
+    declarations: [LayoutComponent, SidebarComponent, HeaderComponent]
 })
 export class LayoutModule {
 }

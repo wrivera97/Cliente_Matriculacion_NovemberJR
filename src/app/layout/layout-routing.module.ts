@@ -63,8 +63,8 @@ const routes: Routes = [
                         .then(m => m.EvaEstudianteDocenteModule), canActivate: [AuthGuard]
             },
             {
-            path: 'docente-asignatura',
-    loadChildren: () =>
+                path: 'docente-asignatura',
+                loadChildren: () =>
         import('./notas/docente-asignatura/docente-asignatura.module')
         .then(n => n.DocenteAsignaturaModule), canActivate: [AuthGuard]
             },
@@ -74,6 +74,13 @@ const routes: Routes = [
                     import('./notas/nota-asistencia-docente/nota-asistencia-docente.module')
                         .then(n => n.NotaAsistenciaDocenteModule), canActivate: [AuthGuard]
             },
+            {
+                 path: 'nota-asistencia-estudiante',
+                 loadChildren: () =>
+                    import('./notas/nota-asistencia-estudiante/nota-asistencia-estudiante.module')
+                        .then(n => n.NotaAsistenciaEstudianteModule), canActivate: [AuthGuard]
+
+            }
         ]
     }
 ];

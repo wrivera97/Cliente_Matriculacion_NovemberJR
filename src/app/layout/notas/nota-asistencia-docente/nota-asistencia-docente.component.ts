@@ -9,7 +9,6 @@ import {User} from '../modelos/user.model';
 import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
 import {Matricula} from '../modelos/matricula.model';
 import {DetallenotaModel} from '../modelos/detallenota.model';
-
 import swal from "sweetalert2";
 @Component({
   selector: 'app-nota-asistencia',
@@ -159,7 +158,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         const  parametros =
             '?asignatura_id=' + this.detalleDocenteAsignaturaSeleccionado.asignatura.id
                   + '&paralelo=' + this.detalleDocenteAsignaturaSeleccionado.paralelo
-                  + '&jornada=' + this.detalleDocenteAsignaturaSeleccionado.jornada ;
+                  + '&jornada=' + this.detalleDocenteAsignaturaSeleccionado.jornada
+                  + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
 
         this.NotasService.get('testnotas1' + parametros).subscribe(
             Response => {

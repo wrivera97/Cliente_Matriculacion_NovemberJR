@@ -1,25 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BlankPageModule } from './nota-asistencia-estudiante.module';
 
-import { NotaAsistenciaEstudianteComponent } from './nota-asistencia-estudiante.component';
+describe('BlankPageModule', () => {
+    let blankPageModule: BlankPageModule;
 
-describe('NotaAsistenciaEstudianteComponent', () => {
-  let component: NotaAsistenciaEstudianteComponent;
-  let fixture: ComponentFixture<NotaAsistenciaEstudianteComponent>;
+    beforeEach(() => {
+        blankPageModule = new BlankPageModule();
+    });
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NotaAsistenciaEstudianteComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NotaAsistenciaEstudianteComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(blankPageModule).toBeTruthy();
+    });
 });

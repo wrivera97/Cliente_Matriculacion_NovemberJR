@@ -1,3 +1,120 @@
-<p>
-  nota-asistencia-estudiante works!
-</p>
+<table>
+    <tr>
+        <td>
+               <span  [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" >
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+        </td>
+
+        <td>
+            <select [disabled]="flagAll" name="periodoLectivoActual"
+                    [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                    (change)="cambiarPeriodoLectivoActual()">
+                <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                        *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}
+                </option>
+            </select>
+        </td>
+        <td>
+            <div>
+                <small class="text-muted" *ngIf="!flagAll" > * seleccione un periodo para revisar sus asignaturas actuales o anteriores</small>
+            </div>
+        </td>
+
+    </tr>
+</table>
+
+<div *ngIf="!flagAll">
+<table class="table">
+   <thead>
+   <th scope="col">Nivel:</th>
+   <th scope="col">Asignaturas:</th>
+   </thead>
+    <tbody>
+    <tr *ngFor="let detalleestudiante of detalleEstudianteUser">
+        <td>{{detalleestudiante.asignatura.periodo_academico_id}}</td>
+            <td>{{detalleestudiante.asignatura.nombre}}</td>
+                <td> <button class="btn-sm btn-info fa fa-book" aria-hidden="true" title=" Revisar calificaciones y asistencias de esta asignatura"
+                             (click)="getDetalleNotaEstudiante(detalleestudiante.asignatura.id,notaEstudianteDetalle)"></button></td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<!-- Button trigger modal -->
+<ng-template #notaEstudianteDetalle let-c="close" let-d="dismiss">
+    <form name="EstudianteDetalle"method="get"  #formCtrl="ngForm">
+        <div class="modal-header">
+
+            <div class="row">
+
+
+            </div>
+
+        </div>
+
+            <div class="modal-body">
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Nota primer parcial:</label>
+                        <input type="text" class="form-control" id="inputCity">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Nota segundo parcial:</label>
+                        <select id="inputState" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="inputZip">Nota final:</label>
+                        <input type="text" class="form-control" id="inputZip">
+                    </div>
+                </div>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Asistencia primer parcial:</label>
+                        <input type="text" class="form-control" id="inputCity2">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">Asistencia segundo parcial:</label>
+                        <select id="inputState2" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>...</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="inputZip">Asistencia final:</label>
+                        <input type="text" class="form-control" id="inputZip2">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+
+                <h6 class="text-muted">
+                    <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                    {{messages['requiredFields']['text']}}
+                </h6>
+                <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+                </button>
+                <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+                </button>
+            </div>
+
+
+
+
+    </form>
+</ng-template>
