@@ -32,16 +32,13 @@
     <div class="col-lg-12">
 
         <table class="table table-hover table-lg table-responsive">
-            <thead class="table-default text-center">
-            <th scope="col">Carrera:</th>
-            <th scope="col">Asignatura:</th>
-            <th scope="col">Nivel:</th>
-            <th scope="col">Jornada:</th>
-            <th scope="col">Paralelo:</th>
-
-
-
-            <th scope="col">
+            <thead class="table-default text-justify">
+           <!--- <th scope="col">Carrera:</th>-->
+            <th>Asignatura:</th>
+            <th>Nivel:</th>
+            <th>Jornada:</th>
+            <th>Paralelo:</th>
+            <th>
                 <button type="button" class="btn btn-success ml-1 btn-sm" (click)="getDocenteAsignaturasUser(periodoLectivoSeleccionado)"
                          title="Actualizar">
                     <span class="{{messages['buttonRefresh']['icon']}}"></span>
@@ -51,21 +48,21 @@
 
             </thead>
 
-            <tbody class="text-center">
-            <tr *ngFor="let test of detalleDocenteAsignatura ">
-                <td>
+            <tbody class="text-justify">
+            <tr *ngFor="let docenteasignatura of detalleDocenteAsignatura ">
+             <!--   <td>
                 {{'{%pendiente%}'}}
-                </td>
+                </td>-->
                 <td>
-                {{test.asignatura.nombre}}
-                </td>
-
-                <td>
-                    {{test.asignatura.periodo_academico_id}}
+                {{docenteasignatura.asignatura.nombre}}
                 </td>
 
                 <td>
-                    <select disabled [(ngModel)]="test.jornada" class="text-uppercase form-control-sm">
+                    {{docenteasignatura.asignatura.periodo_academico_id}}
+                </td>
+
+                <td>
+                    <select disabled [(ngModel)]="docenteasignatura.jornada" class="text-uppercase form-control-sm">
                         <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
                         </option>
@@ -74,7 +71,7 @@
 
                 <td>
 
-                    <select disabled [(ngModel)]="test.paralelo" class="text-uppercase form-control-sm">
+                    <select disabled [(ngModel)]="docenteasignatura.paralelo" class="text-uppercase form-control-sm">
                         <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
                             <h1>{{paralelo.descripcion}}</h1>
                         </option>
@@ -83,7 +80,7 @@
 
                 <td>
                     <button type="button" class="btn btn-secondary ml-1 btn-sm text-white"
-                            (click)="getdetalleasignaturaestudiantes(test)"
+                            (click)="getdetalleasignaturaestudiantes(docenteasignatura)"
                             title="Lista de estudiantes matriculados ">
     <span class="fa fa-users">
 
@@ -115,30 +112,15 @@
 
             </tr>
         </table>
-        <table class="table text-center text-muted">
+
+        <table class="table text-justify">
             <thead>
-            <tr>
-                <th>-ESTUDIANTE-</th>
-                <th>-NOTAS-</th>
-                <th>-ASISTENCIAS-</th>
-            </tr>
-            </thead>
-        </table>
-        <table class="table text-center">
-            <thead>
-            <th scope="col">Apellidos</th>
-            <th scope="col">Nombres:</th>
-            <!--<th scope="col">Correo Institucional:</th>-->
-            <th scope="col">Primer parcial:</th>
-            <th scope="col">Segundo parcial:</th>
-            <th scope="col">Final:</th>
-            <th scope="col">Primer parcial:</th>
-            <th scope="col">Segundo parcial:</th>
-            <th scope="col">Final:</th>
-            <th scope="col">Estado:</th>
+            <th>Apellidos</th>
+            <th>Nombres:</th>
+            <th>Correo Institucional:</th>
             </thead>
 
-        <tbody class="text-center">
+        <tbody class="text-justify">
         <tr *ngFor="let estudiante of DetalleEstudiante ">
 
             <td>
@@ -148,43 +130,18 @@
             <td>
             {{estudiante.estudiante.nombre1}} {{estudiante.estudiante.nombre2}}
             </td>
-            <!--
-            <td>
-            {{test2.estudiante.correo_institucional}}
-            </td>
-             -->
-            <td>
 
-                <input type="text"maxlength="5" size="4" id="nota1" name="nota1" >
-
-            </td>
             <td>
-
-                <input type="text"maxlength="5" size="4"  id="nota2" name="nota2">
-            </td>
-            <td>
-                <input type="text"maxlength="5" size="4" id="nota_final" name="nota_final" >
-            </td>
-
-         <td>
-
-                <input type="text"maxlength="5" size="4">
-            </td>
-            <td>
-                <input type="text"maxlength="5" size="4" >
-            </td>
-            <td>
-
-                <input type="text"maxlength="5" size="4">
+            {{estudiante.estudiante.correo_institucional}}
             </td>
 
             <td>
-                {{'en proceso'}}
-            </td>
-
-            <td>
-                <button type="button" class="btn btn-success ml-1 btn-sm text-white fa fa-check text" aria-hidden=true (click)="createDetalleNotas(estudiante)">
+                <button type="button" class="btn btn-info ml-1 btn-sm text-white fa fa-plus" aria-hidden=true
+                        title="Asignar Calificaciones" (click)="openDetalleNotas(estudiante,contentDetalleNota)">
                 </button>
+
+                <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil-square-o"
+                        aria-hidden=true  title="Modificar Calificaciones"> </button>
             </td>
         </tr>
         </tbody>
@@ -193,4 +150,97 @@
     </div>
 </div>
 
+
+<!--modal -->
+<ng-template #contentDetalleNota let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-lg-auto text-center" name="titulo">Registro de calificaciones:</h4>
+            </div>
+        </div>
+
+        <div class="modal-body">
+
+            <div>
+                <label for="nota1">
+                    <b class="text-danger">*</b>
+                    <b>Nota primer parcial:</b>
+                </label>
+                <input style="width: 4em;" id="nota1"  name="nota1" type="number" required="required"
+                       ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota1">
+            </div>
+
+            <div>
+                <label for="nota2">
+                    <b class="text-danger">*</b>
+                    <b>Nota segundo parcial:</b>
+                </label>
+                <input  style="width: 4em;" id="nota2" name="nota2" type="number" required="required"
+                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota2">
+
+            </div>
+
+            <div>
+                <label >
+                    <b class="text-danger">*</b>
+                    <b>Nota Final:</b>
+                </label>
+                <input disabled name="nota_final" size="5" value="{{(this.detallenotanuevo.nota1/2)+(this.detallenotanuevo.nota2/2)}}">
+            </div>
+
+            <div>
+                <label for="asistencia1">
+                    <b class="text-danger">*</b>
+                    <b>Asistencia primer parcial:</b>
+                </label>
+                <input  style="width: 4em;" id="asistencia1"  name="asistencia1" type="number" required="required"
+                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia1">
+            </div>
+
+            <div>
+                <label for="asistencia2">
+                    <b class="text-danger">*</b>
+                    <b>Asistencia segundo parcial:</b>
+                </label>
+                <input  style="width: 4em;" id="asistencia2" name="asistencia2"  type="number" required="required"
+                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia2">
+
+            </div>
+
+            <div>
+                <label>
+                    <b class="text-danger">*</b>
+                    <b>Asistencia Final:</b>
+                </label>
+                <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
+            </div>
+
+
+            <div>
+                <label><b>Estado academico</b></label>
+                <input disabled name="estado_academico"  size="10" maxlength="10"
+                       value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
+                            &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00)}}">
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
 

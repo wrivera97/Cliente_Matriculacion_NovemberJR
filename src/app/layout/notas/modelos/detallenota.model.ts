@@ -1,7 +1,6 @@
 import {DocenteAsignatura} from './docente-asignaturas.model';
-import {DetalleMatricula} from '../../matriculacion/modelos/detalle-matricula.model';
-import {Estudiante} from '../../matriculacion/modelos/estudiante.model';
-import {Matricula} from '../../matriculacion/modelos/matricula.model';
+import {Estudiante} from '../modelos/estudiante.model';
+
 
 export  class DetallenotaModel {
     id?: number;

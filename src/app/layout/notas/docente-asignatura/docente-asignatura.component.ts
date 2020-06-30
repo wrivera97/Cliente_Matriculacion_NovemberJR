@@ -179,7 +179,6 @@ this.spinner.hide(); // ocultamos animacion
                 Response => {
 
                     this.detalleDocente = Response['asignacionesDocente'];
-                    console.log(Response);
                     this.spinner.hide();
                 },
                 error => {
@@ -199,7 +198,7 @@ this.spinner.hide(); // ocultamos animacion
                 this.spinner.hide();
                 swal.fire(this.messages['createSuccess']);
             },
-            error => {
+                    error => {
                 this.spinner.hide();
                 if (error.error.errorInfo === '23505') {
                     swal.fire(this.messages['error23505']);
@@ -234,7 +233,6 @@ if (razonEliminarAsignatura) {
                          response => {
              this.getDetalleDocente(this.docenteSeleccionado);
              this.spinner.show();
-             console.log(response);
              swal.fire(this.messages['deleteSuccess']);
         },
         error => {
@@ -243,11 +241,11 @@ if (razonEliminarAsignatura) {
                            });
                         }
                     });
-} else {
-    if (!(razonEliminarAsignatura === undefined)) {
-        swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
-    }
-    }
+            } else {
+                if (!(razonEliminarAsignatura === undefined)) {
+                swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+                }
+        }
     }
 
  opendetalledocenteasignaturas(content) {
@@ -306,15 +304,5 @@ getAsignaturasCarrera() {
         });
 }
 
-/*getAsignaturasCarreraNivel() {
-    this.NotasService.get('testnivel?carrera_id=' + this.carrera.id + '&periodo_academico_id=' + this.periodo_academico.id).subscribe(
-        response => {
-            this.asignaturas = response['asignaturas'];
-        },
-        error => {
-            this.spinner.hide();
-            swal.fire(this.messages['error500']);
-        });
-}*/
 
 }

@@ -4,11 +4,9 @@ import {ServiceService} from '../notas.service';
 import {User} from '../modelos/user.model';
 import {PeriodoLectivo} from '../modelos/periodo-lectivo.model';
 import {Carrera} from '../modelos/carrera.model';
-import {Matricula} from '../modelos/matricula.model';
-import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
 import {DetallenotaModel} from '../modelos/detallenota.model';
 import {catalogos} from '../../../../environments/catalogos';
-import {DetalleMatricula} from '../../matriculacion/modelos/detalle-matricula.model';
+import {DetalleMatricula} from '../modelos/detalle-matricula.model';
 import swal from "sweetalert2";
 import {NgxSpinnerService} from 'ngx-spinner';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
@@ -38,7 +36,7 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
 
 
 
-    detalleNotas: DetallenotaModel;
+    detalleNota: DetallenotaModel;
 
     user: User;
 
@@ -51,10 +49,10 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
         this.txtPeriodoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.messages = catalogos.messages;
         this.periodoLectivo = '';
-        this.detalleNotas = new DetallenotaModel();
         this.detalleEstudianteUserSelecciondo = new DetalleMatricula();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
+        this.detalleNota = new DetallenotaModel();
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getPeriodosLectivos();
@@ -121,26 +119,25 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
         this.flagAll = false;
         this.spinner.show();
         const parametros = '?id=' + this.user.id + '&periodo_lectivo_id=' + periodoLectivoActual.id;
-        this.NotasService.get('testnotas2' + parametros ).subscribe(
+        this.NotasService.get('notaDetalle/User/Estudiante' + parametros ).subscribe(
             response => {
-                this.detalleEstudianteUser = response ['ok'];
+                this.detalleEstudianteUser = response ['asignatura_estudiante'];
                 this.spinner.hide();
             },
             error => {
                 this.spinner.hide();
-                swal.fire(this.messages['error500']);
+                swal.fire(this.messages['errorFoundAsignaturasPeriodo']);
 
             });
     }
     getDetalleNotaEstudiante( asignaturaId: number, content)  {
         const parametros = '?asignatura_id=' + asignaturaId +
-                           '&periodo_lectivo_id=' + this.periodoLectivoActual.id + '&id=' +
-                            this.user.id;
-        this.NotasService.get('testnotas3' + parametros).subscribe(
+                           '&periodo_lectivo_id=' + this.periodoLectivoActual.id + '&id=' + this.user.id;
+        this.NotasService.get('notaDetalle/Estudiante' + parametros).subscribe(
 
           response => {
 
-              this.detalleNotas = response ['detalleNota'];
+              this.detalleNota = response ['detalleNota'];
               const logoutScreenOptions: NgbModalOptions = {
                   size: 'lg'
 
@@ -149,12 +146,13 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
                   .result
                   .then((resultModal => {
                       if (resultModal === 'save') {
-                      }
-                  }), (resultCancel => {
 
-                  }));
+                      }
+                  }),
+                      );
           },
             error => {
+                swal.fire(this.messages['errorFoundDocente']);
 
             });
     }}

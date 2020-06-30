@@ -32,89 +32,94 @@
    <th scope="col">Asignaturas:</th>
    </thead>
     <tbody>
-    <tr *ngFor="let detalleestudiante of detalleEstudianteUser">
-        <td>{{detalleestudiante.asignatura.periodo_academico_id}}</td>
-            <td>{{detalleestudiante.asignatura.nombre}}</td>
+    <tr *ngFor="let detalleEstudiante of detalleEstudianteUser">
+        <td>{{detalleEstudiante.asignatura.periodo_academico_id}}</td>
+            <td>{{detalleEstudiante.asignatura.nombre}}</td>
                 <td> <button class="btn-sm btn-info fa fa-book" aria-hidden="true" title=" Revisar calificaciones y asistencias de esta asignatura"
-                             (click)="getDetalleNotaEstudiante(detalleestudiante.asignatura.id,notaEstudianteDetalle)"></button></td>
+                             (click)="getDetalleNotaEstudiante(detalleEstudiante.asignatura.id,notaEstudianteDetalle)"></button></td>
     </tr>
     </tbody>
 </table>
 </div>
 
-<!-- Button trigger modal -->
-<ng-template #notaEstudianteDetalle let-c="close" let-d="dismiss">
-    <form name="EstudianteDetalle"method="get"  #formCtrl="ngForm">
+    <ng-template #notaEstudianteDetalle let-c="close" let-d="dismiss" >
         <div class="modal-header">
-
-            <div class="row">
-
+            <div>
+                <small class="text-muted">*En caso de existir algun error contacte con su docente de la asignatura respectiva</small>
 
             </div>
 
         </div>
 
             <div class="modal-body">
-                <div class="form-row">
 
-                    <div class="form-group col-md-6">
-                        <label for="inputCity">Nota primer parcial:</label>
-                        <input type="text" class="form-control" id="inputCity">
+                <table class="form-group">
+                    <div class="form-group ">
+                        <div class="col-lg-sm">
+                        <label for="nota1"><b>Nota primer parcial:</b></label>
+                        <option id="nota1" name="nota1" *ngFor="let detallenota of detalleNota">
+                            {{detallenota.nota1}}
+                        </option>
+                        </div>
+
+                        <div class="col-lg-sm">
+                        <label for="nota2"><b>Nota segundo parcial:</b></label>
+                        <option id="nota2" name="nota2" *ngFor="let detallenota of detalleNota">
+                            {{detallenota.nota2}}
+                        </option>
+                        </div>
+
+                        <div class="col-lg-sm">
+                        <label for="nota_final"><b>Nota final:</b></label><br>
+                        <option id="nota_final" name="nota_final" *ngFor="let detallenota of detalleNota"
+                                [ngClass]="{'text-danger':detallenota.nota_final <='69.50',
+                                'text-success':detallenota.nota_final >='69.50'}">
+                            {{detallenota.nota_final}}
+                        </option>
+                        </div>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label for="inputState">Nota segundo parcial:</label>
-                        <select id="inputState" class="form-control">
-                            <option selected>Choose...</option>
-                            <option>...</option>
-                        </select>
+                        <div class="form-group ">
+                     <div class="col-lg-sm">
+                        <label for="asistencia1"><b>Asistencia primer parcial:</b></label><br>
+                        <option id="asistencia1" name="asistencia1" *ngFor="let detallenota of detalleNota">
+                            {{detallenota.asistencia1}}
+                        </option>
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <label for="inputZip">Nota final:</label>
-                        <input type="text" class="form-control" id="inputZip">
+                   <div class="col-lg-sm">
+                        <label for="asistencia2"><b>Asistencia segundo parcial:</b></label><br>
+                        <option id="asistencia2" name="asistencia2" *ngFor="let detallenota of detalleNota">
+                            {{detallenota.asistencia2}}
+                        </option>
                     </div>
+
+                   <div class="col-lg-sm">
+                        <label for="asistencia_final"><b>Asistencia final:</b></label><br>
+                        <option id="asistencia_final" name="asistencia_final" *ngFor="let detallenota of detalleNota"
+                                [ngClass]="{'text-danger':detallenota.asistencia_final <='69.50',
+                                'text-success':detallenota.asistencia_final >='69.50'}">
+                            {{detallenota.asistencia_final}}
+                        </option>
+                    </div>
+
+
+                        <div class="col-lg-sm">
+                            <label for="estado_academico"><b>Estado Academico:</b></label><br>
+                            <option id="estado_academico" name="estado_academico" *ngFor="let test of detalleNota"
+                                    [ngClass]="{'text-danger':test.estado_academico!=='APROBADO',
+                                'text-success':test.estado_academico=='APROBADO'}">
+                                {{test.estado_academico}}
+                            </option>
+
+                        </div>
                 </div>
-
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="inputCity">Asistencia primer parcial:</label>
-                        <input type="text" class="form-control" id="inputCity2">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputState">Asistencia segundo parcial:</label>
-                        <select id="inputState2" class="form-control">
-                            <option selected>Choose...</option>
-                            <option>...</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="inputZip">Asistencia final:</label>
-                        <input type="text" class="form-control" id="inputZip2">
-                    </div>
-                </div>
+                </table>
             </div>
-
-
-            <div class="modal-footer">
-
-                <h6 class="text-muted">
-                    <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
-                    {{messages['requiredFields']['text']}}
-                </h6>
-                <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="c('close')">
         <span
-            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
-                </button>
-                <button type="button" class="btn btn-danger" (click)="c('close')">
-        <span
-            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
-                </button>
-            </div>
-
-
-
-
-    </form>
-</ng-template>
+            class="{{messages['saveConfirmationDialog2']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog2']['cancel']}}
+            </button>
+        </div>
+    </ng-template>

@@ -248,6 +248,26 @@ export const catalogos = {
     },
     messages:
         {
+            errorFoundAsignaturasPeriodo: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'No tienes asignaturas en este periodo',
+                'text': 'Selecciona otro periodo',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+
+            errorFoundDocente: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'No se encontro el  docente para esta asignatura',
+                'text': 'Vuelve a intentar mas tarde',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+
             createInputQuestion: {
                 input: 'textarea',
                 position: 'center',

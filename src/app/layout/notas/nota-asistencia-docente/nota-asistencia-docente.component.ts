@@ -10,6 +10,7 @@ import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
 import {Matricula} from '../modelos/matricula.model';
 import {DetallenotaModel} from '../modelos/detallenota.model';
 import swal from "sweetalert2";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-nota-asistencia',
   templateUrl: './nota-asistencia-docente.component.html',
@@ -51,7 +52,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
 
 
     constructor(private spinner: NgxSpinnerService, private NotasService: ServiceService,
-                private router: Router) {
+                private router: Router, private modalService: NgbModal) {
     }
 
     ngOnInit() {
@@ -143,9 +144,9 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         const parametros =
             '?id=' + this.user.id
             + '&periodo_lectivo_id=' + periodoLectivoActual.id;
-        this.NotasService.get('testnotas' + parametros).subscribe(
+        this.NotasService.get('docenteAsignaturas/Docente' + parametros).subscribe(
             Response => {
-                this.detalleDocenteAsignatura = Response['ok'];
+                this.detalleDocenteAsignatura = Response['docente_asignaturas'];
                 this.spinner.hide();
             });
 
@@ -161,30 +162,41 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
                   + '&jornada=' + this.detalleDocenteAsignaturaSeleccionado.jornada
                   + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
 
-        this.NotasService.get('testnotas1' + parametros).subscribe(
+        this.NotasService.get('docenteAsignatura/Docente/Estudiante' + parametros).subscribe(
             Response => {
                 this.DetalleEstudiante = Response['detalle_estudiante'];
-                console.log(Response);
             },
         error => {
-                alert('Error de servidor');
+            swal.fire(this.messages['error500']);
 
             });
     }
 
-
-    createDetalleNotas(detalleEstudiante: Matricula) {
+     openDetalleNotas(detalleEstudiante: Matricula, content) {
         this.DetalleEstudianteSeleccionado = detalleEstudiante;
-        this.detallenotanuevo.docente_asignatura.id = this.detalleDocenteAsignaturaSeleccionado.id;
-        this.detallenotanuevo.estudiante.id = this.DetalleEstudianteSeleccionado.estudiante.id;
-        /*prueba de datos enviados al bdd y backend*/
-        this.detallenotanuevo.nota1 = '100';
-        this.detallenotanuevo.nota2 = '100';
-        this.detallenotanuevo.nota_final = '100';
-        this.detallenotanuevo.asistencia1 = '90';
-        this.detallenotanuevo.asistencia2 = '90';
-        this.detallenotanuevo.asistencia_final = '90';
-        this.detallenotanuevo.estado_academico = 'APROBADO';
+         this.detallenotanuevo.docente_asignatura.id = this.detalleDocenteAsignaturaSeleccionado.id;
+         this.detallenotanuevo.estudiante.id = this.DetalleEstudianteSeleccionado.estudiante.id;
+
+        this.modalService.open(content)
+            .result
+            .then((resultModal => {
+            if (resultModal === 'save') {
+                this.createDetalleNotas();
+            }
+        }), (resultCancel => {
+
+        }));
+    }
+
+    createDetalleNotas() {
+        // @ts-ignore
+this.detallenotanuevo.nota_final = (this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2));
+        // @ts-ignore
+this.detallenotanuevo.asistencia_final = (this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2));
+        // @ts-ignore
+this.detallenotanuevo.estado_academico = ((this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2)) >= 70.00) &&
+        // @ts-ignore
+    ((this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2)) >= 69.50 ? 'APROBADO' : 'REPROBADO');
 
         this.NotasService.post('notaDetalle', {'detalle_nota' : this.detallenotanuevo}).subscribe(
             response => {
@@ -192,7 +204,13 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
                 swal.fire(this.messages['createSuccess']);
             },
             error => {
-                alert('error de servidor');
+                this.spinner.hide();
+                if (error.error.errorInfo === '23505') {
+                    swal.fire(this.messages['error23505']);
+                } else {
+                    swal.fire(this.messages['error500']);
+                }
+                this.detallenotanuevo = new DetallenotaModel();
             });
     }
 
