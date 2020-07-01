@@ -41,8 +41,9 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
 
 
     detallenotanuevo: DetallenotaModel;
+    detallenotaUpdate: DetallenotaModel;
+    detalleNota: DetallenotaModel;
 
-    testeo: DetallenotaModel;
 
 
     messages: any;
@@ -62,8 +63,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.periodoLectivo = '';
         this.estados = catalogos.estados;
-        this.testeo = new DetallenotaModel();
         this.detallenotanuevo = new DetallenotaModel();
+        this.detallenotaUpdate= new DetallenotaModel();
         this.messages = catalogos.messages;
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
@@ -75,7 +76,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getPeriodosLectivos();
-        this.test();
+
+
 
     }
 
@@ -217,11 +219,42 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
             });
     }
 
-        test() {
-        this.NotasService.get('test').subscribe(
-           response => {
-            this.testeo = response['ok'];
-            console.log(response);
-           });
+    updateDetalleNotas() {
+     this.NotasService.update('notaDetalle', {'detalle_nota': this.detallenotaUpdate} ).subscribe(
+         response => {
+             this.getdetalleNotaDocente(this.DetalleEstudianteSeleccionado);
+             this.spinner.hide();
+             swal.fire(this.messages['updateSuccess']);
+         },
+             error => {
+                 this.spinner.hide();
+                 swal.fire(this.messages['error500']);
+             });
+
     }
+     openDetalleNotaUpdate( content) {
+         this.modalService.open(content)
+             .result
+             .then((resultModal => {
+                 if (resultModal === 'save') {
+                     this.createDetalleNotas();
+                 }
+             }), (resultCancel => {
+
+             }));
+    }
+
+    getdetalleNotaDocente(detalleEstudiante: Matricula) {
+        this.DetalleEstudianteSeleccionado = detalleEstudiante;
+        const parametros = '?estudiante_id='  + this.DetalleEstudianteSeleccionado.estudiante.id +
+                           '&docente_asignatura_id=' + this.detalleDocenteAsignaturaSeleccionado.id;
+      this.NotasService.get('notaDetalle/Docente' + parametros).subscribe(
+          response => {
+        this.detalleNota = response ['detalle_nota'];
+        console.log(response);
+
+          });
+    }
+
+
 }

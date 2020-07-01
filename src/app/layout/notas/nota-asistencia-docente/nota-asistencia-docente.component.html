@@ -139,7 +139,7 @@
                         title="Registrar calificaciones" (click)="openDetalleNotas(estudiante,contentDetalleNota)">
                 </button>
                 <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil" aria-hidden=true
-                        title="Editar calificaciones">
+                        title="Revisar,Editar calificaciones" (click)="openDetalleNotaUpdate(contentDetalleNotaUpdate)" >
                 </button>
             </td>
         </tr>
@@ -149,79 +149,157 @@
     </div>
 </div>
 
-
-<!--modal -->
-<ng-template #contentDetalleNota let-c="close" let-d="dismiss">
-    <form name="cupos" method="post" #formCtrl="ngForm">
-
+<!--modal update-->
+<ng-template #contentDetalleNotaUpdate let-c="close" let-d="dismiss">
+    <form name="updateDetalleNota" method="post" #formCtrl="ngForm" >
         <div class="modal-header">
             <div class="row">
-                <h4 class="col-lg-auto text-center" name="titulo">Registro de calificaciones:</h4>
+                <h4 class="col-lg-auto text-center">Actualizar Calificaciones - Asistencias</h4>
             </div>
         </div>
 
         <div class="modal-body">
+        <table class="table-sm">
+            <table class="table table-responsive" >
+                <h5 class="text-center"><b>Calificaciones:</b></h5>
+                <td>
+               <div>
+                   <label>Primer parcial:</label>
+                   <input size="5" maxlength="5">
+               </div>
+                </td>
 
+                <td>
+                <div>
+                    <label>segundo parcial:</label>
+                    <input size="5" maxlength="5">
+                </div>
+                </td>
+
+                <td>
+
+                    <div>
+                        <label>Final:</label>
+                        <input class="left" size="5" maxlength="5">
+                    </div>
+                </td>
+            </table>
+
+            <table class="table table-responsive">
+                <h5 class="text-center"><b>Asistencias:</b></h5>
+                <td>
+                    <div>
+                        <label>Primer parcial:</label>
+                        <input size="5" maxlength="5">
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <label>segundo parcial:</label>
+                        <input size="5" maxlength="5">
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <label>Final:</label>
+                        <input size="5" maxlength="5">
+                    </div>
+                </td>
+
+            </table>
+
+            <div class="text-left">
+                <input type="text" size="10" maxlength="10" value="APROBADO" disabled>
+            </div>
+        </table>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info fa fa-pencil-square-o"  (click)="c('save')" [disabled]="formCtrl.form.invalid">Actualizar
+            </button>
+
+            <button type="button" class="btn btn-danger fa fa-ban" (click)="c('close')">Cancelar
+            </button>
+        </div>
+   </form>
+</ng-template>
+
+<!--modal create-->
+<ng-template #contentDetalleNota let-c="close" let-d="dismiss">
+    <form name="postdDtalleNota" method="post" #formCtrl="ngForm">
+
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-lg-auto text-center">Registrar Calificaciones - Asistencias:</h4>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <table class="table-sm">
+                <table class="table table-responsive" >
+                    <h5 class="text-center"><b>Calificaciones:</b></h5>
+                    <td>
             <div>
-                <label for="nota1">
-                    <b class="text-danger">*</b>
-                    <b>Nota primer parcial:</b>
-                </label>
+                <label for="nota1">Primer parcial:</label>
                 <input style="width: 4em;" id="nota1"  name="nota1" type="number" required="required"
                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota1">
             </div>
+                    </td>
+                    <td>
 
             <div>
-                <label for="nota2">
-                    <b class="text-danger">*</b>
-                    <b>Nota segundo parcial:</b>
-                </label>
+                <label for="nota2">Segundo parcial:</label>
                 <input  style="width: 4em;" id="nota2" name="nota2" type="number" required="required"
                         ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota2">
 
             </div>
-
+                    </td>
+                    <td>
             <div>
-                <label >
-                    <b class="text-danger">*</b>
-                    <b>Nota Final:</b>
-                </label>
+                <label>Final:</label>
                 <input disabled name="nota_final" size="5" value="{{(this.detallenotanuevo.nota1/2)+(this.detallenotanuevo.nota2/2)}}">
             </div>
+                    </td>
+                </table>
 
+
+
+                <table class="table table-responsive" >
+                    <h5 class="text-center"><b>Asistencias:</b></h5>
+                    <td>
             <div>
-                <label for="asistencia1">
-                    <b class="text-danger">*</b>
-                    <b>Asistencia primer parcial:</b>
+                <label for="asistencia1"> primer parcial:
                 </label>
                 <input  style="width: 4em;" id="asistencia1"  name="asistencia1" type="number" required="required"
                         ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia1">
             </div>
+                    </td>
 
+                    <td>
             <div>
-                <label for="asistencia2">
-                    <b class="text-danger">*</b>
-                    <b>Asistencia segundo parcial:</b>
-                </label>
+                <label for="asistencia2"> segundo parcial:</label>
                 <input  style="width: 4em;" id="asistencia2" name="asistencia2"  type="number" required="required"
                         ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia2">
-
             </div>
+                    </td>
 
+                    <td>
             <div>
-                <label>
-                    <b class="text-danger">*</b>
-                    <b>Asistencia Final:</b>
-                </label>
+                <label> Final:</label>
                 <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
             </div>
+                    </td>
+                </table>
 
             <div>
-                <label><b>Estado academico</b></label>
                 <input disabled name="estado_academico"  size="10" maxlength="10"
                        value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
                             &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00) ? 'APROBADO' :'REPROBADO'}}">
             </div>
+
+            </table>
         </div>
 
         <div class="modal-footer">

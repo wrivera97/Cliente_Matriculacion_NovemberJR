@@ -222,10 +222,11 @@ this.spinner.hide(); // ocultamos animacion
                            swal.fire(this.messages['error500']);
                    });
             }
-async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {
+
+        async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {
             const {value: razonEliminarAsignatura} = await swal.fire(this.messages['deleteInputAccept']);
-if (razonEliminarAsignatura) {
-    swal.fire(this.messages['deleteInputAccept'])
+            if (razonEliminarAsignatura) {
+                swal.fire(this.messages['deleteInputAccept'])
                 .then((result) => {
                     if (result.value) {
                         this.spinner.show();
