@@ -1,7 +1,6 @@
 <table>
     <tr>
         <td>
-
                <span  [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
                     'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" >
                         <strong>{{txtPeriodoActualHistorico}} :</strong>
@@ -136,12 +135,12 @@
             </td>
 
             <td>
-                <button type="button" class="btn btn-info ml-1 btn-sm text-white fa fa-plus" aria-hidden=true
-                        title="Asignar Calificaciones" (click)="openDetalleNotas(estudiante,contentDetalleNota)">
+                <button type="button" class="btn btn-info ml-1 btn-sm text-white fa fa-bookmark" aria-hidden=true
+                        title="Registrar calificaciones" (click)="openDetalleNotas(estudiante,contentDetalleNota)">
                 </button>
-
-                <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil-square-o"
-                        aria-hidden=true  title="Modificar Calificaciones"> </button>
+                <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil" aria-hidden=true
+                        title="Editar calificaciones">
+                </button>
             </td>
         </tr>
         </tbody>
@@ -217,14 +216,12 @@
                 <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
             </div>
 
-
             <div>
                 <label><b>Estado academico</b></label>
                 <input disabled name="estado_academico"  size="10" maxlength="10"
                        value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
-                            &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00)}}">
+                            &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00) ? 'APROBADO' :'REPROBADO'}}">
             </div>
-
         </div>
 
         <div class="modal-footer">

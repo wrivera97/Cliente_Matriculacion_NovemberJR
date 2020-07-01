@@ -42,6 +42,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
 
     detallenotanuevo: DetallenotaModel;
 
+    testeo: DetallenotaModel;
 
 
     messages: any;
@@ -61,6 +62,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.periodoLectivo = '';
         this.estados = catalogos.estados;
+        this.testeo = new DetallenotaModel();
         this.detallenotanuevo = new DetallenotaModel();
         this.messages = catalogos.messages;
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
@@ -73,6 +75,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getPeriodosLectivos();
+        this.test();
+
     }
 
     getPeriodoLectivoActual() {
@@ -190,28 +194,34 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
 
     createDetalleNotas() {
         // @ts-ignore
-this.detallenotanuevo.nota_final = (this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2));
+        this.detallenotanuevo.nota_final = (this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2));
         // @ts-ignore
-this.detallenotanuevo.asistencia_final = (this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2));
+        this.detallenotanuevo.asistencia_final = (this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2));
         // @ts-ignore
-this.detallenotanuevo.estado_academico = ((this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2)) >= 70.00) &&
+        this.detallenotanuevo.estado_academico = ((this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2)) >= 69.50) &&
         // @ts-ignore
-    ((this.detallenotanuevo.nota1 / (2)) + (this.detallenotanuevo.nota2 / (2)) >= 69.50 ? 'APROBADO' : 'REPROBADO');
+        ((this.detallenotanuevo.asistencia1 / (2)) + (this.detallenotanuevo.asistencia2 / (2)) >= 70.00) ? 'APROBADO' : 'REPROBADO';
 
         this.NotasService.post('notaDetalle', {'detalle_nota' : this.detallenotanuevo}).subscribe(
             response => {
                this.detallenotanuevo = new DetallenotaModel();
-                swal.fire(this.messages['createSuccess']);
+                swal.fire(this.messages['createSuccessNota']);
             },
             error => {
                 this.spinner.hide();
                 if (error.error.errorInfo === '23505') {
-                    swal.fire(this.messages['error23505']);
                 } else {
-                    swal.fire(this.messages['error500']);
+                    swal.fire(this.messages['errorNotaDuplicada']);
                 }
                 this.detallenotanuevo = new DetallenotaModel();
             });
     }
 
+        test() {
+        this.NotasService.get('test').subscribe(
+           response => {
+            this.testeo = response['ok'];
+            console.log(response);
+           });
+    }
 }

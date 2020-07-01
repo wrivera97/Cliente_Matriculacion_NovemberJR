@@ -72,8 +72,8 @@
                         <div class="col-lg-sm">
                         <label for="nota_final"><b>Nota final:</b></label><br>
                         <option id="nota_final" name="nota_final" *ngFor="let detallenota of detalleNota"
-                                [ngClass]="{'text-danger':detallenota.nota_final <='69.50',
-                                'text-success':detallenota.nota_final >='69.50'}">
+                                [ngClass]="{'text-danger':detallenota.nota_final <=69.49,
+                                'text-success':detallenota.nota_final >=69.50}">
                             {{detallenota.nota_final}}
                         </option>
                         </div>
@@ -97,8 +97,8 @@
                    <div class="col-lg-sm">
                         <label for="asistencia_final"><b>Asistencia final:</b></label><br>
                         <option id="asistencia_final" name="asistencia_final" *ngFor="let detallenota of detalleNota"
-                                [ngClass]="{'text-danger':detallenota.asistencia_final <='69.50',
-                                'text-success':detallenota.asistencia_final >='69.50'}">
+                                [ngClass]="{'text-danger':detallenota.asistencia_final <= 69.99,
+                                'text-success':detallenota.asistencia_final >=70.00}">
                             {{detallenota.asistencia_final}}
                         </option>
                     </div>

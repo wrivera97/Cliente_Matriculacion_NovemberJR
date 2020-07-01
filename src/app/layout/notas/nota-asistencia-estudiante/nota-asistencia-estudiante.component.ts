@@ -140,19 +140,10 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
               this.detalleNota = response ['detalleNota'];
               const logoutScreenOptions: NgbModalOptions = {
                   size: 'lg'
-
           };
-              this.modalService.open(content, logoutScreenOptions)
-                  .result
-                  .then((resultModal => {
-                      if (resultModal === 'save') {
-
-                      }
-                  }),
-                      );
+              this.modalService.open(content, logoutScreenOptions);
           },
             error => {
                 swal.fire(this.messages['errorFoundDocente']);
-
             });
     }}

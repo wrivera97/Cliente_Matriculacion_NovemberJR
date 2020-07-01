@@ -248,6 +248,22 @@ export const catalogos = {
     },
     messages:
         {
+            errorNotaDuplicada: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'Calificaciones ya registradas para este estudiante',
+                'timer': 5000,
+                'showConfirmButton': true,
+                'backdrop': 'rgba(255, 0, 0,0.4)'
+            },
+            createSuccessNota: {
+                'position': 'center',
+                'type': 'success',
+                'title': 'Calificaciones guardadas con exito',
+                'timer': 3000,
+                'showConfirmButton': true,
+                'backdrop': 'rgba(0, 0, 255,0.4)'
+            },
             errorFoundAsignaturasPeriodo: {
                 'position': 'center',
                 'type': 'error',
@@ -485,6 +501,7 @@ export const catalogos = {
                 'showConfirmButton': true,
                 'backdrop': 'rgba(255, 0, 0,0.4)'
             },
+
 
             error412: {
                 'position': 'center',
