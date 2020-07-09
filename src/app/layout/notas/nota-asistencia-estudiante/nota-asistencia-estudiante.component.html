@@ -106,10 +106,10 @@
 
                         <div class="col-lg-sm">
                             <label for="estado_academico"><b>Estado Academico:</b></label><br>
-                            <option id="estado_academico" name="estado_academico" *ngFor="let test of detalleNota"
-                                    [ngClass]="{'text-danger':test.estado_academico!=='APROBADO',
-                                'text-success':test.estado_academico=='APROBADO'}">
-                                {{test.estado_academico}}
+                            <option id="estado_academico" name="estado_academico" *ngFor="let detallenota of detalleNota"
+                                    [ngClass]="{'text-danger':detallenota.estado_academico!=='APROBADO',
+                                'text-success':detallenota.estado_academico=='APROBADO'}">
+                                {{detallenota.estado_academico}}
                             </option>
 
                         </div>

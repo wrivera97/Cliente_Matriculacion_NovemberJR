@@ -9,8 +9,9 @@ import {User} from '../modelos/user.model';
 import {DocenteAsignatura} from '../modelos/docente-asignaturas.model';
 import {Matricula} from '../modelos/matricula.model';
 import {DetallenotaModel} from '../modelos/detallenota.model';
-import swal from "sweetalert2";
+import swal from 'sweetalert2';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ngWalkerFactoryUtils} from 'codelyzer/angular/ngWalkerFactoryUtils';
 @Component({
   selector: 'app-nota-asistencia',
   templateUrl: './nota-asistencia-docente.component.html',
@@ -64,7 +65,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.periodoLectivo = '';
         this.estados = catalogos.estados;
         this.detallenotanuevo = new DetallenotaModel();
-        this.detallenotaUpdate= new DetallenotaModel();
+        this.detallenotaUpdate = new DetallenotaModel();
+        this.detalleNota = new DetallenotaModel();
         this.messages = catalogos.messages;
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
@@ -171,27 +173,12 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.NotasService.get('docenteAsignatura/Docente/Estudiante' + parametros).subscribe(
             Response => {
                 this.DetalleEstudiante = Response['detalle_estudiante'];
+                console.log(Response);
             },
         error => {
             swal.fire(this.messages['error500']);
 
             });
-    }
-
-     openDetalleNotas(detalleEstudiante: Matricula, content) {
-        this.DetalleEstudianteSeleccionado = detalleEstudiante;
-         this.detallenotanuevo.docente_asignatura.id = this.detalleDocenteAsignaturaSeleccionado.id;
-         this.detallenotanuevo.estudiante.id = this.DetalleEstudianteSeleccionado.estudiante.id;
-
-        this.modalService.open(content)
-            .result
-            .then((resultModal => {
-            if (resultModal === 'save') {
-                this.createDetalleNotas();
-            }
-        }), (resultCancel => {
-
-        }));
     }
 
     createDetalleNotas() {
@@ -219,11 +206,26 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
             });
     }
 
-    updateDetalleNotas() {
-     this.NotasService.update('notaDetalle', {'detalle_nota': this.detallenotaUpdate} ).subscribe(
+    openDetalleNotas(detalleEstudiante: Matricula, content) {
+        this.DetalleEstudianteSeleccionado = detalleEstudiante;
+        this.detallenotanuevo.docente_asignatura.id = this.detalleDocenteAsignaturaSeleccionado.id;
+        this.detallenotanuevo.estudiante.id = this.DetalleEstudianteSeleccionado.estudiante.id;
+
+        this.modalService.open(content)
+            .result
+            .then((resultModal => {
+                if (resultModal === 'save') {
+                    this.createDetalleNotas();
+                }
+            }), (resultCancel => {
+
+            }));
+    }
+
+    updateDetalleNotas(detallenota: DetallenotaModel) {
+
+     this.NotasService.update('notaDetalle', {'detalle_nota': detallenota} ).subscribe(
          response => {
-             this.getdetalleNotaDocente(this.DetalleEstudianteSeleccionado);
-             this.spinner.hide();
              swal.fire(this.messages['updateSuccess']);
          },
              error => {
@@ -232,17 +234,26 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
              });
 
     }
-     openDetalleNotaUpdate( content) {
-         this.modalService.open(content)
-             .result
-             .then((resultModal => {
-                 if (resultModal === 'save') {
-                     this.createDetalleNotas();
-                 }
-             }), (resultCancel => {
+     async openDetalleNotaUpdate(content) {
+         this.getdetalleNotaDocente(this.DetalleEstudianteSeleccionado);
+         const {value: razonUpdateAsignatura} = await swal.fire(this.messages['UpdateQuestionAccept']);
+         if (razonUpdateAsignatura) {
+             this.modalService.open(content)
+                 .result
+                 .then((resultModal => {
+                     if (resultModal === 'save') {
+                         this.updateDetalleNotas(razonUpdateAsignatura);
+                     }
+                 }), (resultCancel => {
 
-             }));
-    }
+                 }));
+         } else {
+             if (!(razonUpdateAsignatura === undefined)) {
+                 swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+             }
+         }
+     }
+
 
     getdetalleNotaDocente(detalleEstudiante: Matricula) {
         this.DetalleEstudianteSeleccionado = detalleEstudiante;
@@ -250,9 +261,11 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
                            '&docente_asignatura_id=' + this.detalleDocenteAsignaturaSeleccionado.id;
       this.NotasService.get('notaDetalle/Docente' + parametros).subscribe(
           response => {
-        this.detalleNota = response ['detalle_nota'];
-        console.log(response);
-
+              this.detalleNota = response ['detalle_nota'];
+              console.log(response);
+          },
+          error => {
+              swal.fire(this.messages['error500']);
           });
     }
 

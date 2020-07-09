@@ -18,8 +18,11 @@
         </td>
             <td>
         <div>
-            <small class="text-muted" *ngIf="!flagAll" > * seleccione un periodo para revisar sus asignaciones.</small>
+            <small class="text-muted" *ngIf="!flagAll" >* seleccione un periodo para revisar sus asignaciones.</small>
         </div>
+                <div>
+                    <small class="text-muted" *ngIf="!flagAll" >* Registros filtrados por nivel (1 - 6)</small>
+                </div>
             </td>
 
     </tr>
@@ -32,9 +35,9 @@
 
         <table class="table table-hover table-lg table-responsive">
             <thead class="table-default text-justify">
-           <!--- <th scope="col">Carrera:</th>-->
-            <th>Asignatura:</th>
             <th>Nivel:</th>
+            <th>Carrera:</th>
+            <th>Asignatura:</th>
             <th>Jornada:</th>
             <th>Paralelo:</th>
             <th>
@@ -49,16 +52,17 @@
 
             <tbody class="text-justify">
             <tr *ngFor="let docenteasignatura of detalleDocenteAsignatura ">
-             <!--   <td>
-                {{'{%pendiente%}'}}
-                </td>-->
+                <td>
+                    {{docenteasignatura.asignatura.periodo_academico_id}}
+                </td>
+                <td>
+                {{docenteasignatura.descripcion}}
+                </td>
                 <td>
                 {{docenteasignatura.asignatura.nombre}}
                 </td>
 
-                <td>
-                    {{docenteasignatura.asignatura.periodo_academico_id}}
-                </td>
+
 
                 <td>
                     <select disabled [(ngModel)]="docenteasignatura.jornada" class="text-uppercase form-control-sm">
@@ -120,26 +124,26 @@
             </thead>
 
         <tbody class="text-justify">
-        <tr *ngFor="let estudiante of DetalleEstudiante ">
+        <tr *ngFor="let detalleEstudiante of DetalleEstudiante ">
 
             <td>
-            {{estudiante.estudiante.apellido1}} {{estudiante.estudiante.apellido2}}
+            {{detalleEstudiante.estudiante.apellido1}} {{detalleEstudiante.estudiante.apellido2}}
             </td>
 
             <td>
-            {{estudiante.estudiante.nombre1}} {{estudiante.estudiante.nombre2}}
+            {{detalleEstudiante.estudiante.nombre1}} {{detalleEstudiante.estudiante.nombre2}}
             </td>
 
             <td>
-            {{estudiante.estudiante.correo_institucional}}
+            {{detalleEstudiante.estudiante.correo_institucional}}
             </td>
 
             <td>
                 <button type="button" class="btn btn-info ml-1 btn-sm text-white fa fa-bookmark" aria-hidden=true
-                        title="Registrar calificaciones" (click)="openDetalleNotas(estudiante,contentDetalleNota)">
+                        title="Registrar calificaciones" (click)="openDetalleNotas(detalleEstudiante,contentDetalleNota)">
                 </button>
                 <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil" aria-hidden=true
-                        title="Revisar,Editar calificaciones" (click)="openDetalleNotaUpdate(contentDetalleNotaUpdate)" >
+                        title="Revisar,Editar calificaciones" (click)="openDetalleNotaUpdate(contentDetalleNotaUpdate) || this.getdetalleNotaDocente(detalleEstudiante)">
                 </button>
             </td>
         </tr>
@@ -159,20 +163,20 @@
         </div>
 
         <div class="modal-body">
-        <table class="table-sm">
-            <table class="table table-responsive" >
+        <table class="table-sm"  >
+            <table class="table table-responsive">
                 <h5 class="text-center"><b>Calificaciones:</b></h5>
                 <td>
                <div>
-                   <label>Primer parcial:</label>
-                   <input size="5" maxlength="5">
+                   <label for="editnota1">Primer parcial:</label>
+               <input id="editnota1" name="editnota1" size="5" maxlength="5" [(ngModel)]="detalleNota.nota1">
                </div>
                 </td>
 
                 <td>
                 <div>
-                    <label>segundo parcial:</label>
-                    <input size="5" maxlength="5">
+                    <label for="updatenota2">segundo parcial:</label>
+                    <input size="5" maxlength="5" name="updatenota1" id="updatenota2" >
                 </div>
                 </td>
 
@@ -180,7 +184,7 @@
 
                     <div>
                         <label>Final:</label>
-                        <input class="left" size="5" maxlength="5">
+                        <input class="left" size="5" maxlength="5"   name="updadetenotafinal" >
                     </div>
                 </td>
             </table>
@@ -190,37 +194,44 @@
                 <td>
                     <div>
                         <label>Primer parcial:</label>
-                        <input size="5" maxlength="5">
+                        <label>
+                            <input size="5" maxlength="5" name="updadeteasistencia1"  >
+                        </label>
                     </div>
                 </td>
 
                 <td>
                     <div>
                         <label>segundo parcial:</label>
-                        <input size="5" maxlength="5">
+                        <label>
+                            <input size="5" maxlength="5" name="updadeteasistencia2"  >
+                        </label>
                     </div>
                 </td>
 
                 <td>
                     <div>
                         <label>Final:</label>
-                        <input size="5" maxlength="5">
+                        <input size="5" maxlength="5" name="updateasistenciafinal"  >
                     </div>
                 </td>
 
             </table>
 
             <div class="text-left">
-                <input type="text" size="10" maxlength="10" value="APROBADO" disabled>
+                <input type="text" size="10" maxlength="10" name="updateestado"  >
             </div>
         </table>
         </div>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-info fa fa-pencil-square-o"  (click)="c('save')" [disabled]="formCtrl.form.invalid">Actualizar
-            </button>
 
-            <button type="button" class="btn btn-danger fa fa-times" (click)="c('close')">Cancelar
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields2']['icon']}} </b>
+                {{messages['requiredFields2']['text']}}
+            </h6>
+            <button type="button" class="btn btn-secondary" (click)="c('close')" >
+                <span class="{{messages['saveConfirmationDialog2']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog2']['cancel']}}
             </button>
         </div>
    </form>
@@ -243,23 +254,25 @@
                     <td>
             <div>
                 <label for="nota1">Primer parcial:</label>
-                <input style="width: 4em;" id="nota1"  name="nota1" type="number" required="required"
-                       ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota1">
+                <input style="width: 4em;" id="nota1" name="nota1" type="number" required="required"
+                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota1">
             </div>
                     </td>
                     <td>
 
             <div>
                 <label for="nota2">Segundo parcial:</label>
-                <input  style="width: 4em;" id="nota2" name="nota2" type="number" required="required"
-                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota2">
+                <input style="width: 4em;" id="nota2" name="nota2" type="number" required="required"
+                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota2">
 
             </div>
                     </td>
                     <td>
             <div>
                 <label>Final:</label>
-                <input disabled name="nota_final" size="5" value="{{(this.detallenotanuevo.nota1/2)+(this.detallenotanuevo.nota2/2)}}">
+                <label>
+                    <input disabled name="nota_final" size="5" value="{{(this.detallenotanuevo.nota1/2)+(this.detallenotanuevo.nota2/2)}}">
+                </label>
             </div>
                     </td>
                 </table>
@@ -272,31 +285,35 @@
             <div>
                 <label for="asistencia1"> primer parcial:
                 </label>
-                <input  style="width: 4em;" id="asistencia1"  name="asistencia1" type="number" required="required"
-                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia1">
+                <input style="width: 4em;" id="asistencia1" name="asistencia1" type="number" required="required"
+                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia1">
             </div>
                     </td>
 
                     <td>
             <div>
                 <label for="asistencia2"> segundo parcial:</label>
-                <input  style="width: 4em;" id="asistencia2" name="asistencia2"  type="number" required="required"
-                        ng-model="number" onKeyPress="if(this.value.length==5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia2">
+                <input style="width: 4em;" id="asistencia2" name="asistencia2" type="number" required="required"
+                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia2">
             </div>
                     </td>
 
                     <td>
             <div>
                 <label> Final:</label>
-                <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
+                <label>
+                    <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
+                </label>
             </div>
                     </td>
                 </table>
 
             <div>
-                <input disabled name="estado_academico"  size="10" maxlength="10"
-                       value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
-                            &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00) ? 'APROBADO' :'REPROBADO'}}">
+                <label>
+                    <input disabled name="estado_academico"  size="10" maxlength="10"
+                           value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
+                                &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00) ? 'APROBADO' :'REPROBADO'}}">
+                </label>
             </div>
 
             </table>

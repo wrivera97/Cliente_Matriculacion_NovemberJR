@@ -180,6 +180,7 @@ this.spinner.hide(); // ocultamos animacion
 
                     this.detalleDocente = Response['asignacionesDocente'];
                     this.spinner.hide();
+                    console.log(Response);
                 },
                 error => {
                     this.spinner.hide();

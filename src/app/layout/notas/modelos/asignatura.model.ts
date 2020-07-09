@@ -16,6 +16,7 @@ export class Asignatura {
   estado: string;
 
   constructor() {
+    this.id = 0;
     this.codigo = '';
     this.horas_autonoma = 0;
     this.horas_docente = 0;
