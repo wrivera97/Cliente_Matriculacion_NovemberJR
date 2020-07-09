@@ -1,8 +1,7 @@
-import {DocenteAsignatura} from './docente-asignaturas.model';
-import {Estudiante} from '../modelos/estudiante.model';
+import { DocenteAsignatura } from "./docente-asignaturas.model";
+import { Estudiante } from "../modelos/estudiante.model";
 
-
-export  class DetallenotaModel {
+export class DetallenotaModel {
     id?: number;
     nota1: string;
     nota2: string;
@@ -15,14 +14,14 @@ export  class DetallenotaModel {
     estudiante: Estudiante;
 
     constructor() {
-    this.nota1 = '';
-    this.nota2 = '' ;
-    this.nota_final = '';
-    this.asistencia1 = '';
-    this.asistencia2 = '';
-    this.asistencia_final = '';
-    this.estado_academico = '';
-    this.docente_asignatura = new DocenteAsignatura();
-    this.estudiante = new Estudiante();
+        this.nota1 = "";
+        this.nota2 = "";
+        this.nota_final = "";
+        this.asistencia1 = "";
+        this.asistencia2 = "";
+        this.asistencia_final = "";
+        this.estado_academico = "";
+        this.docente_asignatura = new DocenteAsignatura();
+        this.estudiante = new Estudiante();
     }
-    }
+}

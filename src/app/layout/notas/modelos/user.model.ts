@@ -1,5 +1,5 @@
-import {Rol} from './rol.model';
-import {Carrera} from './carrera.model';
+import { Rol } from "./rol.model";
+import { Carrera } from "./carrera.model";
 
 export class User {
     id: string;

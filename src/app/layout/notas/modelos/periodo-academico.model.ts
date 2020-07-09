@@ -1,11 +1,10 @@
 export class PeriodoAcademico {
-  id?: number;
-  nombre: string;
-  estado: string;
+    id?: number;
+    nombre: string;
+    estado: string;
 
-  constructor() {
-    
-    this.nombre = '';
-    this.estado = '';
-  }
+    constructor() {
+        this.nombre = "";
+        this.estado = "";
+    }
 }

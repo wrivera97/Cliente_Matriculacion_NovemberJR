@@ -8,8 +8,8 @@ export class PeriodoLectivo {
 
     constructor() {
         this.id = 0;
-        this.codigo = '';
-        this.nombre = '';
+        this.codigo = "";
+        this.nombre = "";
         this.fecha_fin_cupo = new Date();
         this.fecha_fin_anulacion = new Date();
     }

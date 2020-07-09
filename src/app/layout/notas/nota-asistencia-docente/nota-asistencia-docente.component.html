@@ -1,30 +1,49 @@
 <table>
     <tr>
         <td>
-               <span  [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
-                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" >
-                        <strong>{{txtPeriodoActualHistorico}} :</strong>
-                    </span>
+            <span
+                [ngClass]="{
+                    'text-danger':
+                        periodoLectivoSeleccionado.estado != 'ACTUAL',
+                    'text-success':
+                        periodoLectivoSeleccionado.estado == 'ACTUAL'
+                }"
+            >
+                <strong>{{ txtPeriodoActualHistorico }} :</strong>
+            </span>
         </td>
 
         <td>
-            <select [disabled]="flagAll" name="periodoLectivoActual"
-                    [(ngModel)]="periodoLectivoActual.id" class="form-control"
-                    (change)="cambiarPeriodoLectivoActual()">
-                <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
-                        *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}
+            <select
+                [disabled]="flagAll"
+                name="periodoLectivoActual"
+                [(ngModel)]="periodoLectivoActual.id"
+                class="form-control"
+                (change)="cambiarPeriodoLectivoActual()"
+            >
+                <option
+                    [ngClass]="{
+                        'bg-success text-white': periodo.estado == 'ACTUAL'
+                    }"
+                    value="{{ periodo.id }}"
+                    *ngFor="let periodo of periodosLectivos"
+                    >{{ periodo.nombre }}
                 </option>
             </select>
         </td>
-            <td>
-        <div>
-            <small class="text-muted" *ngIf="!flagAll" >* seleccione un periodo para revisar sus asignaciones.</small>
-        </div>
-                <div>
-                    <small class="text-muted" *ngIf="!flagAll" >* Registros filtrados por nivel (1 - 6)</small>
-                </div>
-            </td>
-
+        <td>
+            <div>
+                <small class="text-muted" *ngIf="!flagAll"
+                    >* seleccione un periodo para revisar sus
+                    asignaciones.</small
+                >
+            </div>
+            <div>
+                <small class="text-muted" *ngIf="!flagAll"
+                    >* Registros filtrados por nivel (1 - 6)</small
+                >
+            </div>
+        </td>
     </tr>
 </table>
 
@@ -32,66 +51,88 @@
 
 <div class="row mt-1" *ngIf="!flagAll">
     <div class="col-lg-12">
-
         <table class="table table-hover table-lg table-responsive">
             <thead class="table-default text-justify">
-            <th>Nivel:</th>
-            <th>Carrera:</th>
-            <th>Asignatura:</th>
-            <th>Jornada:</th>
-            <th>Paralelo:</th>
-            <th>
-                <button type="button" class="btn btn-success ml-1 btn-sm" (click)="getDocenteAsignaturasUser(periodoLectivoSeleccionado)"
-                         title="Actualizar">
-                    <span class="{{messages['buttonRefresh']['icon']}}"></span>
-                </button>
-
-            </th>
-
+                <th>Carrera:</th>
+                <th>Nivel:</th>
+                <th>Asignatura:</th>
+                <th>Jornada:</th>
+                <th>Paralelo:</th>
+                <th>
+                    <button
+                        type="button"
+                        class="btn btn-success ml-1 btn-sm"
+                        (click)="
+                            getDocenteAsignaturasUser(
+                                periodoLectivoSeleccionado
+                            )
+                        "
+                        title="Actualizar"
+                    >
+                        <span
+                            class="{{ messages['buttonRefresh']['icon'] }}"
+                        ></span>
+                    </button>
+                </th>
             </thead>
 
             <tbody class="text-justify">
-            <tr *ngFor="let docenteasignatura of detalleDocenteAsignatura ">
-                <td>
-                    {{docenteasignatura.asignatura.periodo_academico_id}}
-                </td>
-                <td>
-                {{docenteasignatura.descripcion}}
-                </td>
-                <td>
-                {{docenteasignatura.asignatura.nombre}}
-                </td>
+                <tr *ngFor="let docenteasignatura of detalleDocenteAsignatura">
+                    <td>
+                        {{ docenteasignatura.descripcion }}
+                    </td>
+                    <td>
+                        {{ docenteasignatura.asignatura.periodo_academico_id }}
+                    </td>
+                    <td>
+                        {{ docenteasignatura.asignatura.nombre }}
+                    </td>
 
+                    <td>
+                        <select
+                            disabled
+                            [(ngModel)]="docenteasignatura.jornada"
+                            class="text-uppercase form-control-sm"
+                        >
+                            <option
+                                value="{{ jornada.codigo }}"
+                                *ngFor="let jornada of jornadas"
+                            >
+                                {{ jornada.descripcion }}
+                            </option>
+                        </select>
+                    </td>
 
+                    <td>
+                        <select
+                            disabled
+                            [(ngModel)]="docenteasignatura.paralelo"
+                            class="text-uppercase form-control-sm"
+                        >
+                            <option
+                                value="{{ paralelo.codigo }}"
+                                *ngFor="let paralelo of paralelos"
+                            >
+                                <h1>{{ paralelo.descripcion }}</h1>
+                            </option>
+                        </select>
+                    </td>
 
-                <td>
-                    <select disabled [(ngModel)]="docenteasignatura.jornada" class="text-uppercase form-control-sm">
-                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
-                            {{jornada.descripcion}}
-                        </option>
-                    </select>
-                </td>
-
-                <td>
-
-                    <select disabled [(ngModel)]="docenteasignatura.paralelo" class="text-uppercase form-control-sm">
-                        <option value="{{paralelo.codigo}}" *ngFor="let paralelo of paralelos">
-                            <h1>{{paralelo.descripcion}}</h1>
-                        </option>
-                    </select>
-                </td>
-
-                <td>
-                    <button type="button" class="btn btn-secondary ml-1 btn-sm text-white"
-                            (click)="getdetalleasignaturaestudiantes(docenteasignatura)"
-                            title="Lista de estudiantes matriculados ">
-    <span class="fa fa-users">
-
-    </span>
-                    </button>
-                </td>
-            </tr>
-
+                    <td>
+                        <button
+                            type="button"
+                            class="btn btn-secondary ml-1 btn-sm text-white"
+                            (click)="
+                                getdetalleasignaturaestudiantes(
+                                    docenteasignatura
+                                )
+                            "
+                            title="Lista de estudiantes matriculados "
+                        >
+                            <span class="fa fa-users"> </span>
+                        </button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -102,237 +143,419 @@
         <table>
             <tr>
                 <td>
-                    <button type="button" class="btn btn-secondary btn-lg mb-1" (click)="getDocenteAsignaturasUser(periodoLectivoSeleccionado)">
-                        <span class="fa fa-arrow-left text-white"> Regresar</span>
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-lg mb-1"
+                        (click)="
+                            getDocenteAsignaturasUser(
+                                periodoLectivoSeleccionado
+                            )
+                        "
+                    >
+                        <span class="fa fa-arrow-left text-white">
+                            Regresar</span
+                        >
                     </button>
-
                 </td>
-                <td class="text-muted " >
+                <td class="text-muted">
                     <h4>
-                        {{'Estudiantes matriculados en:' }} {{detalleDocenteAsignaturaSeleccionado.asignatura.nombre}}
+                        {{ "Estudiantes matriculados en:" }}
+                        {{
+                            detalleDocenteAsignaturaSeleccionado.asignatura
+                                .nombre
+                        }}
                     </h4>
                 </td>
-
             </tr>
         </table>
 
         <table class="table text-justify">
             <thead>
-            <th>Apellidos</th>
-            <th>Nombres:</th>
-            <th>Correo Institucional:</th>
+                <th>Apellidos</th>
+                <th>Nombres:</th>
+                <th>Correo Institucional:</th>
             </thead>
 
-        <tbody class="text-justify">
-        <tr *ngFor="let detalleEstudiante of DetalleEstudiante ">
+            <tbody class="text-justify">
+                <tr *ngFor="let detalleEstudiante of DetalleEstudiante">
+                    <td>
+                        {{ detalleEstudiante.estudiante.apellido1 }}
+                        {{ detalleEstudiante.estudiante.apellido2 }}
+                    </td>
 
-            <td>
-            {{detalleEstudiante.estudiante.apellido1}} {{detalleEstudiante.estudiante.apellido2}}
-            </td>
+                    <td>
+                        {{ detalleEstudiante.estudiante.nombre1 }}
+                        {{ detalleEstudiante.estudiante.nombre2 }}
+                    </td>
 
-            <td>
-            {{detalleEstudiante.estudiante.nombre1}} {{detalleEstudiante.estudiante.nombre2}}
-            </td>
+                    <td>
+                        {{ detalleEstudiante.estudiante.correo_institucional }}
+                    </td>
 
-            <td>
-            {{detalleEstudiante.estudiante.correo_institucional}}
-            </td>
-
-            <td>
-                <button type="button" class="btn btn-info ml-1 btn-sm text-white fa fa-bookmark" aria-hidden=true
-                        title="Registrar calificaciones" (click)="openDetalleNotas(detalleEstudiante,contentDetalleNota)">
-                </button>
-                <button type="button" class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil" aria-hidden=true
-                        title="Revisar,Editar calificaciones" (click)="openDetalleNotaUpdate(contentDetalleNotaUpdate) || this.getdetalleNotaDocente(detalleEstudiante)">
-                </button>
-            </td>
-        </tr>
-        </tbody>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn btn-info ml-1 btn-sm text-white fa fa-bookmark"
+                            aria-hidden="true"
+                            title="Registrar calificaciones"
+                            (click)="
+                                openDetalleNotas(
+                                    detalleEstudiante,
+                                    contentDetalleNota
+                                ) ||
+                                    this.getDetalleNotaDocentePost(
+                                        detalleEstudiante
+                                    )
+                            "
+                        ></button>
+                        <button
+                            type="button"
+                            class="btn btn-warning ml-1 btn-sm text-white fa fa-pencil"
+                            aria-hidden="true"
+                            title="Revisar,Editar calificaciones"
+                            (click)="
+                                this.getDetalleNotaDocenteUpdate(
+                                    detalleEstudiante
+                                ) ||
+                                    this.openDetalleNotaUpdate(
+                                        contentDetalleNotaUpdate
+                                    )
+                            "
+                        ></button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
-
     </div>
 </div>
 
 <!--modal update-->
 <ng-template #contentDetalleNotaUpdate let-c="close" let-d="dismiss">
-    <form name="updateDetalleNota" method="post" #formCtrl="ngForm" >
+    <form name="updateDetalleNota" method="post" #formCtrl="ngForm">
         <div class="modal-header">
             <div class="row">
-                <h4 class="col-lg-auto text-center">Actualizar Calificaciones - Asistencias</h4>
-            </div>
-        </div>
-
-        <div class="modal-body">
-        <table class="table-sm"  >
-            <table class="table table-responsive">
-                <h5 class="text-center"><b>Calificaciones:</b></h5>
-                <td>
-               <div>
-                   <label for="editnota1">Primer parcial:</label>
-               <input id="editnota1" name="editnota1" size="5" maxlength="5" [(ngModel)]="detalleNota.nota1">
-               </div>
-                </td>
-
-                <td>
-                <div>
-                    <label for="updatenota2">segundo parcial:</label>
-                    <input size="5" maxlength="5" name="updatenota1" id="updatenota2" >
-                </div>
-                </td>
-
-                <td>
-
-                    <div>
-                        <label>Final:</label>
-                        <input class="left" size="5" maxlength="5"   name="updadetenotafinal" >
-                    </div>
-                </td>
-            </table>
-
-            <table class="table table-responsive">
-                <h5 class="text-center"><b>Asistencias:</b></h5>
-                <td>
-                    <div>
-                        <label>Primer parcial:</label>
-                        <label>
-                            <input size="5" maxlength="5" name="updadeteasistencia1"  >
-                        </label>
-                    </div>
-                </td>
-
-                <td>
-                    <div>
-                        <label>segundo parcial:</label>
-                        <label>
-                            <input size="5" maxlength="5" name="updadeteasistencia2"  >
-                        </label>
-                    </div>
-                </td>
-
-                <td>
-                    <div>
-                        <label>Final:</label>
-                        <input size="5" maxlength="5" name="updateasistenciafinal"  >
-                    </div>
-                </td>
-
-            </table>
-
-            <div class="text-left">
-                <input type="text" size="10" maxlength="10" name="updateestado"  >
-            </div>
-        </table>
-        </div>
-
-
-        <div class="modal-footer">
-            <h6 class="text-muted">
-                <b class="text-danger">{{messages['requiredFields2']['icon']}} </b>
-                {{messages['requiredFields2']['text']}}
-            </h6>
-            <button type="button" class="btn btn-secondary" (click)="c('close')" >
-                <span class="{{messages['saveConfirmationDialog2']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog2']['cancel']}}
-            </button>
-        </div>
-   </form>
-</ng-template>
-
-<!--modal create-->
-<ng-template #contentDetalleNota let-c="close" let-d="dismiss">
-    <form name="postdDtalleNota" method="post" #formCtrl="ngForm">
-
-        <div class="modal-header">
-            <div class="row">
-                <h4 class="col-lg-auto text-center">Registrar Calificaciones - Asistencias:</h4>
+                <h4 class="col-lg-auto text-center">
+                    Actualizar Calificaciones - Asistencias
+                </h4>
             </div>
         </div>
 
         <div class="modal-body">
             <table class="table-sm">
-                <table class="table table-responsive" >
+                <table class="table table-responsive">
                     <h5 class="text-center"><b>Calificaciones:</b></h5>
                     <td>
-            <div>
-                <label for="nota1">Primer parcial:</label>
-                <input style="width: 4em;" id="nota1" name="nota1" type="number" required="required"
-                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota1">
-            </div>
+                        <div>
+                            <label for="editnota1">Primer parcial:</label>
+                            <input
+                                id="editnota1"
+                                name="editnota1"
+                                size="5"
+                                maxlength="5"
+                                [(ngModel)]="detalleNota.nota1"
+                                (change)="updateDetalleNotas(detalleNota)"
+                            />
+                        </div>
                     </td>
+
                     <td>
-
-            <div>
-                <label for="nota2">Segundo parcial:</label>
-                <input style="width: 4em;" id="nota2" name="nota2" type="number" required="required"
-                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.nota2">
-
-            </div>
+                        <div>
+                            <label for="updatenota2">segundo parcial:</label>
+                            <input
+                                size="5"
+                                maxlength="5"
+                                name="updatenota1"
+                                id="updatenota2"
+                                [(ngModel)]="detalleNota.nota2"
+                                (change)="updateDetalleNotas(detalleNota)"
+                            />
+                        </div>
                     </td>
+
                     <td>
-            <div>
-                <label>Final:</label>
-                <label>
-                    <input disabled name="nota_final" size="5" value="{{(this.detallenotanuevo.nota1/2)+(this.detallenotanuevo.nota2/2)}}">
-                </label>
-            </div>
+                        <div>
+                            <label>Final:</label>
+                            <input
+                                class="left"
+                                size="5"
+                                maxlength="5"
+                                name="updadetenotafinal"
+                                disabled
+                                [(ngModel)]="detalleNota.nota_final"
+                                value="{{
+                                    this.detalleNota.nota1 / 2 +
+                                        this.detalleNota.nota2 / 2
+                                }}"
+                            />
+                        </div>
                     </td>
                 </table>
 
-
-
-                <table class="table table-responsive" >
+                <table class="table table-responsive">
                     <h5 class="text-center"><b>Asistencias:</b></h5>
                     <td>
-            <div>
-                <label for="asistencia1"> primer parcial:
-                </label>
-                <input style="width: 4em;" id="asistencia1" name="asistencia1" type="number" required="required"
-                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia1">
-            </div>
+                        <div>
+                            <label>Primer parcial:</label>
+                            <label>
+                                <input
+                                    size="5"
+                                    maxlength="5"
+                                    name="updadeteasistencia1"
+                                    [(ngModel)]="detalleNota.asistencia1"
+                                    (change)="updateDetalleNotas(detalleNota)"
+                                />
+                            </label>
+                        </div>
                     </td>
 
                     <td>
-            <div>
-                <label for="asistencia2"> segundo parcial:</label>
-                <input style="width: 4em;" id="asistencia2" name="asistencia2" type="number" required="required"
-                       ngModel="number" onKeyPress="if(this.value.length===5) return false;" min="2" [(ngModel)]="detallenotanuevo.asistencia2">
-            </div>
+                        <div>
+                            <label>segundo parcial:</label>
+                            <label>
+                                <input
+                                    size="5"
+                                    maxlength="5"
+                                    name="updadeteasistencia2"
+                                    [(ngModel)]="detalleNota.asistencia2"
+                                    (change)="updateDetalleNotas(detalleNota)"
+                                />
+                            </label>
+                        </div>
                     </td>
 
                     <td>
-            <div>
-                <label> Final:</label>
-                <label>
-                    <input disabled  name="asistencia_final" size="5" value="{{(this.detallenotanuevo.asistencia1/2) + (this.detallenotanuevo.asistencia2/2)}}">
-                </label>
-            </div>
+                        <div>
+                            <label>Final:</label>
+                            <input
+                                size="5"
+                                maxlength="5"
+                                name="updateasistenciafinal"
+                                disabled
+                                [(ngModel)]="detalleNota.asistencia_final"
+                                value="{{
+                                    this.detalleNota.asistencia1 / 2 +
+                                        this.detalleNota.asistencia2 / 2
+                                }}"
+                            />
+                        </div>
                     </td>
                 </table>
 
-            <div>
-                <label>
-                    <input disabled name="estado_academico"  size="10" maxlength="10"
-                           value="{{((this.detallenotanuevo.nota1/(2)) + (this.detallenotanuevo.nota2/(2))>= 69.50)
-                                &&  ((this.detallenotanuevo.asistencia1/(2)) + (this.detallenotanuevo.asistencia2/(2))>=70.00) ? 'APROBADO' :'REPROBADO'}}">
-                </label>
-            </div>
-
+                <div class="text-left">
+                    <input
+                        type="text"
+                        size="10"
+                        maxlength="10"
+                        name="updateestado"
+                        disabled
+                        [ngModel]="detalleNota.estado_academico"
+                        value="{{
+                            this.detalleNota.nota1 / 2 +
+                                this.detalleNota.nota2 / 2 >=
+                                69.5 &&
+                            this.detalleNota.asistencia1 / 2 +
+                                this.detalleNota.asistencia2 / 2 >=
+                                70.0
+                                ? 'APROBADO'
+                                : 'REPROBADO'
+                        }}"
+                    />
+                </div>
             </table>
         </div>
 
         <div class="modal-footer">
             <h6 class="text-muted">
-                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
-                {{messages['requiredFields']['text']}}
+                <b class="text-danger"
+                    >{{ messages["requiredFields2"]["icon"] }}
+                </b>
+                {{ messages["requiredFields2"]["text"] }}
             </h6>
-            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
-        <span
-            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
-            </button>
-            <button type="button" class="btn btn-danger" (click)="c('close')">
-        <span
-            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="c('close')"
+            >
+                <span
+                    class="{{
+                        messages['saveConfirmationDialog2']['iconCancel']
+                    }}"
+                ></span
+                >&nbsp;{{ messages["saveConfirmationDialog2"]["cancel"] }}
             </button>
         </div>
     </form>
 </ng-template>
 
+<!--modal create-->
+<ng-template #contentDetalleNota let-c="close" let-d="dismiss">
+    <form name="postdDtalleNota" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-lg-auto text-center">
+                    Registrar Calificaciones - Asistencias:
+                </h4>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <table class="table-sm">
+                <table class="table table-responsive">
+                    <h5 class="text-center"><b>Calificaciones:</b></h5>
+                    <td>
+                        <div>
+                            <label for="nota1">Primer parcial:</label>
+                            <input
+                                style="width: 4em;"
+                                id="nota1"
+                                name="nota1"
+                                type="number"
+                                required="required"
+                                ngModel="number"
+                                onKeyPress="if(this.value.length===5) return false;"
+                                min="2"
+                                [(ngModel)]="detallenotanuevo.nota1"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <label for="nota2">Segundo parcial:</label>
+                            <input
+                                style="width: 4em;"
+                                id="nota2"
+                                name="nota2"
+                                type="number"
+                                required="required"
+                                ngModel="number"
+                                onKeyPress="if(this.value.length===5) return false;"
+                                min="2"
+                                [(ngModel)]="detallenotanuevo.nota2"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <label>Final:</label>
+                            <label>
+                                <input
+                                    disabled
+                                    name="nota_final"
+                                    size="5"
+                                    value="{{
+                                        this.detallenotanuevo.nota1 / 2 +
+                                            this.detallenotanuevo.nota2 / 2
+                                    }}"
+                                />
+                            </label>
+                        </div>
+                    </td>
+                </table>
+
+                <table class="table table-responsive">
+                    <h5 class="text-center"><b>Asistencias:</b></h5>
+                    <td>
+                        <div>
+                            <label for="asistencia1"> primer parcial: </label>
+                            <input
+                                style="width: 4em;"
+                                id="asistencia1"
+                                name="asistencia1"
+                                type="number"
+                                required="required"
+                                ngModel="number"
+                                onKeyPress="if(this.value.length===5) return false;"
+                                min="2"
+                                [(ngModel)]="detallenotanuevo.asistencia1"
+                            />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            <label for="asistencia2"> segundo parcial:</label>
+                            <input
+                                style="width: 4em;"
+                                id="asistencia2"
+                                name="asistencia2"
+                                type="number"
+                                required="required"
+                                ngModel="number"
+                                onKeyPress="if(this.value.length===5) return false;"
+                                min="2"
+                                [(ngModel)]="detallenotanuevo.asistencia2"
+                            />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            <label> Final:</label>
+                            <label>
+                                <input
+                                    disabled
+                                    name="asistencia_final"
+                                    size="5"
+                                    value="{{
+                                        this.detallenotanuevo.asistencia1 / 2 +
+                                            this.detallenotanuevo.asistencia2 /
+                                                2
+                                    }}"
+                                />
+                            </label>
+                        </div>
+                    </td>
+                </table>
+
+                <div>
+                    <label>
+                        <input
+                            disabled
+                            name="estado_academico"
+                            size="10"
+                            maxlength="10"
+                            value="{{
+                                this.detallenotanuevo.nota1 / 2 +
+                                    this.detallenotanuevo.nota2 / 2 >=
+                                    69.5 &&
+                                this.detallenotanuevo.asistencia1 / 2 +
+                                    this.detallenotanuevo.asistencia2 / 2 >=
+                                    70.0
+                                    ? 'APROBADO'
+                                    : 'REPROBADO'
+                            }}"
+                        />
+                    </label>
+                </div>
+            </table>
+        </div>
+
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger"
+                    >{{ messages["requiredFields"]["icon"] }}
+                </b>
+                {{ messages["requiredFields"]["text"] }}
+            </h6>
+            <button
+                type="button"
+                class="btn btn-success"
+                (click)="c('save')"
+                [disabled]="formCtrl.form.invalid"
+            >
+                <span
+                    class="{{ messages['saveConfirmationDialog']['iconOk'] }}"
+                ></span
+                >&nbsp;{{ messages["saveConfirmationDialog"]["ok"] }}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+                <span
+                    class="{{
+                        messages['saveConfirmationDialog']['iconCancel']
+                    }}"
+                ></span
+                >&nbsp;{{ messages["saveConfirmationDialog"]["cancel"] }}
+            </button>
+        </div>
+    </form>
+</ng-template>

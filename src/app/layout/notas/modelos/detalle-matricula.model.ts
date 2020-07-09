@@ -1,6 +1,5 @@
-import {Matricula} from './matricula.model';
-import {Asignatura} from './asignatura.model';
-
+import { Matricula } from "./matricula.model";
+import { Asignatura } from "./asignatura.model";
 
 export class DetalleMatricula {
     id?: number;
@@ -16,8 +15,8 @@ export class DetalleMatricula {
         this.matricula = new Matricula();
         this.asignatura = new Asignatura();
         this.asignatura.id = 0;
-        this.numero_matricula = '';
-        this.jornada = '';
-        this.paralelo = '';
+        this.numero_matricula = "";
+        this.jornada = "";
+        this.paralelo = "";
     }
 }

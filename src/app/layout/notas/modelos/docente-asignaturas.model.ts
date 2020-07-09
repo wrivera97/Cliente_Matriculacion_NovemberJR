@@ -1,8 +1,6 @@
-import {Asignatura} from './asignatura.model';
-import { PeriodoLectivo } from './periodo-lectivo.model';
-import {Docente} from './docente.model';
-
-
+import { Asignatura } from "./asignatura.model";
+import { PeriodoLectivo } from "./periodo-lectivo.model";
+import { Docente } from "./docente.model";
 
 export class DocenteAsignatura {
     id?: number;
@@ -16,9 +14,8 @@ export class DocenteAsignatura {
         this.docente = new Docente();
         this.periodo_lectivo = new PeriodoLectivo();
         this.asignatura = new Asignatura();
-        this.paralelo = '';
-        this.jornada = '';
-        this.jornada = '';
-
+        this.paralelo = "";
+        this.jornada = "";
+        this.jornada = "";
     }
 }

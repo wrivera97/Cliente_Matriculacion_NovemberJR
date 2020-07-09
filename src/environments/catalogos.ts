@@ -248,6 +248,35 @@ export const catalogos = {
     },
     messages:
         {
+            updateNotaSuccess: {
+                position: 'center',
+                type: 'success',
+                title: 'Calificacion actualizada',
+                timer: 1000,
+                showConfirmButton: false,
+                backdrop: 'rgba(0,0,255,0.4)'
+            },
+            errorFoundNota: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'No hay calificaciones para este estudiante',
+                'text': 'Intenta registrarlas primero',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+            questionUpdateNota: {
+                position: 'center',
+                title: '¿Desea modificar las calificaciones del estudiante seleccionado?',
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fa fa-check" aria-hidden="true"> Si</i>',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+                backdrop: 'rgba(255, 0, 0,0.4)'
+            },
             errorNotaDuplicada: {
                 'position': 'center',
                 'type': 'error',
@@ -277,8 +306,8 @@ export const catalogos = {
             errorFoundDocente: {
                 'position': 'center',
                 'type': 'error',
-                'title': 'No se encontro el  docente para esta asignatura',
-                'text': 'Vuelve a intentar mas tarde',
+                'title': 'No se encontró el  docente para esta asignatura',
+                'text': 'Vuelve a intentar más tarde',
                 'timer': 3000,
                 'showConfirmButton': false,
                 'backdrop': 'rgba(255,0,0,0.4)'
@@ -329,7 +358,7 @@ export const catalogos = {
             deleteInputAccept: {
                 position: 'center',
                 type: 'error',
-                title: '¿Esta seguro en anular este registro?',
+                title: '¿Está seguro en anular este registro?',
                 showConfirmButton: true,
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -566,7 +595,7 @@ export const catalogos = {
             saveConfirmationDialog2: {'ok': 'OK', 'cancel': 'Cerrar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             saveConfirmationDialog: {'ok': 'Guardar', 'cancel': 'Cancelar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             requiredFields: {'icon': '*', 'text': 'Todos los campos son obligatorios'},
-            requiredFields2: {'icon': '¡Atencion!', 'text': 'Seleccione solo el campo a modificar'},
+            requiredFields2: {'icon': '¡Atención!', 'text': 'Seleccione solo él campo a modificar'},
             buttonCreate: {'icon': 'fa fa-save', 'text': 'Guardar'},
             buttonAdd: {'icon': 'fa fa-plus', 'text': 'Añadir'},
             buttonUpdate: {'icon': 'fa fa-edit', 'text': ''},

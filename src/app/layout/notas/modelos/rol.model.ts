@@ -1,12 +1,8 @@
-
-
 export class Rol {
-  id: string;
-  descripcion: number;
-  rol: string;
-  estado: string;
+    id: string;
+    descripcion: number;
+    rol: string;
+    estado: string;
 
-  constructor() {
-
-  }
+    constructor() {}
 }

@@ -1,4 +1,4 @@
-import {Instituto} from './instituto.model';
+import { Instituto } from "./instituto.model";
 
 export class Carrera {
     id?: number;
@@ -19,15 +19,15 @@ export class Carrera {
     constructor() {
         this.id = 0;
         this.instituto = new Instituto();
-        this.codigo = '';
-        this.codigo_sniese = '';
-        this.nombre = '';
-        this.modalidad = '';
-        this.titulo_otorga = '';
-        this.siglas = '';
-        this.tipo_carrera = '';
-        this.descripcion = '';
-        this.estado = '';
+        this.codigo = "";
+        this.codigo_sniese = "";
+        this.nombre = "";
+        this.modalidad = "";
+        this.titulo_otorga = "";
+        this.siglas = "";
+        this.tipo_carrera = "";
+        this.descripcion = "";
+        this.estado = "";
         this.seleccionada = false;
     }
 }
