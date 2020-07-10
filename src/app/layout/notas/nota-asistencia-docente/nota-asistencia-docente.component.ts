@@ -188,17 +188,22 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
     createDetalleNotas() {
         // @ts-ignore
         this.detallenotanuevo.nota_final =
+         // @ts-ignore
             this.detallenotanuevo.nota1 / 2 + this.detallenotanuevo.nota2 / 2;
         // @ts-ignore
         this.detallenotanuevo.asistencia_final =
+         // @ts-ignore
             this.detallenotanuevo.asistencia1 / 2 +
+             // @ts-ignore
             this.detallenotanuevo.asistencia2 / 2;
         // @ts-ignore
         this.detallenotanuevo.estado_academico =
+         // @ts-ignore
             this.detallenotanuevo.nota1 / 2 + this.detallenotanuevo.nota2 / 2 >=
                 69.5 &&
             // @ts-ignore
             this.detallenotanuevo.asistencia1 / 2 +
+             // @ts-ignore
                 this.detallenotanuevo.asistencia2 / 2 >=
                 70.0
                 ? "APROBADO"
@@ -240,15 +245,19 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
     updateDetalleNotas(detallenota: DetallenotaModel) {
         // @ts-ignore
         this.detalleNota.nota_final =
+         // @ts-ignore
             this.detalleNota.nota1 / 2 + this.detalleNota.nota2 / 2;
         // @ts-ignore
         this.detalleNota.asistencia_final =
+         // @ts-ignore
             this.detalleNota.asistencia1 / 2 + this.detalleNota.asistencia2 / 2;
         // @ts-ignore
         this.detalleNota.estado_academico =
+         // @ts-ignore
             this.detalleNota.nota1 / 2 + this.detalleNota.nota2 / 2 >= 69.5 &&
             // @ts-ignore
             this.detalleNota.asistencia1 / 2 +
+             // @ts-ignore
                 this.detalleNota.asistencia2 / 2 >=
                 70.0
                 ? "APROBADO"
