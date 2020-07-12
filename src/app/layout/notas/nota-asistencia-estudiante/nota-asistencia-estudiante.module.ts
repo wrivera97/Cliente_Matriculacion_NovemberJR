@@ -3,11 +3,11 @@ import {NotaAsistenciaEstudianteRoutingModule} from './nota-asistencia-estudiant
 import {NotaAsistenciaEstudianteComponent} from './nota-asistencia-estudiante.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 @NgModule({
   declarations: [NotaAsistenciaEstudianteComponent],
   imports: [
-    CommonModule, NotaAsistenciaEstudianteRoutingModule, NgbModule,FormsModule
+    CommonModule, NotaAsistenciaEstudianteRoutingModule, NgbModule, FormsModule, ReactiveFormsModule
   ]
 })
 export class NotaAsistenciaEstudianteModule { }

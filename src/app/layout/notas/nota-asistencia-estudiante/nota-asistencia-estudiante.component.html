@@ -1,3 +1,4 @@
+<div>
 <table>
     <tr>
         <td>
@@ -36,12 +37,13 @@
             <div>
                 <small class="text-muted" *ngIf="!flagAll">
                     * seleccione un periodo para revisar sus asignaturas
-                    actuales o anteriores</small
+                </small
                 >
             </div>
         </td>
     </tr>
 </table>
+</div>
 
 <div *ngIf="!flagAll">
     <table class="table">
@@ -61,7 +63,7 @@
                         (click)="
                             getDetalleNotaEstudiante(
                                 detalleEstudiante.asignatura.id,
-                                notaEstudianteDetalle
+                                contentNotaEstudianteDetalle
                             )
                         "
                     ></button>
@@ -71,130 +73,76 @@
     </table>
 </div>
 
-<ng-template #notaEstudianteDetalle let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <div>
-            <small class="text-muted"
-                >*En caso de existir algún error contacte con su docente de la
-                asignatura respectiva</small
-            >
-        </div>
-    </div>
+<ng-template #contentNotaEstudianteDetalle let-c="close" let-d="dismiss">
+    <form name="getDetalleNotaEstudiante" method="get" #formCtrl="ngForm">
+        <div class="modal-body">
+            <table class="table-sm">
+                <table class="table table-responsive">
+                     <h5 class="text-center"><b>Calificaciones:</b></h5>
+                     <td>
+                         <div>
+                         <label for="nota1">Primer parcial: </label>
+                  <input size="5" maxlength="5" id="nota1" name="nota1"[disabled]="true" [(ngModel)]="detalleNota.nota1"
+                  />
+                        </div>
+                     </td>
+                    <td>
+                        <div>
+                            <label for="nota2">Segundo parcial: </label>
+                            <input size="5" maxlength="5" id="nota2" name="nota2" [disabled]="true" [(ngModel)]="detalleNota.nota2"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <label for="nota_final">Final: </label>
+                            <input size="5" maxlength="5" id="nota_final" name="nota_final" [disabled]="true" [(ngModel)]="detalleNota.asistencia_final"
+                            />
+                        </div>
+                    </td>
+          </table>
 
-    <div class="modal-body">
-        <table class="form-group">
-            <div class="form-group">
-                <div class="col-lg-sm">
-                    <label for="nota1"><b>Nota primer parcial:</b></label>
-                    <option
-                        id="nota1"
-                        name="nota1"
-                        *ngFor="let detallenota of detalleNota"
-                    >
-                        {{ detallenota.nota1 }}
-                    </option>
-                </div>
+                <table class="table table-responsive">
+                    <h5 class="text-center"><b>Asistencias:</b></h5>
 
-                <div class="col-lg-sm">
-                    <label for="nota2"><b>Nota segundo parcial:</b></label>
-                    <option
-                        id="nota2"
-                        name="nota2"
-                        *ngFor="let detallenota of detalleNota"
-                    >
-                        {{ detallenota.nota2 }}
-                    </option>
-                </div>
-
-                <div class="col-lg-sm">
-                    <label for="nota_final"><b>Nota final:</b></label
-                    ><br />
-                    <option
-                        id="nota_final"
-                        name="nota_final"
-                        *ngFor="let detallenota of detalleNota"
-                        [ngClass]="{
-                            'text-danger': detallenota.nota_final <= 69.49,
-                            'text-success': detallenota.nota_final >= 69.5
-                        }"
-                    >
-                        {{ detallenota.nota_final }}
-                    </option>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-lg-sm">
-                    <label for="asistencia1"
-                        ><b>Asistencia primer parcial:</b></label
-                    ><br />
-                    <option
-                        id="asistencia1"
-                        name="asistencia1"
-                        *ngFor="let detallenota of detalleNota"
-                    >
-                        {{ detallenota.asistencia1 }}
-                    </option>
-                </div>
-
-                <div class="col-lg-sm">
-                    <label for="asistencia2"
-                        ><b>Asistencia segundo parcial:</b></label
-                    ><br />
-                    <option
-                        id="asistencia2"
-                        name="asistencia2"
-                        *ngFor="let detallenota of detalleNota"
-                    >
-                        {{ detallenota.asistencia2 }}
-                    </option>
-                </div>
-
-                <div class="col-lg-sm">
-                    <label for="asistencia_final"
-                        ><b>Asistencia final:</b></label
-                    ><br />
-                    <option
-                        id="asistencia_final"
-                        name="asistencia_final"
-                        *ngFor="let detallenota of detalleNota"
-                        [ngClass]="{
+                    <td>
+                        <div>
+                            <label for="asistencia1">Primer parcial: </label>
+                            <input size="5" maxlength="5" id="asistencia1" name="asistencia1" [disabled]="true" [(ngModel)]="detalleNota.asistencia1"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <label for="asistencia2">Segundo parcial: </label>
+                            <input size="5" maxlength="5" id="asistencia2" name="asistencia2" [disabled]="true" [(ngModel)]="detalleNota.asistencia2"
+                            />
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <label for="asistencia_final">Final: </label>
+                            <input size="5" maxlength="5" id="asistencia_final" name="asistencia_final"[disabled]="true" [(ngModel)]="detalleNota.asistencia_final"
+                            />
+                        </div>
+                    </td>
+                </table>
+                <div>
+                    <input name="estado_academico" size="9" [disabled]="true" [ngClass]="{
                             'text-danger':
-                                detallenota.asistencia_final <= 69.99,
-                            'text-success': detallenota.asistencia_final >= 70.0
-                        }"
-                    >
-                        {{ detallenota.asistencia_final }}
-                    </option>
-                </div>
-
-                <div class="col-lg-sm">
-                    <label for="estado_academico"
-                        ><b>Estado Academico:</b></label
-                    ><br />
-                    <option
-                        id="estado_academico"
-                        name="estado_academico"
-                        *ngFor="let detallenota of detalleNota"
-                        [ngClass]="{
-                            'text-danger':
-                                detallenota.estado_academico !== 'APROBADO',
+                                detalleNota.estado_academico !== 'APROBADO',
                             'text-success':
-                                detallenota.estado_academico == 'APROBADO'
+                                detalleNota.estado_academico == 'APROBADO'
                         }"
-                    >
-                        {{ detallenota.estado_academico }}
-                    </option>
+
+                           [(ngModel)]="detalleNota.estado_academico">
                 </div>
-            </div>
         </table>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="c('close')">
-            <span
-                class="{{ messages['saveConfirmationDialog2']['iconCancel'] }}"
-            ></span
-            >&nbsp;{{ messages["saveConfirmationDialog2"]["cancel"] }}
-        </button>
-    </div>
+      </div>
+
+      <div class="modal-footer">
+     <button  class="btn btn-secondary fa fa-times" (click)="c('close')"> Cerrar</button>
+      </div>
+    </form>
+
 </ng-template>

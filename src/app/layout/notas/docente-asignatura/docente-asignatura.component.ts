@@ -192,7 +192,6 @@ export class DocenteAsignaturaComponent implements OnInit {
             (Response) => {
                 this.detalleDocente = Response["asignacionesDocente"];
                 this.spinner.hide();
-                console.log(Response);
             },
             (error) => {
                 this.spinner.hide();
@@ -231,7 +230,6 @@ export class DocenteAsignaturaComponent implements OnInit {
             docente_asignatura: detalledocente,
         }).subscribe(
             (response) => {
-                this.getDetalleDocente(this.docenteSeleccionado);
                 this.spinner.hide();
                 swal.fire(this.messages["updateSuccess"]);
             },

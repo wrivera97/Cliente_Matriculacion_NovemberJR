@@ -63,7 +63,6 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         this.estados = catalogos.estados;
         this.detallenotanuevo = new DetallenotaModel();
         this.detallenotaUpdate = new DetallenotaModel();
-        // this.detalleNota = new DetallenotaModel();
         this.messages = catalogos.messages;
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
@@ -267,6 +266,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
             detalle_nota: detallenota,
         }).subscribe(
             (response) => {
+                this.spinner.hide();
                 swal.fire(this.messages["updateNotaSuccess"]);
             },
             (error) => {

@@ -9,7 +9,7 @@ import { catalogos } from "../../../../environments/catalogos";
 import { DetalleMatricula } from "../modelos/detalle-matricula.model";
 import swal from "sweetalert2";
 import { NgxSpinnerService } from "ngx-spinner";
-import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "app-nota-asistencia-estudiante",
@@ -52,7 +52,6 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
         this.detalleEstudianteUserSelecciondo = new DetalleMatricula();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.periodoLectivoActual = new PeriodoLectivo();
-        this.detalleNota = new DetallenotaModel();
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getPeriodosLectivos();
@@ -153,10 +152,7 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
         this.NotasService.get("notaDetalle/Estudiante" + parametros).subscribe(
             (response) => {
                 this.detalleNota = response["detalleNota"];
-                const logoutScreenOptions: NgbModalOptions = {
-                    size: "lg",
-                };
-                this.modalService.open(content, logoutScreenOptions);
+                this.modalService.open(content);
             },
             (error) => {
                 swal.fire(this.messages["errorFoundDocente"]);
