@@ -155,8 +155,9 @@ export class NotaAsistenciaEstudianteComponent implements OnInit {
                 this.modalService.open(content);
             },
             (error) => {
-                swal.fire(this.messages["errorFoundDocente"]);
+            swal.fire(this.messages["errorFoundNota"]);
             }
+
         );
     }
 }

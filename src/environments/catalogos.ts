@@ -302,11 +302,19 @@ export const catalogos = {
                 'showConfirmButton': false,
                 'backdrop': 'rgba(255,0,0,0.4)'
             },
-
             errorFoundDocente: {
                 'position': 'center',
                 'type': 'error',
                 'title': 'No se encontró el  docente para esta asignatura',
+                'text': 'Vuelve a intentar más tarde',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+            errorFoundNota: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'No se encontró calificaciones para esta asignatura',
                 'text': 'Vuelve a intentar más tarde',
                 'timer': 3000,
                 'showConfirmButton': false,

@@ -178,101 +178,94 @@ export class DocenteAsignaturaComponent implements OnInit {
             }
         ); // cierre del subcribe y response
     } // funcion o metodo }cerramos
-    getDetalleDocente(docente: Docente) {
+    /*metodo get(obtenemos las asignaturas que estan asignadas al docente que fue seleccionado)*/
+    getDetalleDocente(docente: Docente) {/*creamos nuestro metodo con una breve descripción */
         this.spinner.show();
         this.detalleDocente = null;
         this.flagAll = true;
         this.docenteSeleccionado = docente;
-        this.NotasService.get(
-            "asignacionDocentes?id=" +
-                this.docenteSeleccionado.id +
+        this.NotasService.get(/*LLamamos a nuesto servicio con metodo get seguidamente con la direccion de la api con sus parametros*/
+            "asignacionDocentes?id=" + 
+                this.docenteSeleccionado.id +/*primer parametro */
                 "&periodo_lectivo_id=" +
-                this.periodoLectivoActual.id
-        ).subscribe(
-            (Response) => {
-                this.detalleDocente = Response["asignacionesDocente"];
+                this.periodoLectivoActual.id/*segundo parametro* */
+        ).subscribe(/*nos subscribimos */
+            (Response) => { /*obtenemos la respuesta desde el servidor*/
+                this.detalleDocente = Response["asignacionesDocente"];/*la respuesta la almacenamos en un array*/
                 this.spinner.hide();
             },
             (error) => {
                 this.spinner.hide();
-                swal.fire(this.messages["error500"]);
+                swal.fire(this.messages["error500"]); /*si existe un error o no existe respuesta enviamos un mensaje de error*/
             }
         );
     }
-
-    createDetalleDocenteAsignatura() {
+    /*metodo post (enviamos los datos a guardar al backend  "laravel") */
+    createDetalleDocenteAsignatura() {/*creamos nuestro metodo con una breve descripción */
         this.spinner.show();
-        this.detalleDocenteasignaturaNuevo.estado = "ACTIVO";
-        this.NotasService.post("asignacionDocentes", {
+        this.detalleDocenteasignaturaNuevo.estado = "ACTIVO"; /*Enviamos como estado "ACTIVO" al crear un nuevo detalle*/
+        this.NotasService.post("asignacionDocentes", { /*llamamos a nuestro servicio con metodo post seguidamente con la direccion de la api*/
             docente_asignatura: this.detalleDocenteasignaturaNuevo,
-        }).subscribe(
-            (response) => {
+        }).subscribe(/*nos subscribimos*/
+            (response) => { /*obtenemos la respuesta */
                 this.getDetalleDocente(this.docenteSeleccionado);
-                this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();
+                this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();/*llamamos al modelo y pasamos los datos declarados en el modelo*/
                 this.spinner.hide();
-                swal.fire(this.messages["createSuccess"]);
+                swal.fire(this.messages["createSuccess"]);/*si los datos fueron guardados mostramos un mensaje o notificacion*/
             },
             (error) => {
                 this.spinner.hide();
                 if (error.error.errorInfo === "23505") {
                     swal.fire(this.messages["error23505"]);
                 } else {
-                    swal.fire(this.messages["error500"]);
+                    swal.fire(this.messages["error500"]);/*si hubo un error enviamos un mensaje describiendo el error*/
                 }
                 this.detalleDocenteasignaturaNuevo = new DocenteAsignatura();
             }
         );
     }
-
-    updateDetalleDocenteAsignatura(detalledocente: DocenteAsignatura) {
+    /*metodo put (enviamos los datos a actualizar al backend "laravel) */
+    updateDetalleDocenteAsignatura(detalledocente: DocenteAsignatura) {/*creamos nuestro metodo con una breve descripción con una variable local*/
         this.spinner.show();
-        this.NotasService.update("asignacionDocentes", {
+        this.NotasService.update("asignacionDocentes", {/*llamamos nuestro servicio con metodo update seguidamente con la direccion de la api*/
             docente_asignatura: detalledocente,
-        }).subscribe(
-            (response) => {
+        }).subscribe( /*nos subscribimos */
+            (response) => { /*obtenemos la respuesta*/
                 this.spinner.hide();
-                swal.fire(this.messages["updateSuccess"]);
+                swal.fire(this.messages["updateSuccess"]);/*si los datos fueron actualizados mostramos un mensaje o notificacion*/
             },
             (error) => {
                 this.spinner.hide();
-                swal.fire(this.messages["error500"]);
+                swal.fire(this.messages["error500"]);/*si hubo un error al actualizar enviamos un mensaje de error*/
             }
         );
     }
-
-    async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {
-        const { value: razonEliminarAsignatura } = await swal.fire(
-            this.messages["deleteInputAccept"]
+    /*meotodo delete (enviamos el id del registro selecccionado al backend "laravel")*/
+    async deleteAsignaturaDocente(detalledocente: DocenteAsignatura) {/*creamos nuestro metodo con una breve descripción con una variable local*/
+        const { value: razonEliminarAsignatura } = await swal.fire( /*creamos una constante para almacenar la razon por la cual se eliminara el registro */
+            this.messages["deleteInputAccept"]/*mostramos un mensaje advirtiendo si desea o no eliminar el registro */
         );
         if (razonEliminarAsignatura) {
             swal.fire(this.messages["deleteInputAccept"]).then((result) => {
                 if (result.value) {
                     this.spinner.show();
-                    this.NotasService.delete(
-                        "asignacionDocentes?id=" + detalledocente.id
+                    this.NotasService.delete(/*llamamos a nuestro servicio con metodo delete seguido de nuestra ruta o api*/
+                        "asignacionDocentes?id=" + detalledocente.id /*seleccionamos y enviamos el id del registro*/
                     ).subscribe(
-                        (response) => {
+                        (response) => {/*obtenemos la respuesta desde el servidor */
                             this.getDetalleDocente(this.docenteSeleccionado);
                             this.spinner.show();
-                            swal.fire(this.messages["deleteSuccess"]);
+                            swal.fire(this.messages["deleteSuccess"]);/*mensaje de eliminado correcto */
                         },
                         (error) => {
                             this.spinner.hide();
-                            swal.fire(this.messages["error500"]);
+                            swal.fire(this.messages["error500"]);/*mensaje de que hubo un error o el registro no existe (404 - 500) */
                         }
                     );
                 }
             });
-        } else {
-            if (!(razonEliminarAsignatura === undefined)) {
-                swal.fire(
-                    "Motivo",
-                    "Debe contener por lo menos un motivo",
-                    "warning"
-                );
-            }
         }
-    }
+     }
 
     opendetalledocenteasignaturas(content) {
         this.detalleDocenteasignaturaNuevo.docente.id = this.docenteSeleccionado.id;

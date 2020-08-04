@@ -9,6 +9,7 @@ export class Docente {
     apellido2: String;
     identificacion: String;
     genero: String;
+    tipo_sangre: string;
     correo_institucional: String;
     estado: String;
 
