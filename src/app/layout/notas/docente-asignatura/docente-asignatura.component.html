@@ -176,12 +176,12 @@
                     </td>
 
                     <td>
-                        {{ docenteAsignatura.asignatura.nombre }}
+                                {{docenteAsignatura.asignatura.nombre}}
+
                     </td>
 
                     <td>
-                        <select
-                            disabled
+                        <select [disabled]="true"
                             [(ngModel)]="docenteAsignatura.jornada"
                             class="text-uppercase form-control-sm"
                         >
@@ -195,8 +195,7 @@
                     </td>
 
                     <td>
-                        <select
-                            disabled
+                        <select [disabled]="true"
                             [(ngModel)]="docenteAsignatura.paralelo"
                             class="text-uppercase form-control-sm"
                         >

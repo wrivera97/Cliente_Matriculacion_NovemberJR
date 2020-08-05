@@ -185,7 +185,7 @@ export class DocenteAsignaturaComponent implements OnInit {
         this.flagAll = true;
         this.docenteSeleccionado = docente;
         this.NotasService.get(/*LLamamos a nuesto servicio con metodo get seguidamente con la direccion de la api con sus parametros*/
-            "asignacionDocentes?id=" + 
+            "asignacionDocentes?id=" +
                 this.docenteSeleccionado.id +/*primer parametro */
                 "&periodo_lectivo_id=" +
                 this.periodoLectivoActual.id/*segundo parametro* */
@@ -233,6 +233,7 @@ export class DocenteAsignaturaComponent implements OnInit {
             (response) => { /*obtenemos la respuesta*/
                 this.spinner.hide();
                 swal.fire(this.messages["updateSuccess"]);/*si los datos fueron actualizados mostramos un mensaje o notificacion*/
+                this.getDetalleDocente(this.docenteSeleccionado);
             },
             (error) => {
                 this.spinner.hide();

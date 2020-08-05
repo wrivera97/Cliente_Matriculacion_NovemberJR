@@ -256,15 +256,6 @@ export const catalogos = {
                 showConfirmButton: false,
                 backdrop: 'rgba(0,0,255,0.4)'
             },
-            errorFoundNota: {
-                'position': 'center',
-                'type': 'error',
-                'title': 'No hay calificaciones para este estudiante',
-                'text': 'Intenta registrarlas primero',
-                'timer': 3000,
-                'showConfirmButton': false,
-                'backdrop': 'rgba(255,0,0,0.4)'
-            },
             questionUpdateNota: {
                 position: 'center',
                 title: '¿Desea modificar las calificaciones del estudiante seleccionado?',
