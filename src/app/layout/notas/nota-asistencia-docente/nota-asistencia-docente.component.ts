@@ -183,8 +183,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
             }
         );
     }
-
-    createDetalleNotas() {
+  /*metodo post (enviamos los datos a guardar al backend  "laravel") */
+    createDetalleNotas() {/*creamos nuestro metodo con una breve descripción */
         // @ts-ignore
         this.detallenotanuevo.nota_final =
          // @ts-ignore
@@ -194,7 +194,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
          // @ts-ignore
             this.detallenotanuevo.asistencia1 / 2 +
              // @ts-ignore
-            this.detallenotanuevo.asistencia2 / 2;
+            this.detallenotanuevo.asistencia2 / 2; /*validamos los datos antes ser enviados a backend */
         // @ts-ignore
         this.detallenotanuevo.estado_academico =
          // @ts-ignore
@@ -208,18 +208,18 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
                 ? "APROBADO"
                 : "REPROBADO";
 
-        this.NotasService.post("notaDetalle", {
+        this.NotasService.post("notaDetalle", { /*llamamos a nuestro servicio con metodo post seguidamente con la direccion de la api*/
             detalle_nota: this.detallenotanuevo,
-        }).subscribe(
+        }).subscribe(/*nos subscribimos*/
             (response) => {
                 this.detallenotanuevo = new DetallenotaModel();
-                swal.fire(this.messages["createSuccessNota"]);
+                swal.fire(this.messages["createSuccessNota"]); /*si los datos fueron guardados mostramos un mensaje o notificacion*/
             },
             (error) => {
                 this.spinner.hide();
-                if (error.error.errorInfo === "23505") {
+                if (error.error.errorInfo === "23505") {/*si hubo un error enviamos un mensaje describiendo el error*/
                 } else {
-                    swal.fire(this.messages["errorNotaDuplicada"]);
+                    swal.fire(this.messages["errorNotaDuplicada"]); /*si los datos ya estan guardados enviamos mensaje de registro duplicado*/
                 }
                 this.detallenotanuevo = new DetallenotaModel();
             }
@@ -240,8 +240,8 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
             (resultCancel) => {}
         );
     }
-
-    updateDetalleNotas(detallenota: DetallenotaModel) {
+ /*metodo put (enviamos los datos a actualizar al backend "laravel) */
+    updateDetalleNotas(detallenota: DetallenotaModel) {/*creamos nuestro metodo con una breve descripción con una variable local*/
         // @ts-ignore
         this.detalleNota.nota_final =
          // @ts-ignore
@@ -249,7 +249,7 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
         // @ts-ignore
         this.detalleNota.asistencia_final =
          // @ts-ignore
-            this.detalleNota.asistencia1 / 2 + this.detalleNota.asistencia2 / 2;
+            this.detalleNota.asistencia1 / 2 + this.detalleNota.asistencia2 / 2;  /*validamos los datos antes ser enviados a backend */
         // @ts-ignore
         this.detalleNota.estado_academico =
          // @ts-ignore
@@ -262,16 +262,16 @@ export class NotaAsistenciaDocenteComponent implements OnInit {
                 ? "APROBADO"
                 : "REPROBADO";
 
-        this.NotasService.update("notaDetalle", {
+        this.NotasService.update("notaDetalle", {/*llamamos nuestro servicio con metodo update seguidamente con la direccion de la api*/
             detalle_nota: detallenota,
-        }).subscribe(
-            (response) => {
+        }).subscribe(/*nos subscribimos al servicio */
+            (response) => { /*obtenemos la respuesta*/
                 this.spinner.hide();
-                swal.fire(this.messages["updateNotaSuccess"]);
+                swal.fire(this.messages["updateNotaSuccess"]);/*si los datos fueron actualizados mostramos un mensaje o notificacion*/
             },
             (error) => {
                 this.spinner.hide();
-                swal.fire(this.messages["error500"]);
+                swal.fire(this.messages["error500"]);/*si hubo un error al actualizar enviamos un mensaje de error*/
             }
         );
     }
