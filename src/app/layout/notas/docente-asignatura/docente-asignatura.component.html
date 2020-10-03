@@ -149,7 +149,7 @@
                 <th>
                     <button
                         [disabled]="
-                            periodoLectivoSeleccionado.estado == 'HISTORICO'
+                            periodoLectivoSeleccionado.estado == 'HISTORICO'|| docenteSeleccionado.estado !='ACTIVO'
                         "
                         type="button"
                         class="btn btn-success ml-1 btn-sm"
